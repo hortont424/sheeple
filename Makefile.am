@@ -46,7 +46,10 @@ doc_DATA = \
 
 lib_LTLIBRARIES += libsheeple.la
 
-libsheeple_la_SOURCES = src/libsheeple/*.c src/libsheeple/*.h
+libsheeple_la_SOURCES = \
+    src/libsheeple/sheeple.c \
+    src/libsheeple/sheeple.h
+
 libsheeple_la_CFLAGS = $(SHEEPLE_CFLAGS)
 libsheeple_la_LDFLAGS = $(SHEEPLE_LIBS)
 
