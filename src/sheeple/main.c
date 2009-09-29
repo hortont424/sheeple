@@ -59,6 +59,8 @@ GtkWidget *create_window(void)
 int main(int argc, char *argv[])
 {
     GtkWidget *window;
+    
+    printf("%d\n", sheeple_test_func());
 
 #ifdef ENABLE_NLS
     bindtextdomain(GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
