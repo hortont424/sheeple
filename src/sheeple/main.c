@@ -28,6 +28,8 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
+#include <libsheeple/sheeple.h>
+
 #include "callbacks.h"
 
 #define UI_FILE PACKAGE_DATA_DIR"/sheeple/ui/sheeple.ui"
