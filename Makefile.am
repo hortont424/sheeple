@@ -40,14 +40,14 @@ doc_DATA = \
 ### sheeple application ###
 
 uidir = $(datadir)/sheeple/ui
-ui_DATA = src/sheeple.ui
+ui_DATA = src/sheeple/sheeple.ui
 
 bin_PROGRAMS += sheeple
 
 sheeple_SOURCES = \
-	src/callbacks.c \
-	src/callbacks.h \
-	src/main.c
+	src/sheeple/callbacks.c \
+	src/sheeple/callbacks.h \
+	src/sheeple/main.c
 
 sheeple_CFLAGS = $(SHEEPLE_CFLAGS)
 sheeple_LDFLAGS = -Wl,--export-dynamic
