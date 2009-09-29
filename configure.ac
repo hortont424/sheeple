@@ -61,6 +61,5 @@ AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
 
 AC_OUTPUT([
 Makefile
-src/Makefile
 po/Makefile.in
 ])
