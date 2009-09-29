@@ -14,10 +14,6 @@ AM_CPPFLAGS = \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\"
 
-### pkgconfig ###
-pkgconfig_DATA = libsheeple-1.0.pc
-pkgconfigdir = $(libdir)/pkgconfig
-
 ### intltool ###
 
 INTLTOOL_FILES = \
@@ -55,6 +51,9 @@ libsheeple_la_LDFLAGS = $(SHEEPLE_LIBS)
 
 libsheepleheaders_HEADERS = src/libsheeple/sheeple.h
 libsheepleheadersdir = $(pkgincludedir)
+
+pkgconfig_DATA = src/libsheeple/libsheeple-1.0.pc
+pkgconfigdir = $(libdir)/pkgconfig
 
 ### sheeple application ###
 

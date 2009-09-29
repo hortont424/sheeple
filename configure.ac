@@ -65,6 +65,6 @@ AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
 
 AC_OUTPUT([
 Makefile
-libsheeple-1.0.pc
+src/libsheeple/libsheeple-1.0.pc
 po/Makefile.in
 ])
