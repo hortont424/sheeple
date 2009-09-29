@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
+/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 4; tab-width: 4 -*- */
 /*
  * main.c
  * Copyright (C) Tim Horton 2009 <hortont424@gmail.com>
@@ -26,82 +26,50 @@
 #include <config.h>
 
 #include <gtk/gtk.h>
-
-
-
-/*
- * Standard gettext macros.
- */
-#ifdef ENABLE_NLS
-#  include <libintl.h>
-#  undef _
-#  define _(String) dgettext (PACKAGE, String)
-#  ifdef gettext_noop
-#    define N_(String) gettext_noop (String)
-#  else
-#    define N_(String) (String)
-#  endif
-#else
-#  define textdomain(String) (String)
-#  define gettext(String) (String)
-#  define dgettext(Domain,Message) (Message)
-#  define dcgettext(Domain,Message,Type) (Message)
-#  define bindtextdomain(Domain,Directory) (Domain)
-#  define _(String) (String)
-#  define N_(String) (String)
-#endif
-
-
+#include <glib/gi18n.h>
 
 #include "callbacks.h"
 
-/* For testing propose use the local (not installed) ui file */
-/* #define UI_FILE PACKAGE_DATA_DIR"/sheeple/ui/sheeple.ui" */
 #define UI_FILE "src/sheeple.ui"
-	
-GtkWidget*
-create_window (void)
+    
+GtkWidget * create_window (void)
 {
-	GtkWidget *window;
-	GtkBuilder *builder;
-	GError* error = NULL;
+    GtkWidget *window;
+    GtkBuilder *builder;
+    GError* error = NULL;
 
-	builder = gtk_builder_new ();
-	if (!gtk_builder_add_from_file (builder, UI_FILE, &error))
-	{
-		g_warning ("Couldn't load builder file: %s", error->message);
-		g_error_free (error);
-	}
+    builder = gtk_builder_new ();
+    if (!gtk_builder_add_from_file (builder, UI_FILE, &error))
+    {
+        g_warning ("Couldn't load builder file: %s", error->message);
+        g_error_free (error);
+    }
 
-	/* This is important */
-	gtk_builder_connect_signals (builder, NULL);
-	window = GTK_WIDGET (gtk_builder_get_object (builder, "window"));
+    /* This is important */
+    gtk_builder_connect_signals (builder, NULL);
+    window = GTK_WIDGET (gtk_builder_get_object (builder, "window"));
 
-	g_object_unref (builder);
-	
-	return window;
+    g_object_unref (builder);
+    
+    return window;
 }
 
-
-int
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
- 	GtkWidget *window;
-
+    GtkWidget *window;
 
 #ifdef ENABLE_NLS
-	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
-	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-	textdomain (GETTEXT_PACKAGE);
+    bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
+    bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+    textdomain (GETTEXT_PACKAGE);
 #endif
 
-	
-	gtk_set_locale ();
-	gtk_init (&argc, &argv);
+    gtk_set_locale ();
+    gtk_init (&argc, &argv);
 
-	window = create_window ();
-	gtk_widget_show (window);
+    window = create_window ();
+    gtk_widget_show (window);
 
-	gtk_main ();
-	return 0;
+    gtk_main ();
+    return 0;
 }

@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
+/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 4; tab-width: 4 -*- */
 /*
  * callbacks.h
  * Copyright (C) Tim Horton 2009 <hortont424@gmail.com>
@@ -19,4 +19,4 @@
 
 #include <gtk/gtk.h>
 
-void destroy (GtkWidget *widget, gpointer data);
+void destroy(GtkWidget * widget, gpointer data);
