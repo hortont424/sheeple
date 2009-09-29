@@ -30,7 +30,7 @@
 
 #include "callbacks.h"
 
-#define UI_FILE "src/sheeple.ui"
+#define UI_FILE PACKAGE_DATA_DIR"/sheeple/ui/sheeple.ui"
 
 GtkWidget *create_window(void)
 {
