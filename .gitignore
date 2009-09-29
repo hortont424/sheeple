@@ -2,7 +2,11 @@
 *.o
 Makefile
 Makefile.in
-
+.dirstamp
+*.la
+*.lo
+.libs/
+libsheeple-1.0.pc
 .deps/
 INSTALL
 aclocal.m4
@@ -29,5 +33,4 @@ po/POTFILES
 po/stamp-it
 /sheeple
 src/.deps/
-src/.dirstamp
 stamp-h1
