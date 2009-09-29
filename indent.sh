@@ -1,2 +1,2 @@
-astyle --style=ansi -R "*.c"
-astyle --style=ansi -R "*.h"
+astyle --style=ansi -R -n "*.c"
+astyle --style=ansi -R -n "*.h"
