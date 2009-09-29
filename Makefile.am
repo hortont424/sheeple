@@ -4,16 +4,16 @@ SUBDIRS = po
 
 AUTOMAKE_OPTIONS = gnu dist-bzip2 subdir-objects
 
-### sheeple documentation ###
+### initial values ###
 
-docdir = ${prefix}/doc/sheeple
-doc_DATA = \
-	README \
-	COPYING \
-	AUTHORS \
-	ChangeLog \
-	INSTALL \
-	NEWS
+bin_PROGRAMS = 
+AM_CFLAGS = -Wall -g
+AM_CPPFLAGS = \
+	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
+	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
+	-DPACKAGE_DATA_DIR=\""$(datadir)"\"
+
+### intltool ###
 
 INTLTOOL_FILES = \
 	intltool-extract.in \
@@ -26,36 +26,40 @@ DISTCLEANFILES = \
 	intltool-update \
 	po/.intltool-merge-cache
 
-# Remove doc/ui directory on uninstall
-uninstall-local:
-	-rm -r $(docdir)
-	-rm -r $(uidir)
-	-rm -r $(datadir)/sheeple
+### sheeple documentation ###
+
+docdir = ${prefix}/doc/sheeple
+doc_DATA = \
+	README \
+	COPYING \
+	AUTHORS \
+	ChangeLog \
+	INSTALL \
+	NEWS
 
 ### sheeple application ###
 
 uidir = $(datadir)/sheeple/ui
 ui_DATA = src/sheeple.ui
 
-AM_CPPFLAGS = \
-	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
-	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
-	$(SHEEPLE_CFLAGS)
-	
-AM_CFLAGS = -Wall -g
-
-bin_PROGRAMS = sheeple
+bin_PROGRAMS += sheeple
 
 sheeple_SOURCES = \
 	src/callbacks.c \
 	src/callbacks.h \
 	src/main.c
 
+sheeple_CFLAGS = $(SHEEPLE_CFLAGS)
 sheeple_LDFLAGS = -Wl,--export-dynamic
-
 sheeple_LDADD = $(SHEEPLE_LIBS)
 
 ### extra-dist ###
 
 EXTRA_DIST = $(ui_DATA) $(doc_DATA) $(INTLTOOL_FILES)
+
+### uninstallation ###
+uninstall-local:
+	-rm -r $(docdir)
+	-rm -r $(uidir)
+	-rm -r $(datadir)/sheeple
+
