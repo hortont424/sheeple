@@ -1,5 +1,9 @@
 SUBDIRS = po
 
+### automake options ###
+
+AUTOMAKE_OPTIONS = gnu dist-bzip2 subdir-objects
+
 ### sheeple documentation ###
 
 docdir = ${prefix}/doc/sheeple
