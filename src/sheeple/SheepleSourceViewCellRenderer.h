@@ -12,22 +12,22 @@
 
 typedef struct _SheepleSourceViewCellRenderer SheepleSourceViewCellRenderer;
 typedef struct _SheepleSourceViewCellRendererClass
-	SheepleSourceViewCellRendererClass;
+ SheepleSourceViewCellRendererClass;
 
 /* CustomCellRendererProgress: Our custom cell renderer
 *   structure. Extend according to need */
 
 struct _SheepleSourceViewCellRenderer {
-	GtkCellRenderer parent;
-	gdouble progress;
+    GtkCellRenderer parent;
+    gdouble progress;
 };
 
 struct _SheepleSourceViewCellRendererClass {
-	GtkCellRendererClass parent_class;
+    GtkCellRendererClass parent_class;
 };
 
 GType sheeple_source_view_cell_renderer_get_type(void);
 
 GtkCellRenderer *sheeple_source_view_cell_renderer_new(void);
 
-#endif							// _SHEEPLE_SOURCE_VIEW_CELL_RENDERER_H_
+#endif                          // _SHEEPLE_SOURCE_VIEW_CELL_RENDERER_H_
