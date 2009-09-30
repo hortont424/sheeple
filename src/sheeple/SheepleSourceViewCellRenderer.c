@@ -239,7 +239,7 @@ GtkCellRenderer *sheeple_source_view_cell_renderer_new(void)
  ***************************************************************************/
 
 #define FIXED_WIDTH   100
-#define FIXED_HEIGHT  20
+#define FIXED_HEIGHT  24
 
 static void
 sheeple_source_view_cell_renderer_get_size(GtkCellRenderer * cell,
@@ -316,20 +316,22 @@ sheeple_source_view_cell_renderer_render(GtkCellRenderer * cell,
     width -= cell->xpad * 2;
     height -= cell->ypad * 2;
 
-    layout = gtk_widget_create_pango_layout(widget, cellrenderer->name);
+    /*layout = gtk_widget_create_pango_layout(widget, cellrenderer->name);
     font_description = pango_font_description_from_string("Sans 12 Bold");
     gc = gdk_gc_new(window);
     pango_layout_set_font_description(layout, font_description);
     gdk_draw_layout(window, gc, cell_area->x + cell->xpad, cell_area->y + cell->ypad, layout);
     pango_font_description_free(font_description);
-    g_object_unref(layout);
+    g_object_unref(layout);*/
     
-    /*gtk_paint_box(widget->style,
+    gtk_paint_box(widget->style,
                   window,
-                  state, GTK_SHADOW_OUT,
-                  NULL, widget, "bar",
+                  state, GTK_SHADOW_IN,
+                  NULL, widget, "button",
                   cell_area->x + cell->xpad,
                   cell_area->y + cell->ypad,
-                  width * 1.0, height - 1);*/
+                  width * 1.0, height - 1);
+    
+    // http://git.gnome.org/cgit/gtk+/tree/gtk/gtkcellrenderertoggle.c
 }
 

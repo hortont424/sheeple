@@ -81,7 +81,6 @@ GtkWidget *create_view_and_model(void)
     // Disable selection of anything in the treeview
     selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_NONE);
-    gtk_widget_grab_focus(view);
 
     return view;
 }
