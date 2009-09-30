@@ -99,8 +99,7 @@ static void
 sheeple_source_view_cell_renderer_init(SheepleSourceViewCellRenderer *
                                        cellrenderer)
 {
-    GTK_CELL_RENDERER(cellrenderer)->mode =
-        GTK_CELL_RENDERER_MODE_INERT;
+    GTK_CELL_RENDERER(cellrenderer)->mode = GTK_CELL_RENDERER_MODE_INERT;
     GTK_CELL_RENDERER(cellrenderer)->xpad = 2;
     GTK_CELL_RENDERER(cellrenderer)->ypad = 2;
 }

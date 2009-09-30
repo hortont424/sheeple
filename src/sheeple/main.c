@@ -46,6 +46,7 @@ GtkWidget *create_view_and_model(void)
     GtkTreeIter iter, toplevel;
     GtkWidget *view;
     GdkColor bg_color;
+    GtkTreeSelection *selection;
 
     treestore = gtk_tree_store_new(NUM_COLS, G_TYPE_STRING);
     gtk_tree_store_append(treestore, &iter, NULL);
@@ -66,13 +67,21 @@ GtkWidget *create_view_and_model(void)
 
     gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(view), FALSE);
     
+    // Set background; eventually, get this from the theme!!
     gdk_colormap_alloc_color(gdk_colormap_get_system(), &bg_color, TRUE, TRUE);
     gdk_color_parse("#d7dbd4", &bg_color);
     gtk_widget_modify_base(view, GTK_STATE_NORMAL, &bg_color);
     
+    // Hide expanders (expand everything by default), but keep 12px indent
+    // Eventually I'll have to solve expanders, probably, but not today.
     gtk_tree_view_set_show_expanders(GTK_TREE_VIEW(view), FALSE);
     gtk_tree_view_set_level_indentation(GTK_TREE_VIEW(view), 12);
     gtk_tree_view_expand_all(GTK_TREE_VIEW(view));
+    
+    // Disable selection of anything in the treeview
+    selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+    gtk_tree_selection_set_mode(selection, GTK_SELECTION_NONE);
+    gtk_widget_grab_focus(view);
 
     return view;
 }
