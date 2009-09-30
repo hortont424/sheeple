@@ -65,6 +65,10 @@ bin_PROGRAMS += sheeple
 sheeple_SOURCES = \
 	src/sheeple/callbacks.c \
 	src/sheeple/callbacks.h \
+	src/sheeple/SheepleSourceView.c \
+	src/sheeple/SheepleSourceView.h \
+	src/sheeple/SheepleSourceViewCellRenderer.c \
+	src/sheeple/SheepleSourceViewCellRenderer.h \
 	src/sheeple/main.c
 
 sheeple_CFLAGS = $(SHEEPLE_CFLAGS) -Isrc
@@ -76,6 +80,7 @@ sheeple_LDADD = $(SHEEPLE_LIBS) libsheeple.la
 EXTRA_DIST = $(ui_DATA) $(doc_DATA) $(INTLTOOL_FILES)
 
 ### uninstallation ###
+
 uninstall-local:
 	-rm -r $(docdir)
 	-rm -r $(uidir)

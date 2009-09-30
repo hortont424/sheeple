@@ -30,50 +30,104 @@
 
 #include <libsheeple/sheeple.h>
 
-#include "callbacks.h"
+#include "SheepleSourceViewCellRenderer.h"
 
-#define UI_FILE PACKAGE_DATA_DIR"/sheeple/ui/sheeple.ui"
+static GtkListStore        *liststore;
 
-GtkWidget *create_window(void)
+static gboolean             increasing = TRUE;   /* direction of progress bar change */
+
+enum
 {
-    GtkWidget *window;
-    GtkBuilder *builder;
-    GError *error = NULL;
+  COL_PERCENTAGE = 0,
+  COL_TEXT,
+  NUM_COLS
+};
 
-    builder = gtk_builder_new();
-    if (!gtk_builder_add_from_file(builder, UI_FILE, &error))
-    {
-        g_warning("Couldn't load builder file: %s", error->message);
-        g_error_free(error);
-    }
+#define STEP  0.01
 
-    /* This is important */
-    gtk_builder_connect_signals(builder, NULL);
-    window = GTK_WIDGET(gtk_builder_get_object(builder, "window"));
+gboolean
+increase_progress_timeout (GtkCellRenderer *renderer)
+{
+  GtkTreeIter  iter;
+  gfloat       perc = 0.0;
+  gchar        buf[20];
 
-    g_object_unref(builder);
+  gtk_tree_model_get_iter_first(GTK_TREE_MODEL(liststore), &iter); /* first and only row */
 
-    return window;
+  gtk_tree_model_get (GTK_TREE_MODEL(liststore), &iter, COL_PERCENTAGE, &perc, -1);
+
+  if ( perc > (1.0-STEP)  ||  (perc < STEP && perc > 0.0) )
+  {
+    increasing = (!increasing);
+  }
+
+  if (increasing)
+    perc = perc + STEP;
+  else
+    perc = perc - STEP;
+
+  g_snprintf(buf, sizeof(buf), "%u %%", (guint)(perc*100));
+
+  gtk_list_store_set (liststore, &iter, COL_PERCENTAGE, perc, COL_TEXT, buf, -1);
+
+  return TRUE; /* Call again */
 }
 
-int main(int argc, char *argv[])
+
+GtkWidget *
+create_view_and_model (void)
 {
-    GtkWidget *window;
-    
-    printf("%d\n", sheeple_test_func());
+  GtkTreeViewColumn   *col;
+  GtkCellRenderer     *renderer;
+  GtkTreeIter          iter;
+  GtkWidget           *view;
 
-#ifdef ENABLE_NLS
-    bindtextdomain(GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
-    bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-    textdomain(GETTEXT_PACKAGE);
-#endif
+  liststore = gtk_list_store_new(NUM_COLS, G_TYPE_FLOAT, G_TYPE_STRING);
+  gtk_list_store_append(liststore, &iter);
+  gtk_list_store_set (liststore, &iter, COL_PERCENTAGE, 0.5, -1); /* start at 50% */
 
-    gtk_set_locale();
-    gtk_init(&argc, &argv);
+  view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(liststore));
 
-    window = create_window();
-    gtk_widget_show(window);
+  g_object_unref(liststore); /* destroy store automatically with view */
 
-    gtk_main();
-    return 0;
+  renderer = gtk_cell_renderer_text_new();
+  col = gtk_tree_view_column_new();
+  gtk_tree_view_column_pack_start (col, renderer, TRUE);
+  gtk_tree_view_column_add_attribute (col, renderer, "text", COL_TEXT);
+  gtk_tree_view_column_set_title (col, "Progress");
+  gtk_tree_view_append_column(GTK_TREE_VIEW(view),col);
+
+  renderer = sheeple_source_view_cell_renderer_new();
+  col = gtk_tree_view_column_new();
+  gtk_tree_view_column_pack_start (col, renderer, TRUE);
+  gtk_tree_view_column_add_attribute (col, renderer, "percentage", COL_PERCENTAGE);
+  gtk_tree_view_column_set_title (col, "Progress");
+  gtk_tree_view_append_column(GTK_TREE_VIEW(view),col);
+
+  g_timeout_add(50, (GSourceFunc) increase_progress_timeout, NULL);
+
+  return view;
+}
+
+
+int
+main (int argc, char **argv)
+{
+  GtkWidget *window, *view;
+
+  gtk_init(&argc,&argv);
+
+  window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_default_size (GTK_WINDOW(window), 150, 100);
+  g_signal_connect(window, "delete_event", gtk_main_quit, NULL);
+
+  view = create_view_and_model();
+
+  gtk_container_add(GTK_CONTAINER(window), view);
+
+  gtk_widget_show_all(window);
+
+  gtk_main();
+
+  return 0;
 }
