@@ -11,15 +11,14 @@
 #define CUSTOM_CELL_RENDERER_PROGRESS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj),  SHEEPLE_SOURCE_VIEW_TYPE_CELL_RENDERER, SheepleSourceViewCellRendererClass))
 
 typedef struct _SheepleSourceViewCellRenderer SheepleSourceViewCellRenderer;
-typedef struct _SheepleSourceViewCellRendererClass
- SheepleSourceViewCellRendererClass;
+typedef struct _SheepleSourceViewCellRendererClass SheepleSourceViewCellRendererClass;
 
 /* CustomCellRendererProgress: Our custom cell renderer
 *   structure. Extend according to need */
 
 struct _SheepleSourceViewCellRenderer {
     GtkCellRenderer parent;
-    gdouble progress;
+    const guchar * name;
 };
 
 struct _SheepleSourceViewCellRendererClass {
@@ -30,4 +29,4 @@ GType sheeple_source_view_cell_renderer_get_type(void);
 
 GtkCellRenderer *sheeple_source_view_cell_renderer_new(void);
 
-#endif                          // _SHEEPLE_SOURCE_VIEW_CELL_RENDERER_H_
+#endif // _SHEEPLE_SOURCE_VIEW_CELL_RENDERER_H_

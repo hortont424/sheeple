@@ -9,7 +9,7 @@
 /* Some boring function declarations: GObject type system stuff */
 
 static void sheeple_source_view_cell_renderer_init(SheepleSourceViewCellRenderer
-                                                   * cellprogress);
+                                                   * cell);
 
 static void
 sheeple_source_view_cell_renderer_class_init(SheepleSourceViewCellRendererClass
@@ -47,7 +47,7 @@ static void sheeple_source_view_cell_renderer_render(GtkCellRenderer * cell,
                                                      guint flags);
 
 enum {
-    PROP_PERCENTAGE = 1,
+    PROP_NAME = 1,
 };
 
 static gpointer parent_class;
@@ -63,11 +63,11 @@ static gpointer parent_class;
 
 GType sheeple_source_view_cell_renderer_get_type(void)
 {
-    static GType cell_progress_type = 0;
+    static GType cell_type = 0;
 
-    if (cell_progress_type == 0)
+    if (cell_type == 0)
     {
-        static const GTypeInfo cell_progress_info = {
+        static const GTypeInfo cell_info = {
             sizeof(SheepleSourceViewCellRendererClass),
             NULL,               /* base_init */
             NULL,               /* base_finalize */
@@ -80,12 +80,12 @@ GType sheeple_source_view_cell_renderer_get_type(void)
         };
 
         /* Derive from GtkCellRenderer */
-        cell_progress_type = g_type_register_static(GTK_TYPE_CELL_RENDERER,
+        cell_type = g_type_register_static(GTK_TYPE_CELL_RENDERER,
                                                     "SheepleSourceViewCellRenderer",
-                                                    &cell_progress_info, 0);
+                                                    &cell_info, 0);
     }
 
-    return cell_progress_type;
+    return cell_type;
 }
 
 /***************************************************************************
@@ -97,12 +97,12 @@ GType sheeple_source_view_cell_renderer_get_type(void)
 
 static void
 sheeple_source_view_cell_renderer_init(SheepleSourceViewCellRenderer *
-                                       cellrendererprogress)
+                                       cellrenderer)
 {
-    GTK_CELL_RENDERER(cellrendererprogress)->mode =
+    GTK_CELL_RENDERER(cellrenderer)->mode =
         GTK_CELL_RENDERER_MODE_INERT;
-    GTK_CELL_RENDERER(cellrendererprogress)->xpad = 2;
-    GTK_CELL_RENDERER(cellrendererprogress)->ypad = 2;
+    GTK_CELL_RENDERER(cellrenderer)->xpad = 2;
+    GTK_CELL_RENDERER(cellrenderer)->ypad = 2;
 }
 
 /***************************************************************************
@@ -140,11 +140,11 @@ sheeple_source_view_cell_renderer_class_init(SheepleSourceViewCellRendererClass
 
     /* Install our very own properties */
     g_object_class_install_property(object_class,
-                                    PROP_PERCENTAGE,
-                                    g_param_spec_double("percentage",
-                                                        "Percentage",
-                                                        "The fractional progress to display",
-                                                        0, 1, 0,
+                                    PROP_NAME,
+                                    g_param_spec_string("name",
+                                                        "Name",
+                                                        "The name of the cell",
+                                                        "Untitled",
                                                         G_PARAM_READWRITE));
 }
 
@@ -157,7 +157,7 @@ sheeple_source_view_cell_renderer_class_init(SheepleSourceViewCellRendererClass
 static void sheeple_source_view_cell_renderer_finalize(GObject * object)
 {
     /*
-       SheepleSourceViewCellRenderer *cellrendererprogress = sheeple_source_view_cell_renderer(object);
+       SheepleSourceViewCellRenderer *cellrenderer = sheeple_source_view_cell_renderer(object);
      */
 
     /* Free any dynamically allocated resources here */
@@ -177,13 +177,13 @@ sheeple_source_view_cell_renderer_get_property(GObject * object,
                                                GValue * value,
                                                GParamSpec * psec)
 {
-    SheepleSourceViewCellRenderer *cellprogress =
+    SheepleSourceViewCellRenderer *cellrenderer =
         SHEEPLE_SOURCE_VIEW_CELL_RENDERER(object);
 
     switch (param_id)
     {
-    case PROP_PERCENTAGE:
-        g_value_set_double(value, cellprogress->progress);
+    case PROP_NAME:
+        g_value_set_string(value, cellrenderer->name);
         break;
 
     default:
@@ -204,13 +204,13 @@ sheeple_source_view_cell_renderer_set_property(GObject * object,
                                                const GValue * value,
                                                GParamSpec * pspec)
 {
-    SheepleSourceViewCellRenderer *cellprogress =
+    SheepleSourceViewCellRenderer *cellrenderer =
         SHEEPLE_SOURCE_VIEW_CELL_RENDERER(object);
 
     switch (param_id)
     {
-    case PROP_PERCENTAGE:
-        cellprogress->progress = g_value_get_double(value);
+    case PROP_NAME:
+        cellrenderer->name = g_strdup(g_value_get_string(value));
         break;
 
     default:
@@ -240,7 +240,7 @@ GtkCellRenderer *sheeple_source_view_cell_renderer_new(void)
  ***************************************************************************/
 
 #define FIXED_WIDTH   100
-#define FIXED_HEIGHT  10
+#define FIXED_HEIGHT  20
 
 static void
 sheeple_source_view_cell_renderer_get_size(GtkCellRenderer * cell,
@@ -250,6 +250,9 @@ sheeple_source_view_cell_renderer_get_size(GtkCellRenderer * cell,
                                            gint * y_offset,
                                            gint * width, gint * height)
 {
+    SheepleSourceViewCellRenderer *cellrenderer =
+        SHEEPLE_SOURCE_VIEW_CELL_RENDERER(cell);
+    
     gint calc_width;
     gint calc_height;
 
@@ -262,7 +265,7 @@ sheeple_source_view_cell_renderer_get_size(GtkCellRenderer * cell,
     if (height)
         *height = calc_height;
 
-    if (cell_area)
+    /*if (cell_area)
     {
         if (x_offset)
         {
@@ -275,7 +278,7 @@ sheeple_source_view_cell_renderer_get_size(GtkCellRenderer * cell,
             *y_offset = cell->yalign * (cell_area->height - calc_height);
             *y_offset = MAX(*y_offset, 0);
         }
-    }
+    }*/
 }
 
 /***************************************************************************
@@ -292,11 +295,15 @@ sheeple_source_view_cell_renderer_render(GtkCellRenderer * cell,
                                          GdkRectangle * expose_area,
                                          guint flags)
 {
-    SheepleSourceViewCellRenderer *cellprogress =
+    SheepleSourceViewCellRenderer *cellrenderer =
         SHEEPLE_SOURCE_VIEW_CELL_RENDERER(cell);
+    
     GtkStateType state;
     gint width, height;
     gint x_offset, y_offset;
+    PangoLayout * layout;
+    PangoFontDescription * font_description;
+    GdkGC * gc;
 
     sheeple_source_view_cell_renderer_get_size(cell, widget, cell_area,
                                                &x_offset, &y_offset,
@@ -310,18 +317,20 @@ sheeple_source_view_cell_renderer_render(GtkCellRenderer * cell,
     width -= cell->xpad * 2;
     height -= cell->ypad * 2;
 
-    gtk_paint_box(widget->style,
-                  window,
-                  GTK_STATE_NORMAL, GTK_SHADOW_IN,
-                  NULL, widget, "trough",
-                  cell_area->x + x_offset + cell->xpad,
-                  cell_area->y + y_offset + cell->ypad, width - 1, height - 1);
-
-    gtk_paint_box(widget->style,
+    layout = gtk_widget_create_pango_layout(widget, cellrenderer->name);
+    font_description = pango_font_description_from_string("Sans 12 Bold");
+    gc = gdk_gc_new(window);
+    pango_layout_set_font_description(layout, font_description);
+    gdk_draw_layout(window, gc, cell_area->x + cell->xpad, cell_area->y + cell->ypad, layout);
+    pango_font_description_free(font_description);
+    g_object_unref(layout);
+    
+    /*gtk_paint_box(widget->style,
                   window,
                   state, GTK_SHADOW_OUT,
                   NULL, widget, "bar",
-                  cell_area->x + x_offset + cell->xpad,
-                  cell_area->y + y_offset + cell->ypad,
-                  width * cellprogress->progress, height - 1);
+                  cell_area->x + cell->xpad,
+                  cell_area->y + cell->ypad,
+                  width * 1.0, height - 1);*/
 }
+
