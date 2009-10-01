@@ -273,6 +273,9 @@ sheeple_source_view_cell_renderer_get_size(GtkCellRenderer * cell,
 
     calc_width = (gint) cell->xpad * 2 + text_w + TEXT_H_PAD * 2;
     calc_height = (gint) cell->ypad * 2 + text_h + TEXT_V_PAD * 2;
+    
+    if(((SheepleSource*)(cellrenderer->source))->toplevel)
+        calc_height -= cell->ypad * 2;
 
     if (width)
         *width = calc_width;
