@@ -47,7 +47,7 @@ static void sheeple_source_view_cell_renderer_render(GtkCellRenderer * cell,
                                                      guint flags);
 
 enum {
-    PROP_NAME = 1,
+    PROP_SOURCE = 1
 };
 
 static gpointer parent_class;
@@ -139,12 +139,11 @@ sheeple_source_view_cell_renderer_class_init(SheepleSourceViewCellRendererClass
 
     /* Install our very own properties */
     g_object_class_install_property(object_class,
-                                    PROP_NAME,
-                                    g_param_spec_string("name",
-                                                        "Name",
-                                                        "The name of the cell",
-                                                        "Untitled",
-                                                        G_PARAM_READWRITE));
+                                    PROP_SOURCE,
+                                    g_param_spec_pointer("source",
+                                                         "Source",
+                                                         "The source",
+                                                         G_PARAM_READWRITE));
 }
 
 /***************************************************************************
@@ -181,10 +180,9 @@ sheeple_source_view_cell_renderer_get_property(GObject * object,
 
     switch (param_id)
     {
-    case PROP_NAME:
-        g_value_set_string(value, cellrenderer->name);
+    case PROP_SOURCE:
+        g_value_set_pointer(value, cellrenderer->source);
         break;
-
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, param_id, psec);
         break;
@@ -208,10 +206,9 @@ sheeple_source_view_cell_renderer_set_property(GObject * object,
 
     switch (param_id)
     {
-    case PROP_NAME:
-        cellrenderer->name = g_strdup(g_value_get_string(value));
+    case PROP_SOURCE:
+        cellrenderer->source = g_value_get_pointer(value);
         break;
-
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, param_id, pspec);
         break;
@@ -239,7 +236,7 @@ GtkCellRenderer *sheeple_source_view_cell_renderer_new(void)
  ***************************************************************************/
 
 #define FIXED_WIDTH   100
-#define FIXED_HEIGHT  24
+#define FIXED_HEIGHT  28
 
 static void
 sheeple_source_view_cell_renderer_get_size(GtkCellRenderer * cell,
@@ -315,22 +312,40 @@ sheeple_source_view_cell_renderer_render(GtkCellRenderer * cell,
 
     width -= cell->xpad * 2;
     height -= cell->ypad * 2;
-
-    /*layout = gtk_widget_create_pango_layout(widget, cellrenderer->name);
-    font_description = pango_font_description_from_string("Sans 12 Bold");
+    
+    if(!((SheepleSource*)(cellrenderer->source))->toplevel)
+    {
+        gtk_paint_box(widget->style,
+                      window,
+                      GTK_STATE_NORMAL, GTK_SHADOW_IN,
+                      NULL, widget, "buttondefault",
+                      cell_area->x + cell->xpad,
+                      cell_area->y + cell->ypad,
+                      width, height);
+        
+        gtk_paint_box(widget->style,
+                      window,
+                      GTK_STATE_NORMAL, GTK_SHADOW_IN,
+                      NULL, widget, "button",
+                      cell_area->x + cell->xpad,
+                      cell_area->y + cell->ypad,
+                      width, height);
+    }
+    
+    layout = gtk_widget_create_pango_layout(widget,
+                                            ((SheepleSource*)(cellrenderer->source))->name);
+    
+    if(((SheepleSource*)(cellrenderer->source))->toplevel)
+        font_description = pango_font_description_from_string("Sans 10 Bold");
+    else
+        font_description = pango_font_description_from_string("Sans 10");
+    
     gc = gdk_gc_new(window);
     pango_layout_set_font_description(layout, font_description);
-    gdk_draw_layout(window, gc, cell_area->x + cell->xpad, cell_area->y + cell->ypad, layout);
+    gdk_draw_layout(window, gc, cell_area->x + cell->xpad + 4, cell_area->y + cell->ypad + 6, layout);
     pango_font_description_free(font_description);
-    g_object_unref(layout);*/
+    g_object_unref(layout);
     
-    gtk_paint_box(widget->style,
-                  window,
-                  state, GTK_SHADOW_IN,
-                  NULL, widget, "button",
-                  cell_area->x + cell->xpad,
-                  cell_area->y + cell->ypad,
-                  width * 1.0, height - 1);
     
     // http://git.gnome.org/cgit/gtk+/tree/gtk/gtkcellrenderertoggle.c
 }

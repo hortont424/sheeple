@@ -47,13 +47,21 @@ GtkWidget *create_view_and_model(void)
     GtkWidget *view;
     GdkColor bg_color;
     GtkTreeSelection *selection;
+    
+    SheepleSource * firstSource = (SheepleSource *)calloc(1, sizeof(SheepleSource));
+    SheepleSource * subSource = (SheepleSource *)calloc(1, sizeof(SheepleSource));
+    
+    firstSource->name = "Contacts";
+    firstSource->toplevel = 1;
+    subSource->name = "RPI Friends";
+    subSource->toplevel = 0;
 
-    treestore = gtk_tree_store_new(NUM_COLS, G_TYPE_STRING);
+    treestore = gtk_tree_store_new(NUM_COLS, G_TYPE_POINTER);
     gtk_tree_store_append(treestore, &iter, NULL);
     toplevel = iter;
-    gtk_tree_store_set(treestore, &iter, COL_SOURCES, "Something here...", -1);
+    gtk_tree_store_set(treestore, &iter, COL_SOURCES, (gpointer)firstSource, -1);
     gtk_tree_store_append(treestore, &iter, &toplevel);
-    gtk_tree_store_set(treestore, &iter, COL_SOURCES, "Something here...", -1);
+    gtk_tree_store_set(treestore, &iter, COL_SOURCES, (gpointer)subSource, -1);
 
     view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(treestore));
 
@@ -62,7 +70,7 @@ GtkWidget *create_view_and_model(void)
     renderer = sheeple_source_view_cell_renderer_new();
     col = gtk_tree_view_column_new();
     gtk_tree_view_column_pack_start(col, renderer, TRUE);
-    gtk_tree_view_column_add_attribute(col, renderer, "name", COL_SOURCES);
+    gtk_tree_view_column_add_attribute(col, renderer, "source", COL_SOURCES);
     gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
 
     gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(view), FALSE);

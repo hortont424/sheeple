@@ -12,13 +12,19 @@
 
 typedef struct _SheepleSourceViewCellRenderer SheepleSourceViewCellRenderer;
 typedef struct _SheepleSourceViewCellRendererClass SheepleSourceViewCellRendererClass;
+typedef struct _SheepleSource SheepleSource;
 
 /* CustomCellRendererProgress: Our custom cell renderer
 *   structure. Extend according to need */
 
+struct _SheepleSource {
+    const guchar * name;
+    gboolean toplevel;
+};
+
 struct _SheepleSourceViewCellRenderer {
     GtkCellRenderer parent;
-    const guchar * name;
+    gpointer source;
 };
 
 struct _SheepleSourceViewCellRendererClass {
