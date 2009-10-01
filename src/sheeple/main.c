@@ -50,11 +50,17 @@ GtkWidget *create_view_and_model(void)
     
     SheepleSource * firstSource = (SheepleSource *)calloc(1, sizeof(SheepleSource));
     SheepleSource * subSource = (SheepleSource *)calloc(1, sizeof(SheepleSource));
+    SheepleSource * subSource2 = (SheepleSource *)calloc(1, sizeof(SheepleSource));
+    SheepleSource * subSource3 = (SheepleSource *)calloc(1, sizeof(SheepleSource));
     
     firstSource->name = "Contacts";
     firstSource->toplevel = 1;
     subSource->name = "RPI Friends";
     subSource->toplevel = 0;
+    subSource2->name = "Family";
+    subSource2->toplevel = 0;
+    subSource3->name = "Sheeple";
+    subSource3->toplevel = 0;
 
     treestore = gtk_tree_store_new(NUM_COLS, G_TYPE_POINTER);
     gtk_tree_store_append(treestore, &iter, NULL);
@@ -62,7 +68,11 @@ GtkWidget *create_view_and_model(void)
     gtk_tree_store_set(treestore, &iter, COL_SOURCES, (gpointer)firstSource, -1);
     gtk_tree_store_append(treestore, &iter, &toplevel);
     gtk_tree_store_set(treestore, &iter, COL_SOURCES, (gpointer)subSource, -1);
-
+    gtk_tree_store_append(treestore, &iter, &toplevel);
+    gtk_tree_store_set(treestore, &iter, COL_SOURCES, (gpointer)subSource2, -1);
+    gtk_tree_store_append(treestore, &iter, &toplevel);
+    gtk_tree_store_set(treestore, &iter, COL_SOURCES, (gpointer)subSource3, -1);
+    
     view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(treestore));
 
     g_object_unref(treestore);  /* destroy store automatically with view */
@@ -95,7 +105,8 @@ GtkWidget *create_view_and_model(void)
 
 int main(int argc, char **argv)
 {
-    GtkWidget *window, *view;
+    GtkWidget *window, *view, *hbox, *button;
+    GtkTreeSelection *sel;
 
     gtk_init(&argc, &argv);
 
@@ -104,10 +115,21 @@ int main(int argc, char **argv)
     g_signal_connect(window, "delete_event", gtk_main_quit, NULL);
 
     view = create_view_and_model();
+    
+    hbox = gtk_hbox_new(TRUE, 0);
+    button = gtk_button_new_with_label("arst!!");
+    
+    gtk_box_pack_start(GTK_BOX(hbox), view, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 0);
 
-    gtk_container_add(GTK_CONTAINER(window), view);
+    gtk_container_add(GTK_CONTAINER(window), hbox);
 
     gtk_widget_show_all(window);
+
+    sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+    gtk_tree_selection_unselect_all(sel);
+    
+    gtk_widget_grab_focus(button);
 
     gtk_main();
 

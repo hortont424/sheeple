@@ -237,6 +237,8 @@ GtkCellRenderer *sheeple_source_view_cell_renderer_new(void)
 
 #define FIXED_WIDTH   100
 #define FIXED_HEIGHT  28
+#define TEXT_H_PAD      5
+#define TEXT_V_PAD      2
 
 static void
 sheeple_source_view_cell_renderer_get_size(GtkCellRenderer * cell,
@@ -246,14 +248,22 @@ sheeple_source_view_cell_renderer_get_size(GtkCellRenderer * cell,
                                            gint * y_offset,
                                            gint * width, gint * height)
 {
+    PangoLayout * layout;
     SheepleSourceViewCellRenderer *cellrenderer =
         SHEEPLE_SOURCE_VIEW_CELL_RENDERER(cell);
     
-    gint calc_width;
-    gint calc_height;
+    gint calc_width, calc_height, text_w, text_h;
+    
+    layout = gtk_widget_create_pango_layout(widget,
+                                            ((SheepleSource*)(cellrenderer->source))->name);
+    pango_layout_get_pixel_size(layout, &text_w, &text_h);
 
-    calc_width = (gint) cell->xpad * 2 + FIXED_WIDTH;
-    calc_height = (gint) cell->ypad * 2 + FIXED_HEIGHT;
+    calc_width = (gint) cell->xpad * 2 + text_w + TEXT_H_PAD * 2;
+    
+    if(!((SheepleSource*)(cellrenderer->source))->toplevel)
+        calc_height = (gint) cell->ypad * 2 + FIXED_HEIGHT;
+    else
+        calc_height = (gint) cell->ypad * 2 + text_h + TEXT_V_PAD * 2;
 
     if (width)
         *width = calc_width;
