@@ -235,9 +235,7 @@ GtkCellRenderer *sheeple_source_view_cell_renderer_new(void)
  *
  ***************************************************************************/
 
-#define FIXED_WIDTH   100
-#define FIXED_HEIGHT  28
-#define TEXT_H_PAD      5
+#define TEXT_H_PAD      2
 #define TEXT_V_PAD      2
 
 static void
@@ -249,6 +247,7 @@ sheeple_source_view_cell_renderer_get_size(GtkCellRenderer * cell,
                                            gint * width, gint * height)
 {
     PangoLayout * layout;
+    PangoFontDescription * font_description = NULL;
     SheepleSourceViewCellRenderer *cellrenderer =
         SHEEPLE_SOURCE_VIEW_CELL_RENDERER(cell);
     
@@ -256,14 +255,24 @@ sheeple_source_view_cell_renderer_get_size(GtkCellRenderer * cell,
     
     layout = gtk_widget_create_pango_layout(widget,
                                             ((SheepleSource*)(cellrenderer->source))->name);
+    
+    font_description = pango_font_description_copy(
+        pango_layout_get_font_description(layout));
+    
+    if(!font_description)
+        font_description = pango_font_description_new();
+    
+    if(((SheepleSource*)(cellrenderer->source))->toplevel ||
+       ((SheepleSource*)(cellrenderer->source))->selected)
+        pango_font_description_set_weight(font_description, PANGO_WEIGHT_BOLD);
+    
+    pango_font_description_set_size(font_description, 9 * PANGO_SCALE);
+    
+    pango_layout_set_font_description(layout, font_description);
     pango_layout_get_pixel_size(layout, &text_w, &text_h);
 
     calc_width = (gint) cell->xpad * 2 + text_w + TEXT_H_PAD * 2;
-    
-    if(!((SheepleSource*)(cellrenderer->source))->toplevel)
-        calc_height = (gint) cell->ypad * 2 + FIXED_HEIGHT;
-    else
-        calc_height = (gint) cell->ypad * 2 + text_h + TEXT_V_PAD * 2;
+    calc_height = (gint) cell->ypad * 2 + text_h + TEXT_V_PAD * 2;
 
     if (width)
         *width = calc_width;
@@ -304,55 +313,78 @@ sheeple_source_view_cell_renderer_render(GtkCellRenderer * cell,
     SheepleSourceViewCellRenderer *cellrenderer =
         SHEEPLE_SOURCE_VIEW_CELL_RENDERER(cell);
     
-    GtkStateType state;
+    GtkStateType state = GTK_STATE_NORMAL;
+    gboolean draw_button = FALSE;
     gint width, height;
     gint x_offset, y_offset;
     PangoLayout * layout;
-    PangoFontDescription * font_description;
+    PangoFontDescription * font_description = NULL;
     GdkGC * gc;
+    GdkColor fg_color;
 
     sheeple_source_view_cell_renderer_get_size(cell, widget, cell_area,
                                                &x_offset, &y_offset,
                                                &width, &height);
 
-    if (GTK_WIDGET_HAS_FOCUS(widget))
-        state = GTK_STATE_ACTIVE;
-    else
-        state = GTK_STATE_NORMAL;
-
-    width -= cell->xpad * 2;
-    height -= cell->ypad * 2;
+    //width -= cell->xpad * 2;
+    //height -= cell->ypad * 2;
     
-    if(!((SheepleSource*)(cellrenderer->source))->toplevel)
+    if(((SheepleSource*)(cellrenderer->source))->selected)
+    {
+        state = GTK_STATE_ACTIVE;
+        draw_button = TRUE;
+    }
+    else
+    {
+        if (flags & GTK_CELL_RENDERER_PRELIT)
+        {
+            state = GTK_STATE_PRELIGHT;
+            draw_button = TRUE;
+        }
+        else
+            state = GTK_STATE_NORMAL;
+    }
+    
+    if(!((SheepleSource*)(cellrenderer->source))->toplevel && draw_button)
     {
         gtk_paint_box(widget->style,
                       window,
-                      GTK_STATE_NORMAL, GTK_SHADOW_IN,
+                      state, GTK_SHADOW_IN,
                       NULL, widget, "buttondefault",
-                      cell_area->x + cell->xpad,
-                      cell_area->y + cell->ypad,
+                      cell_area->x,
+                      cell_area->y,
                       width, height);
         
         gtk_paint_box(widget->style,
                       window,
-                      GTK_STATE_NORMAL, GTK_SHADOW_IN,
+                      state, GTK_SHADOW_IN,
                       NULL, widget, "button",
-                      cell_area->x + cell->xpad,
-                      cell_area->y + cell->ypad,
+                      cell_area->x,
+                      cell_area->y,
                       width, height);
     }
     
     layout = gtk_widget_create_pango_layout(widget,
                                             ((SheepleSource*)(cellrenderer->source))->name);
     
-    if(((SheepleSource*)(cellrenderer->source))->toplevel)
-        font_description = pango_font_description_from_string("Sans 10 Bold");
-    else
-        font_description = pango_font_description_from_string("Sans 10");
+    font_description = pango_font_description_copy(
+        pango_layout_get_font_description(layout));
+    
+    if(!font_description)
+        font_description = pango_font_description_new();
+    
+    if(((SheepleSource*)(cellrenderer->source))->toplevel ||
+       ((SheepleSource*)(cellrenderer->source))->selected)
+        pango_font_description_set_weight(font_description, PANGO_WEIGHT_BOLD);
+    
+    pango_font_description_set_size(font_description, 9 * PANGO_SCALE);
+    
     
     gc = gdk_gc_new(window);
     pango_layout_set_font_description(layout, font_description);
-    gdk_draw_layout(window, gc, cell_area->x + cell->xpad + 4, cell_area->y + cell->ypad + 6, layout);
+    gdk_colormap_alloc_color(gdk_colormap_get_system(), &fg_color, TRUE, TRUE);
+    gdk_color_parse("#404040", &fg_color);
+    gdk_draw_layout_with_colors(window, gc, cell_area->x + cell->xpad + 2, cell_area->y + cell->ypad + 2, layout, &fg_color, NULL);
     pango_font_description_free(font_description);
     g_object_unref(layout);
     

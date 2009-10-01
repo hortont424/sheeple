@@ -52,6 +52,8 @@ GtkWidget *create_view_and_model(void)
     SheepleSource * subSource = (SheepleSource *)calloc(1, sizeof(SheepleSource));
     SheepleSource * subSource2 = (SheepleSource *)calloc(1, sizeof(SheepleSource));
     SheepleSource * subSource3 = (SheepleSource *)calloc(1, sizeof(SheepleSource));
+    SheepleSource * subSource4 = (SheepleSource *)calloc(1, sizeof(SheepleSource));
+    SheepleSource * subSource5 = (SheepleSource *)calloc(1, sizeof(SheepleSource));
     
     firstSource->name = "Contacts";
     firstSource->toplevel = 1;
@@ -59,8 +61,14 @@ GtkWidget *create_view_and_model(void)
     subSource->toplevel = 0;
     subSource2->name = "Family";
     subSource2->toplevel = 0;
+    subSource2->selected = 1;
     subSource3->name = "Sheeple";
     subSource3->toplevel = 0;
+    subSource3->selected = 1;
+    subSource4->name = "Mike's Family";
+    subSource4->toplevel = 0;
+    subSource5->name = "RCOS";
+    subSource5->toplevel = 0;
 
     treestore = gtk_tree_store_new(NUM_COLS, G_TYPE_POINTER);
     gtk_tree_store_append(treestore, &iter, NULL);
@@ -72,6 +80,10 @@ GtkWidget *create_view_and_model(void)
     gtk_tree_store_set(treestore, &iter, COL_SOURCES, (gpointer)subSource2, -1);
     gtk_tree_store_append(treestore, &iter, &toplevel);
     gtk_tree_store_set(treestore, &iter, COL_SOURCES, (gpointer)subSource3, -1);
+    gtk_tree_store_append(treestore, &iter, &toplevel);
+    gtk_tree_store_set(treestore, &iter, COL_SOURCES, (gpointer)subSource4, -1);
+    gtk_tree_store_append(treestore, &iter, &toplevel);
+    gtk_tree_store_set(treestore, &iter, COL_SOURCES, (gpointer)subSource5, -1);
     
     view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(treestore));
 

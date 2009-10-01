@@ -20,6 +20,7 @@ typedef struct _SheepleSource SheepleSource;
 struct _SheepleSource {
     const guchar * name;
     gboolean toplevel;
+    gboolean selected;
 };
 
 struct _SheepleSourceViewCellRenderer {
