@@ -57,18 +57,14 @@ pkgconfigdir = $(libdir)/pkgconfig
 
 ### sheeple application ###
 
-uidir = $(datadir)/sheeple/ui
-ui_DATA = src/sheeple/sheeple.ui
+#uidir = $(datadir)/sheeple/ui
+#ui_DATA = src/sheeple/sheeple.ui
 
 bin_PROGRAMS += sheeple
 
 sheeple_SOURCES = \
-	src/sheeple/callbacks.c \
-	src/sheeple/callbacks.h \
 	src/sheeple/SheepleSourceView.c \
 	src/sheeple/SheepleSourceView.h \
-	src/sheeple/SheepleSourceViewCellRenderer.c \
-	src/sheeple/SheepleSourceViewCellRenderer.h \
 	src/sheeple/main.c
 
 sheeple_CFLAGS = $(SHEEPLE_CFLAGS) -Isrc
