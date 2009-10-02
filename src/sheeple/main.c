@@ -35,6 +35,7 @@ struct _SheepleGroup
     const gchar * name;
     
     GtkWidget * _button;
+    GtkWidget * _label;
 };
 
 struct _SheepleSource
@@ -60,6 +61,10 @@ GtkWidget *create_source_view_test(GList *sources)
     GHashTableIter iter;
     
     scrollbox = gtk_scrolled_window_new(NULL, NULL);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollbox),
+                                   GTK_POLICY_AUTOMATIC,
+                                   GTK_POLICY_AUTOMATIC);
+    
     layout = gtk_layout_new(NULL, NULL);
     master_vbox = gtk_vbox_new(FALSE, 10);
     
@@ -86,7 +91,7 @@ GtkWidget *create_source_view_test(GList *sources)
         // selection buttons for each group and packing them
         do
         {
-            SheepleGroup * group = ((SheepleGroup *)group_list->data);
+            SheepleGroup *group = ((SheepleGroup *)group_list->data);
             
             GtkWidget *button, *alignment, *button_label;
             gchar *button_markup;
@@ -111,10 +116,11 @@ GtkWidget *create_source_view_test(GList *sources)
             gtk_box_pack_start(GTK_BOX(sourcebox), alignment, TRUE, TRUE, 0);
             
             group->_button = button;
+            group->_label = button_label;
         }
         while(group_list = g_list_next(group_list));
         
-        gtk_box_pack_start(GTK_BOX(master_vbox), sourcebox, FALSE, TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(master_vbox), sourcebox, TRUE, TRUE, 0);
         
         source->_box = sourcebox;
     }
@@ -127,8 +133,12 @@ GtkWidget *create_source_view_test(GList *sources)
     master_padding = gtk_alignment_new(0, 0, 1, 1);
     gtk_alignment_set_padding(GTK_ALIGNMENT(master_padding), 0, 0, 4, 4);
     gtk_container_add(GTK_CONTAINER(master_padding), master_vbox);
+    
+    gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrollbox), GTK_SHADOW_NONE);
+    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrollbox), master_padding);
+    gtk_widget_set_size_request(scrollbox, 150, -1);
 
-    return master_padding;
+    return scrollbox;
 }
 
 void update_selection()
@@ -143,12 +153,25 @@ void update_selection()
         do
         {
             SheepleGroup *group = ((SheepleGroup *)group_list->data);
-            
+            const gchar *button_markup, *markup_str;
             GtkReliefStyle new_style = GTK_RELIEF_NONE;
+            
             if(g_list_find(selected_groups, group))
+            {
                 new_style = GTK_RELIEF_NORMAL;
+                markup_str = "<span weight=\"bold\" size=\"small\">%s</span>";
+            }
+            else
+            {
+                markup_str = "<span size=\"small\">%s</span>";
+            }
             
             gtk_button_set_relief(GTK_BUTTON(group->_button), new_style);
+            
+            button_markup = g_markup_printf_escaped(markup_str,
+                                                    (const gchar *)group->name);
+            
+            gtk_label_set_markup(GTK_LABEL(group->_label), button_markup);
         }
         while(group_list = g_list_next(group_list));
     }
@@ -160,7 +183,7 @@ GList *create_default_sources()
     GList *sources = NULL;
 
     SheepleSource *sheeple_contacts, *sheeple_contacts_matt;
-    SheepleGroup *family, *rcos, *rpi, *girls;
+    SheepleGroup *family, *rcos, *rpi, *girls, *girls2, *girls3, *girls4, *girls5, *girls6, *girls7;
     
     GList *contacts_list = NULL, *matt_list = NULL;
     
@@ -168,13 +191,31 @@ GList *create_default_sources()
     rcos = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
     rpi = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
     girls = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
+    girls2 = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
+    girls3 = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
+    girls4 = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
+    girls5 = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
+    girls6 = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
+    girls7 = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
     
     family->name = "Family";
     rcos->name = "RCOS";
     rpi->name = "RPI Friends";
     girls->name = "Matt's Girls";
+    girls2->name = "Matt's Girls";
+    girls3->name = "Matt's Girls";
+    girls4->name = "Matt's Girls";
+    girls5->name = "Matt's Girls";
+    girls6->name = "Matt's Girls";
+    girls7->name = "Matt's Girls";
     
     matt_list = g_list_prepend(matt_list, girls);
+    matt_list = g_list_prepend(matt_list, girls2);
+    matt_list = g_list_prepend(matt_list, girls3);
+    matt_list = g_list_prepend(matt_list, girls4);
+    matt_list = g_list_prepend(matt_list, girls5);
+    matt_list = g_list_prepend(matt_list, girls6);
+    matt_list = g_list_prepend(matt_list, girls7);
     
     contacts_list = g_list_prepend(contacts_list, family);
     contacts_list = g_list_prepend(contacts_list, rcos);
