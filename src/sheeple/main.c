@@ -198,18 +198,26 @@ GList *create_default_sources()
 
 int main(int argc, char **argv)
 {
-    GtkWidget *window;
+    GtkWidget *window, *hbox, *textview;
     
     gtk_init(&argc, &argv);
     
     all_sources = create_default_sources();
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_default_size(GTK_WINDOW(window), 150, 300);
+    gtk_window_set_default_size(GTK_WINDOW(window), 300, 300);
     g_signal_connect(window, "delete_event", gtk_main_quit, NULL);
     
-    gtk_container_add(GTK_CONTAINER(window), create_source_view_test(all_sources));
+    textview = gtk_text_view_new();
+    
+    hbox = gtk_hbox_new(FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), create_source_view_test(all_sources), FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), textview, TRUE, TRUE, 0);
+    
+    gtk_container_add(GTK_CONTAINER(window), hbox);
     update_selection();
+    
+    gtk_widget_grab_focus(textview);
 
     gtk_widget_show_all(window);
 
