@@ -27,7 +27,6 @@
 GList *all_sources = NULL;
 GList *selected_groups = NULL;
 
-typedef struct _SheepleSource SheepleSource;
 typedef struct _SheepleGroup SheepleGroup;
 
 struct _SheepleGroup
@@ -36,14 +35,6 @@ struct _SheepleGroup
     
     GtkWidget * _button;
     GtkWidget * _label;
-};
-
-struct _SheepleSource
-{
-    const gchar * name;
-    GList * groups;
-    
-    GtkWidget * _box;
 };
 
 void update_selection();
@@ -221,12 +212,10 @@ GList *create_default_sources()
     contacts_list = g_list_prepend(contacts_list, rcos);
     contacts_list = g_list_prepend(contacts_list, rpi);
     
-    sheeple_contacts = (SheepleSource *)calloc(1, sizeof(SheepleSource));
-    sheeple_contacts->name = "Contacts";
+    sheeple_contacts = sheeple_source_new_with_name("Contacts");
     sheeple_contacts->groups = contacts_list;
     
-    sheeple_contacts_matt = (SheepleSource *)calloc(1, sizeof(SheepleSource));
-    sheeple_contacts_matt->name = "Matt's Contacts";
+    sheeple_contacts_matt = sheeple_source_new_with_name("Matt's Contacts");
     sheeple_contacts_matt->groups = matt_list;
     
     sources = g_list_prepend(sources, sheeple_contacts_matt);

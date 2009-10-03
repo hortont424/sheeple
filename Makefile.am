@@ -43,6 +43,8 @@ doc_DATA = \
 lib_LTLIBRARIES += libsheeple.la
 
 libsheeple_la_SOURCES = \
+    src/libsheeple/SheepleSource.c \
+    src/libsheeple/SheepleSource.h \
     src/libsheeple/sheeple.c \
     src/libsheeple/sheeple.h
 
