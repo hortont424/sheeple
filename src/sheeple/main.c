@@ -80,7 +80,7 @@ GtkWidget *create_source_view_test(GList *sources)
         sourcebox = gtk_vbox_new(FALSE, 0);
         
         // Create the source's title label
-        title_markup = g_markup_printf_escaped("<span weight=\"bold\" size=\"small\">%s</span>",
+        title_markup = g_markup_printf_escaped("<small><b>%s</b></small>",
                                                source->name);
         title_label = gtk_label_new(NULL);
         gtk_label_set_markup(GTK_LABEL(title_label), title_markup);
@@ -99,7 +99,7 @@ GtkWidget *create_source_view_test(GList *sources)
             alignment = gtk_alignment_new(0, 0, 0, 0);
             gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 0, 0, 20, 4);
             
-            button_markup = g_markup_printf_escaped("<span size=\"small\">%s</span>",
+            button_markup = g_markup_printf_escaped("<small>%s</small>",
                                                     (const gchar *)group->name);
             
             button_label = gtk_label_new(NULL);
@@ -159,11 +159,11 @@ void update_selection()
             if(g_list_find(selected_groups, group))
             {
                 new_style = GTK_RELIEF_NORMAL;
-                markup_str = "<span weight=\"bold\" size=\"small\">%s</span>";
+                markup_str = "<small><b>%s</b></small>";
             }
             else
             {
-                markup_str = "<span size=\"small\">%s</span>";
+                markup_str = "<small>%s</small>";
             }
             
             gtk_button_set_relief(GTK_BUTTON(group->_button), new_style);
