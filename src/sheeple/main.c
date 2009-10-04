@@ -197,7 +197,7 @@ int main(int argc, char **argv)
     all_sources = create_default_sources();
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_default_size(GTK_WINDOW(window), 300, 300);
+    gtk_window_set_default_size(GTK_WINDOW(window), 300, 400);
     g_signal_connect(window, "delete_event", gtk_main_quit, NULL);
     
     textview = gtk_text_view_new();
