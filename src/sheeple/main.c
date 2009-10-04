@@ -27,16 +27,6 @@
 GList *all_sources = NULL;
 GList *selected_groups = NULL;
 
-typedef struct _SheepleGroup SheepleGroup;
-
-struct _SheepleGroup
-{
-    const gchar * name;
-    
-    GtkWidget * _button;
-    GtkWidget * _label;
-};
-
 void update_selection();
 
 void choose_group(GtkButton * button, gpointer user_data)
@@ -174,43 +164,15 @@ GList *create_default_sources()
     GList *sources = NULL;
 
     SheepleSource *sheeple_contacts, *sheeple_contacts_matt;
-    SheepleGroup *family, *rcos, *rpi, *girls, *girls2, *girls3, *girls4, *girls5, *girls6, *girls7;
     
     GList *contacts_list = NULL, *matt_list = NULL;
     
-    family = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
-    rcos = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
-    rpi = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
-    girls = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
-    girls2 = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
-    girls3 = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
-    girls4 = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
-    girls5 = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
-    girls6 = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
-    girls7 = (SheepleGroup *)calloc(1, sizeof(SheepleGroup));
+    matt_list = g_list_prepend(matt_list, sheeple_group_new_with_name("Matt's Girls"));
+    matt_list = g_list_prepend(matt_list, sheeple_group_new_with_name("Bus People"));
     
-    family->name = "Family";
-    rcos->name = "RCOS";
-    rpi->name = "RPI Friends";
-    girls->name = "Matt's Girls";
-    girls2->name = "Matt's Girls";
-    girls3->name = "Matt's Girls";
-    girls4->name = "Matt's Girls";
-    girls5->name = "Matt's Girls";
-    girls6->name = "Matt's Girls";
-    girls7->name = "Matt's Girls";
-    
-    matt_list = g_list_prepend(matt_list, girls);
-    matt_list = g_list_prepend(matt_list, girls2);
-    matt_list = g_list_prepend(matt_list, girls3);
-    matt_list = g_list_prepend(matt_list, girls4);
-    matt_list = g_list_prepend(matt_list, girls5);
-    matt_list = g_list_prepend(matt_list, girls6);
-    matt_list = g_list_prepend(matt_list, girls7);
-    
-    contacts_list = g_list_prepend(contacts_list, family);
-    contacts_list = g_list_prepend(contacts_list, rcos);
-    contacts_list = g_list_prepend(contacts_list, rpi);
+    contacts_list = g_list_prepend(contacts_list, sheeple_group_new_with_name("Family"));
+    contacts_list = g_list_prepend(contacts_list, sheeple_group_new_with_name("RCOS"));
+    contacts_list = g_list_prepend(contacts_list, sheeple_group_new_with_name("RPI Friends"));
     
     sheeple_contacts = sheeple_source_new_with_name("Contacts");
     sheeple_contacts->groups = contacts_list;
@@ -221,7 +183,7 @@ GList *create_default_sources()
     sources = g_list_prepend(sources, sheeple_contacts_matt);
     sources = g_list_prepend(sources, sheeple_contacts);
     
-    selected_groups = g_list_prepend(selected_groups, family);
+    selected_groups = g_list_prepend(selected_groups, contacts_list->data);
     
     return sources;
 }
