@@ -6,4 +6,4 @@
 
 int sheeple_test_func();
 
-#endif // _SHEEPLE_H_
+#endif                          // _SHEEPLE_H_

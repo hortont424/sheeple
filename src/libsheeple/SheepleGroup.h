@@ -13,28 +13,26 @@
 typedef struct _SheepleGroup SheepleGroup;
 typedef struct _SheepleGroupClass SheepleGroupClass;
 
-struct _SheepleGroup
-{
+struct _SheepleGroup {
     GObject parent_instance;
-    
+
     // Instance members
-    
-    const gchar * name;
-    GList * groups;
-    
-    GtkWidget * _button, * _label;
+
+    const gchar *name;
+    GList *groups;
+
+    GtkWidget *_button, *_label;
 };
 
-struct _SheepleGroupClass
-{
+struct _SheepleGroupClass {
     GObjectClass parent_class;
-    
+
     // Class members
 };
 
 GType sheeple_group_get_type(void);
 
-SheepleGroup * sheeple_group_new();
-SheepleGroup * sheeple_group_new_with_name(const gchar * name);
+SheepleGroup *sheeple_group_new();
+SheepleGroup *sheeple_group_new_with_name(const gchar * name);
 
 #endif

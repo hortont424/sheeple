@@ -13,28 +13,26 @@
 typedef struct _SheepleSource SheepleSource;
 typedef struct _SheepleSourceClass SheepleSourceClass;
 
-struct _SheepleSource
-{
+struct _SheepleSource {
     GObject parent_instance;
-    
+
     // Instance members
-    
-    const gchar * name;
-    GList * groups;
-    
-    GtkWidget * _box;
+
+    const gchar *name;
+    GList *groups;
+
+    GtkWidget *_box;
 };
 
-struct _SheepleSourceClass
-{
+struct _SheepleSourceClass {
     GObjectClass parent_class;
-    
+
     // Class members
 };
 
 GType sheeple_source_get_type(void);
 
-SheepleSource * sheeple_source_new();
-SheepleSource * sheeple_source_new_with_name(const gchar * name);
+SheepleSource *sheeple_source_new();
+SheepleSource *sheeple_source_new_with_name(const gchar * name);
 
 #endif
