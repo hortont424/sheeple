@@ -101,7 +101,7 @@ GtkWidget *create_source_view_test(GList *sources)
         }
         while(group_list = g_list_next(group_list));
         
-        gtk_box_pack_start(GTK_BOX(master_vbox), sourcebox, TRUE, TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(master_vbox), sourcebox, FALSE, TRUE, 0);
         
         source->_box = sourcebox;
     }
