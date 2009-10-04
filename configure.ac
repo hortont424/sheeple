@@ -17,9 +17,9 @@ PKG_PROG_PKG_CONFIG
 # Use AM_SILENT_RULES if present
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
-dnl ***************************************************************************
-dnl Internationalization
-dnl ***************************************************************************
+##################################################
+# Internationalization
+##################################################
 GETTEXT_PACKAGE=sheeple
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
@@ -31,7 +31,7 @@ PKG_CHECK_MODULES(SHEEPLE, [gtk+-2.0 >= 2.12 libedataserver-1.2 libebook-1.2
                             webkit-1.0])
 
 ##################################################
-# Check for gtk-doc.
+# Check for gtk-doc
 ##################################################
 AC_ARG_WITH(html-dir, [  --with-html-dir=PATH path to installed docs ])
 if test "x$with_html_dir" = "x" ; then
@@ -62,6 +62,13 @@ if test x$enable_gtk_doc = xauto ; then
   fi
 fi
 AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
+
+##################################################
+# Build options
+##################################################
+
+CFLAGS="-Wall -pedantic -O0 -g --std=gnu99"
+
 
 AC_OUTPUT([
 Makefile

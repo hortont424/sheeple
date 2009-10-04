@@ -38,8 +38,6 @@ void choose_group(GtkButton * button, gpointer user_data)
 GtkWidget *create_source_view_test(GList * sources)
 {
     GtkWidget *scrollbox, *layout, *master_vbox, *master_padding;
-    GList *current_source_buttons = NULL;
-    GHashTableIter iter;
 
     scrollbox = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollbox),
@@ -99,13 +97,13 @@ GtkWidget *create_source_view_test(GList * sources)
             group->_button = button;
             group->_label = button_label;
         }
-        while (group_list = g_list_next(group_list));
+        while ((group_list = g_list_next(group_list)));
 
         gtk_box_pack_start(GTK_BOX(master_vbox), sourcebox, FALSE, TRUE, 0);
 
         source->_box = sourcebox;
     }
-    while (sources = g_list_next(sources));
+    while ((sources = g_list_next(sources)));
 
     //gtk_layout_put(GTK_LAYOUT(layout), master_vbox, 0, 0);
     //gtk_container_add(GTK_CONTAINER(scrollbox), layout);
@@ -156,9 +154,9 @@ void update_selection()
 
             gtk_label_set_markup(GTK_LABEL(group->_label), button_markup);
         }
-        while (group_list = g_list_next(group_list));
+        while ((group_list = g_list_next(group_list)));
     }
-    while (sources = g_list_next(sources));
+    while ((sources = g_list_next(sources)));
 }
 
 GList *create_default_sources()
