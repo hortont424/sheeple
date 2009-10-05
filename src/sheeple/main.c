@@ -76,10 +76,7 @@ int main(int argc, char **argv)
     textview = gtk_text_view_new();
 
     hbox = gtk_hbox_new(FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox),
-                       sheeple_source_view_get_view(SHEEPLE_SOURCE_VIEW
-                                                    (sourceview)), FALSE, TRUE,
-                       0);
+    gtk_box_pack_start(GTK_BOX(hbox), sourceview, FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), textview, TRUE, TRUE, 0);
 
     gtk_container_add(GTK_CONTAINER(window), hbox);

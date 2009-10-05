@@ -1,7 +1,7 @@
 #include "SheepleSourceView.h"
 #include <stdlib.h>
 
-G_DEFINE_TYPE(SheepleSourceView, sheeple_source_view, G_TYPE_OBJECT)
+G_DEFINE_TYPE(SheepleSourceView, sheeple_source_view, GTK_TYPE_SCROLLED_WINDOW)
 typedef struct _SheepleSourceViewSelectPrivateData
 {
     SheepleSourceView *source_view;
@@ -10,11 +10,14 @@ typedef struct _SheepleSourceViewSelectPrivateData
 
 static void sheeple_source_view_init(SheepleSourceView * self)
 {
-    GtkWidget *master_padding, *scrollbox, *viewport;
+    GtkWidget *master_padding, *viewport;
+    
+    // Create GtkAdjustments
+    gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(self), NULL);
+    gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(self), NULL);
 
-    // Create ScrolledWindow which automatically shows scrollbars when needed
-    scrollbox = gtk_scrolled_window_new(NULL, NULL);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollbox),
+    // Set ScrolledWindow to automatically show scrollbars when needed
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(self),
                                    GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
     self->source_vbox = gtk_vbox_new(FALSE, 10);
@@ -25,21 +28,19 @@ static void sheeple_source_view_init(SheepleSourceView * self)
     gtk_container_add(GTK_CONTAINER(master_padding), self->source_vbox);
 
     // Set up scrolled window
-    gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrollbox),
+    gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(self),
                                         GTK_SHADOW_NONE);
 
     // Create viewport containing sourceview
     viewport =
         gtk_viewport_new(gtk_scrolled_window_get_hadjustment
-                         (GTK_SCROLLED_WINDOW(scrollbox)),
+                         (GTK_SCROLLED_WINDOW(self)),
                          gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW
-                                                             (scrollbox)));
+                                                             (self)));
     gtk_container_add(GTK_CONTAINER(viewport), master_padding);
-    gtk_container_add(GTK_CONTAINER(scrollbox), viewport);
+    gtk_container_add(GTK_CONTAINER(self), viewport);
 
     gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
-
-    self->main_widget = scrollbox;
 }
 
 static void sheeple_source_view_class_init(SheepleSourceViewClass * klass)
@@ -50,11 +51,6 @@ static void sheeple_source_view_class_init(SheepleSourceViewClass * klass)
 GtkWidget *sheeple_source_view_new()
 {
     return g_object_new(SHEEPLE_TYPE_SOURCE_VIEW, NULL);
-}
-
-GtkWidget *sheeple_source_view_get_view(SheepleSourceView * self)
-{
-    return self->main_widget;
 }
 
 void _sheeple_source_view_update_selection(SheepleSourceView * self)
