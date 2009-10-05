@@ -4,6 +4,8 @@
 #include "SheepleSource.h"
 #include "SheepleGroup.h"
 
+#include "SheepleSourceView.h"
+
 int sheeple_test_func();
 
 #endif                          // _SHEEPLE_H_

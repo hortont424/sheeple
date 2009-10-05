@@ -43,6 +43,8 @@ doc_DATA = \
 lib_LTLIBRARIES += libsheeple.la
 
 libsheeple_la_SOURCES = \
+    src/libsheeple/SheepleSourceView.c \
+    src/libsheeple/SheepleSourceView.h \
     src/libsheeple/SheepleSource.c \
     src/libsheeple/SheepleSource.h \
     src/libsheeple/SheepleGroup.c \
@@ -67,8 +69,6 @@ pkgconfigdir = $(libdir)/pkgconfig
 bin_PROGRAMS += sheeple
 
 sheeple_SOURCES = \
-	src/sheeple/SheepleSourceView.c \
-	src/sheeple/SheepleSourceView.h \
 	src/sheeple/main.c
 
 sheeple_CFLAGS = $(SHEEPLE_CFLAGS) -Isrc

@@ -37,16 +37,16 @@ void choose_group(GtkButton * button, gpointer user_data)
 
 GtkWidget *create_source_view_test(GList * sources)
 {
-    GtkWidget *scrollbox, *layout, *master_vbox, *master_padding, *viewport;
+    GtkWidget *scrollbox, *master_vbox, *master_padding, *viewport;
 
+    // Create ScrolledWindow which automatically shows scrollbars when needed
     scrollbox = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollbox),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-    layout = gtk_layout_new(NULL, NULL);
     master_vbox = gtk_vbox_new(FALSE, 10);
 
-    // Iterate over all sources
+    // Iterate over all sources, creating a section (and buttons) for each
     do
     {
         SheepleSource *source = ((SheepleSource *) sources->data);
@@ -122,8 +122,6 @@ GtkWidget *create_source_view_test(GList * sources)
     gtk_widget_set_size_request(scrollbox, 150, -1);
     
     gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
-    
-    g_print("%d\n", gtk_viewport_get_shadow_type(GTK_VIEWPORT(viewport)));
 
     return scrollbox;
 }
