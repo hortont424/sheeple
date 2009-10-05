@@ -102,12 +102,23 @@ Sheeple-1.0.gir: $(INTROSPECTION_SCANNER) libsheeple.la
 	    -I src \
 		--namespace Sheeple --nsversion=1.0 \
 		--include=GObject-2.0 \
-		--include=Pango-1.0 \
 		--include=Gtk-2.0 \
+		--include=Pango-1.0 \
+		--include=Avahi-0.6 \
+		--include=AvahiCore-0.6 \
+		--include=WebKit-1.0 \
 		--library=libsheeple.la \
 		--libtool="$(top_builddir)/libtool" \
         --pkg gobject-2.0 \
         --pkg gtk+-2.0 \
+        --pkg pango \
+        --pkg libedataserver-1.2 \
+        --pkg libebook-1.2 \ 
+        --pkg avahi-client \
+        --pkg avahi-core \
+        --pkg avahi-gobject \
+        --pkg avahi-glib \
+        --pkg webkit-1.0 \
         --output $@ \
 		$(libsheeple_la_SOURCES)
 
