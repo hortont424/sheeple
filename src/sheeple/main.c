@@ -42,7 +42,7 @@ GtkWidget *create_source_view_test(GList * sources)
     // Create ScrolledWindow which automatically shows scrollbars when needed
     scrollbox = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollbox),
-                                   GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+                                   GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
     master_vbox = gtk_vbox_new(FALSE, 10);
 
@@ -119,7 +119,6 @@ GtkWidget *create_source_view_test(GList * sources)
                                 gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrollbox)));
     gtk_container_add(GTK_CONTAINER(viewport), master_padding);
     gtk_container_add(GTK_CONTAINER(scrollbox), viewport);
-    gtk_widget_set_size_request(scrollbox, 150, -1);
     
     gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
 
