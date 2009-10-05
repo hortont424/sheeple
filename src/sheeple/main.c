@@ -46,10 +46,10 @@ GList *create_default_sources()
                        sheeple_group_new_with_name("RPI Friends"));
 
     sheeple_contacts = sheeple_source_new_with_name("Contacts");
-    sheeple_contacts->groups = contacts_list;
+    sheeple_source_set_groups(sheeple_contacts, contacts_list);
 
     sheeple_contacts_matt = sheeple_source_new_with_name("Matt's Contacts");
-    sheeple_contacts_matt->groups = matt_list;
+    sheeple_source_set_groups(sheeple_contacts_matt, matt_list);
 
     sources = g_list_prepend(sources, sheeple_contacts_matt);
     sources = g_list_prepend(sources, sheeple_contacts);

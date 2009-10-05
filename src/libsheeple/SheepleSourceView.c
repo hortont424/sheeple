@@ -63,7 +63,7 @@ void _sheeple_source_view_update_selection(SheepleSourceView * self)
     do
     {
         SheepleSource *source = ((SheepleSource *) sources->data);
-        GList *group_list = (GList *) (source->groups);
+        GList *group_list = sheeple_source_get_groups(source);
 
         do
         {
@@ -125,13 +125,13 @@ void sheeple_source_view_set_sources(SheepleSourceView * self,
 
         GtkWidget *sourcebox, *title_label;
         gchar *title_markup;
-        GList *group_list = (GList *) (source->groups);
+        GList *group_list = sheeple_source_get_groups(source);
 
         sourcebox = gtk_vbox_new(FALSE, 0);
 
         // Create the source's title label
         title_markup = g_markup_printf_escaped("<small><b>%s</b></small>",
-                                               source->name);
+                                               sheeple_source_get_name(source));
         title_label = gtk_label_new(NULL);
         gtk_label_set_markup(GTK_LABEL(title_label), title_markup);
         gtk_misc_set_alignment(GTK_MISC(title_label), 0, 0);
@@ -188,10 +188,9 @@ void sheeple_source_view_set_sources(SheepleSourceView * self,
 
     // select first group. this will eventually have to change (what if the first source has no groups!?)
     self->selected_groups = g_list_prepend(NULL,
-                                           ((SheepleGroup *) ((SheepleSource *)
+                                           (sheeple_source_get_groups((SheepleSource *)
                                                               self->
-                                                              sources->data)->
-                                            groups->data));
+                                                              sources->data)->data));
 
     _sheeple_source_view_update_selection(self);
 }

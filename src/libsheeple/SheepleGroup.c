@@ -66,7 +66,7 @@ sheeple_group_set_property (GObject * object,
     {
         case PROP_NAME:
             g_free((gpointer)self->priv->name);
-            self->priv->name = g_value_dup_string (value);
+            sheeple_group_set_name(self, g_value_dup_string(value));
             break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -85,7 +85,7 @@ sheeple_group_get_property (GObject *object,
     switch (property_id)
     {
         case PROP_NAME:
-            g_value_set_string(value, self->priv->name);
+            g_value_set_string(value, sheeple_group_get_name(self));
             break;
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -100,9 +100,7 @@ SheepleGroup *sheeple_group_new()
 
 SheepleGroup *sheeple_group_new_with_name(const gchar * name)
 {
-    SheepleGroup *grp = g_object_new(SHEEPLE_TYPE_GROUP, "name", name, NULL);
-    
-    return grp;
+    return g_object_new(SHEEPLE_TYPE_GROUP, "name", name, NULL);
 }
 
 const char *sheeple_group_get_name(SheepleGroup *self)
