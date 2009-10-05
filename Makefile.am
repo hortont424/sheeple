@@ -8,7 +8,6 @@ AUTOMAKE_OPTIONS = gnu dist-bzip2 subdir-objects
 
 bin_PROGRAMS = 
 lib_LTLIBRARIES = 
-AM_CFLAGS = -Wall -g
 AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
@@ -52,7 +51,7 @@ libsheeple_la_SOURCES = \
     src/libsheeple/sheeple.c \
     src/libsheeple/sheeple.h
 
-libsheeple_la_CFLAGS = $(SHEEPLE_CFLAGS)
+libsheeple_la_CFLAGS = $(SHEEPLE_CFLAGS) -Isrc
 libsheeple_la_LDFLAGS = $(SHEEPLE_LIBS)
 
 libsheepleheaders_HEADERS = src/libsheeple/sheeple.h
@@ -85,4 +84,8 @@ uninstall-local:
 	-rm -r $(docdir)
 	-rm -r $(uidir)
 	-rm -r $(datadir)/sheeple
+
+### special build rules ###
+lint:
+	splint $(SHEEPLE_CFLAGS) -I. -Isrc -nullpass -nullassign -badflag src/sheeple/*.[ch] src/libsheeple/*.[ch]
 

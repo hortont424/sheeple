@@ -67,8 +67,7 @@ AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
 # Build options
 ##################################################
 
-CFLAGS="-Wall -pedantic -O0 -g --std=gnu99 -Werror"
-
+CFLAGS="-Wall -pedantic -O0 -g --std=gnu99 -Werror -DGSEAL_ENABLE -DDISABLE_DEPRECATED"
 
 AC_OUTPUT([
 Makefile

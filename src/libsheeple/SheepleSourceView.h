@@ -2,6 +2,7 @@
 #define _SHEEPLE_SOURCE_VIEW_H_
 
 #include <gtk/gtk.h>
+#include <libsheeple/sheeple.h>
 
 #define SHEEPLE_TYPE_SOURCE_VIEW             (sheeple_source_view_get_type())
 #define SHEEPLE_SOURCE_VIEW(obj)             (G_TYPE_CHECK_INSTANCE_CAST((obj), SHEEPLE_TYPE_SOURCE_VIEW, SheepleSourceView))
@@ -17,6 +18,10 @@ struct _SheepleSourceView {
     GObject parent_instance;
 
     // Instance members
+    GList *sources;
+    GList *selected_groups;
+    
+    GtkWidget *source_vbox, *main_widget;
 };
 
 struct _SheepleSourceViewClass {
@@ -27,6 +32,10 @@ struct _SheepleSourceViewClass {
 
 GType sheeple_source_view_get_type(void);
 
-SheepleSourceView *sheeple_source_view_new();
+GtkWidget *sheeple_source_view_new();
+
+GtkWidget *sheeple_source_view_get_view(SheepleSourceView * self);
+                                                            
+void sheeple_source_view_set_sources(SheepleSourceView * self, GList * new_sources);
 
 #endif

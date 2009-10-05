@@ -29,13 +29,7 @@ GList *selected_groups = NULL;
 
 void update_selection();
 
-void choose_group(GtkButton * button, gpointer user_data)
-{
-    selected_groups = g_list_prepend(NULL, user_data);
-    update_selection();
-}
-
-GtkWidget *create_source_view_test(GList * sources)
+/*GtkWidget *create_source_view_test(GList * sources)
 {
     GtkWidget *scrollbox, *master_vbox, *master_padding, *viewport;
 
@@ -123,7 +117,7 @@ GtkWidget *create_source_view_test(GList * sources)
     gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
 
     return scrollbox;
-}
+}*/
 
 void update_selection()
 {
@@ -199,11 +193,14 @@ GList *create_default_sources()
 
 int main(int argc, char **argv)
 {
-    GtkWidget *window, *hbox, *textview;
+    GtkWidget *window, *hbox, *textview, *sourceview;
 
     gtk_init(&argc, &argv);
 
     all_sources = create_default_sources();
+    
+    sourceview = sheeple_source_view_new();
+    sheeple_source_view_set_sources(SHEEPLE_SOURCE_VIEW(sourceview), all_sources);
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(GTK_WINDOW(window), 300, 400);
@@ -212,7 +209,7 @@ int main(int argc, char **argv)
     textview = gtk_text_view_new();
 
     hbox = gtk_hbox_new(FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox), create_source_view_test(all_sources),
+    gtk_box_pack_start(GTK_BOX(hbox), sheeple_source_view_get_view(SHEEPLE_SOURCE_VIEW(sourceview)),
                        FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), textview, TRUE, TRUE, 0);
 
@@ -227,3 +224,4 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
