@@ -27,8 +27,7 @@ enum
 {
   PROP_0,
 
-  PROP_NAME,
-  PROP_GROUPS
+  PROP_NAME
 };
 
 static void sheeple_source_init(SheepleSource * self)
