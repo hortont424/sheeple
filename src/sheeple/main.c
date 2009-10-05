@@ -37,7 +37,7 @@ void choose_group(GtkButton * button, gpointer user_data)
 
 GtkWidget *create_source_view_test(GList * sources)
 {
-    GtkWidget *scrollbox, *layout, *master_vbox, *master_padding;
+    GtkWidget *scrollbox, *layout, *master_vbox, *master_padding, *viewport;
 
     scrollbox = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollbox),
@@ -105,19 +105,25 @@ GtkWidget *create_source_view_test(GList * sources)
     }
     while ((sources = g_list_next(sources)));
 
-    //gtk_layout_put(GTK_LAYOUT(layout), master_vbox, 0, 0);
-    //gtk_container_add(GTK_CONTAINER(scrollbox), layout);
-
     // Pad the whole sourceview
     master_padding = gtk_alignment_new(0, 0, 1, 1);
     gtk_alignment_set_padding(GTK_ALIGNMENT(master_padding), 0, 0, 4, 4);
     gtk_container_add(GTK_CONTAINER(master_padding), master_vbox);
 
+    // Set up scrolled window
     gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrollbox),
                                         GTK_SHADOW_NONE);
-    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrollbox),
-                                          master_padding);
+    
+    // Create viewport containing sourceview
+    viewport = gtk_viewport_new(gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(scrollbox)),
+                                gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrollbox)));
+    gtk_container_add(GTK_CONTAINER(viewport), master_padding);
+    gtk_container_add(GTK_CONTAINER(scrollbox), viewport);
     gtk_widget_set_size_request(scrollbox, 150, -1);
+    
+    gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
+    
+    g_print("%d\n", gtk_viewport_get_shadow_type(GTK_VIEWPORT(viewport)));
 
     return scrollbox;
 }
