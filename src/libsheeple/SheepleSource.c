@@ -1,7 +1,6 @@
 #include "SheepleSource.h"
 
 G_DEFINE_TYPE(SheepleSource, sheeple_source, G_TYPE_OBJECT)
-
 static void sheeple_source_init(SheepleSource * self)
 {
 

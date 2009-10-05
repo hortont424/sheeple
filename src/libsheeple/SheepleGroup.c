@@ -1,7 +1,6 @@
 #include "SheepleGroup.h"
 
 G_DEFINE_TYPE(SheepleGroup, sheeple_group, G_TYPE_OBJECT)
-
 static void sheeple_group_init(SheepleGroup * self)
 {
 

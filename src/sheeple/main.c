@@ -59,15 +59,15 @@ GList *create_default_sources()
 
 int main(int argc, char **argv)
 {
-    GList * all_sources;
+    GList *sources;
     GtkWidget *window, *hbox, *textview, *sourceview;
 
     gtk_init(&argc, &argv);
 
-    all_sources = create_default_sources();
-    
+    sources = create_default_sources();
+
     sourceview = sheeple_source_view_new();
-    sheeple_source_view_set_sources(SHEEPLE_SOURCE_VIEW(sourceview), all_sources);
+    sheeple_source_view_set_sources(SHEEPLE_SOURCE_VIEW(sourceview), sources);
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(GTK_WINDOW(window), 300, 400);
@@ -76,8 +76,10 @@ int main(int argc, char **argv)
     textview = gtk_text_view_new();
 
     hbox = gtk_hbox_new(FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox), sheeple_source_view_get_view(SHEEPLE_SOURCE_VIEW(sourceview)),
-                       FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox),
+                       sheeple_source_view_get_view(SHEEPLE_SOURCE_VIEW
+                                                    (sourceview)), FALSE, TRUE,
+                       0);
     gtk_box_pack_start(GTK_BOX(hbox), textview, TRUE, TRUE, 0);
 
     gtk_container_add(GTK_CONTAINER(window), hbox);
@@ -90,4 +92,3 @@ int main(int argc, char **argv)
 
     return 0;
 }
-

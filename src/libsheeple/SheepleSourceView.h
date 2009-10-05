@@ -14,17 +14,19 @@
 typedef struct _SheepleSourceView SheepleSourceView;
 typedef struct _SheepleSourceViewClass SheepleSourceViewClass;
 
-struct _SheepleSourceView {
+struct _SheepleSourceView
+{
     GObject parent_instance;
 
     // Instance members
     GList *sources;
     GList *selected_groups;
-    
+
     GtkWidget *source_vbox, *main_widget;
 };
 
-struct _SheepleSourceViewClass {
+struct _SheepleSourceViewClass
+{
     GObjectClass parent_class;
 
     // Class members
@@ -35,7 +37,8 @@ GType sheeple_source_view_get_type(void);
 GtkWidget *sheeple_source_view_new();
 
 GtkWidget *sheeple_source_view_get_view(SheepleSourceView * self);
-                                                            
-void sheeple_source_view_set_sources(SheepleSourceView * self, GList * new_sources);
+
+void sheeple_source_view_set_sources(SheepleSourceView * self,
+                                     GList * new_sources);
 
 #endif

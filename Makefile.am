@@ -89,3 +89,7 @@ uninstall-local:
 lint:
 	splint $(SHEEPLE_CFLAGS) -I. -Isrc -nullpass -nullassign -badflag src/sheeple/*.[ch] src/libsheeple/*.[ch]
 
+indent:
+	cd src/libsheeple ; bash ../../indent.sh
+	cd src/sheeple ; bash ../../indent.sh
+

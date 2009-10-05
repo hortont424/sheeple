@@ -2,11 +2,10 @@
 #include <stdlib.h>
 
 G_DEFINE_TYPE(SheepleSourceView, sheeple_source_view, G_TYPE_OBJECT)
-
 typedef struct _SheepleSourceViewSelectPrivateData
 {
-    SheepleSourceView * source_view;
-    SheepleGroup * group;
+    SheepleSourceView *source_view;
+    SheepleGroup *group;
 } SheepleSourceViewSelectPrivateData;
 
 static void sheeple_source_view_init(SheepleSourceView * self)
@@ -28,13 +27,16 @@ static void sheeple_source_view_init(SheepleSourceView * self)
     // Set up scrolled window
     gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrollbox),
                                         GTK_SHADOW_NONE);
-    
+
     // Create viewport containing sourceview
-    viewport = gtk_viewport_new(gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(scrollbox)),
-                                gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrollbox)));
+    viewport =
+        gtk_viewport_new(gtk_scrolled_window_get_hadjustment
+                         (GTK_SCROLLED_WINDOW(scrollbox)),
+                         gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW
+                                                             (scrollbox)));
     gtk_container_add(GTK_CONTAINER(viewport), master_padding);
     gtk_container_add(GTK_CONTAINER(scrollbox), viewport);
-    
+
     gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
 
     self->main_widget = scrollbox;
@@ -58,8 +60,8 @@ GtkWidget *sheeple_source_view_get_view(SheepleSourceView * self)
 void _sheeple_source_view_update_selection(SheepleSourceView * self)
 {
     GList *sources = self->sources;
-    
-    if(!sources)
+
+    if (!sources)
         return;
 
     do
@@ -104,18 +106,22 @@ static void _sheeple_source_view_remove_source_vbox_subview(GtkWidget * self,
 
 static void _sheeple_source_view_select(GtkButton * button, gpointer user_data)
 {
-    SheepleSourceViewSelectPrivateData * private = (SheepleSourceViewSelectPrivateData *) user_data;
-    private->source_view->selected_groups = g_list_prepend(NULL, private->group);
+    SheepleSourceViewSelectPrivateData *private =
+        (SheepleSourceViewSelectPrivateData *) user_data;
+    private->source_view->selected_groups =
+        g_list_prepend(NULL, private->group);
     _sheeple_source_view_update_selection(private->source_view);
 }
 
-void sheeple_source_view_set_sources(SheepleSourceView * self, GList * new_sources)
+void sheeple_source_view_set_sources(SheepleSourceView * self,
+                                     GList * new_sources)
 {
     self->sources = new_sources;
-    
+
     gtk_container_foreach(GTK_CONTAINER(self->source_vbox),
-                          &_sheeple_source_view_remove_source_vbox_subview, NULL);
-    
+                          &_sheeple_source_view_remove_source_vbox_subview,
+                          NULL);
+
     // Iterate over all sources, creating a section (and buttons) for each
     do
     {
@@ -139,7 +145,7 @@ void sheeple_source_view_set_sources(SheepleSourceView * self, GList * new_sourc
         // selection buttons for each group and packing them
         do
         {
-            SheepleSourceViewSelectPrivateData * cb_data = NULL;
+            SheepleSourceViewSelectPrivateData *cb_data = NULL;
             SheepleGroup *group = ((SheepleGroup *) group_list->data);
 
             GtkWidget *button, *alignment, *button_label;
@@ -158,14 +164,16 @@ void sheeple_source_view_set_sources(SheepleSourceView * self, GList * new_sourc
             gtk_container_add(GTK_CONTAINER(button), button_label);
             gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
             gtk_button_set_focus_on_click(GTK_BUTTON(button), FALSE);
-            
-            cb_data = (SheepleSourceViewSelectPrivateData*)calloc(1, sizeof(SheepleSourceViewSelectPrivateData));
+
+            cb_data =
+                (SheepleSourceViewSelectPrivateData *) calloc(1,
+                                                              sizeof
+                                                              (SheepleSourceViewSelectPrivateData));
             cb_data->group = group;
             cb_data->source_view = self;
 
-            g_signal_connect(button, "clicked", 
-                             G_CALLBACK(_sheeple_source_view_select),
-                             cb_data);
+            g_signal_connect(button, "clicked",
+                             G_CALLBACK(_sheeple_source_view_select), cb_data);
 
             gtk_container_add(GTK_CONTAINER(alignment), button);
             gtk_box_pack_start(GTK_BOX(sourcebox), alignment, TRUE, TRUE, 0);
@@ -175,15 +183,19 @@ void sheeple_source_view_set_sources(SheepleSourceView * self, GList * new_sourc
         }
         while ((group_list = g_list_next(group_list)));
 
-        gtk_box_pack_start(GTK_BOX(self->source_vbox), sourcebox, FALSE, TRUE, 0);
+        gtk_box_pack_start(GTK_BOX(self->source_vbox), sourcebox, FALSE, TRUE,
+                           0);
 
         source->_box = sourcebox;
     }
     while ((new_sources = g_list_next(new_sources)));
-    
+
     // select first group. this will eventually have to change (what if the first source has no groups!?)
-    self->selected_groups = g_list_prepend(NULL, ((SheepleGroup*)((SheepleSource*)self->sources->data)->groups->data));
-    
+    self->selected_groups = g_list_prepend(NULL,
+                                           ((SheepleGroup *) ((SheepleSource *)
+                                                              self->
+                                                              sources->data)->
+                                            groups->data));
+
     _sheeple_source_view_update_selection(self);
 }
-

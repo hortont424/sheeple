@@ -13,7 +13,8 @@
 typedef struct _SheepleGroup SheepleGroup;
 typedef struct _SheepleGroupClass SheepleGroupClass;
 
-struct _SheepleGroup {
+struct _SheepleGroup
+{
     GObject parent_instance;
 
     // Instance members
@@ -24,7 +25,8 @@ struct _SheepleGroup {
     GtkWidget *_button, *_label;
 };
 
-struct _SheepleGroupClass {
+struct _SheepleGroupClass
+{
     GObjectClass parent_class;
 
     // Class members
