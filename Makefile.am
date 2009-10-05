@@ -3,6 +3,7 @@
 ### automake options ###
 
 AUTOMAKE_OPTIONS = gnu dist-bzip2 subdir-objects
+ACLOCAL_AMFLAGS = -I m4
 
 ### initial values ###
 
