@@ -113,8 +113,6 @@ void sheeple_source_view_set_sources(SheepleSourceView * self, GList * new_sourc
 {
     self->sources = new_sources;
     
-    g_print("Sources being set: %p\n", (void*)self->sources);
-    
     gtk_container_foreach(GTK_CONTAINER(self->source_vbox),
                           &_sheeple_source_view_remove_source_vbox_subview, NULL);
     
@@ -182,5 +180,10 @@ void sheeple_source_view_set_sources(SheepleSourceView * self, GList * new_sourc
         source->_box = sourcebox;
     }
     while ((new_sources = g_list_next(new_sources)));
+    
+    // select first group. this will eventually have to change (what if the first source has no groups!?)
+    self->selected_groups = g_list_prepend(NULL, ((SheepleGroup*)((SheepleSource*)self->sources->data)->groups->data));
+    
+    _sheeple_source_view_update_selection(self);
 }
 

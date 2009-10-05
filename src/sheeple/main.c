@@ -24,138 +24,6 @@
 
 #include <libsheeple/sheeple.h>
 
-GList *all_sources = NULL;
-GList *selected_groups = NULL;
-
-void update_selection();
-
-/*GtkWidget *create_source_view_test(GList * sources)
-{
-    GtkWidget *scrollbox, *master_vbox, *master_padding, *viewport;
-
-    // Create ScrolledWindow which automatically shows scrollbars when needed
-    scrollbox = gtk_scrolled_window_new(NULL, NULL);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollbox),
-                                   GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-
-    master_vbox = gtk_vbox_new(FALSE, 10);
-
-    // Iterate over all sources, creating a section (and buttons) for each
-    do
-    {
-        SheepleSource *source = ((SheepleSource *) sources->data);
-
-        GtkWidget *sourcebox, *title_label;
-        gchar *title_markup;
-        GList *group_list = (GList *) (source->groups);
-
-        sourcebox = gtk_vbox_new(FALSE, 0);
-
-        // Create the source's title label
-        title_markup = g_markup_printf_escaped("<small><b>%s</b></small>",
-                                               source->name);
-        title_label = gtk_label_new(NULL);
-        gtk_label_set_markup(GTK_LABEL(title_label), title_markup);
-        gtk_misc_set_alignment(GTK_MISC(title_label), 0, 0);
-        gtk_box_pack_start(GTK_BOX(sourcebox), title_label, TRUE, TRUE, 4);
-
-        // Iterate over all groups within this source, creating
-        // selection buttons for each group and packing them
-        do
-        {
-            SheepleGroup *group = ((SheepleGroup *) group_list->data);
-
-            GtkWidget *button, *alignment, *button_label;
-            gchar *button_markup;
-
-            alignment = gtk_alignment_new(0, 0, 0, 0);
-            gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 0, 0, 20, 4);
-
-            button_markup = g_markup_printf_escaped("<small>%s</small>",
-                                                    (const gchar *)group->name);
-
-            button_label = gtk_label_new(NULL);
-            gtk_label_set_markup(GTK_LABEL(button_label), button_markup);
-
-            button = gtk_button_new();
-            gtk_container_add(GTK_CONTAINER(button), button_label);
-            gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
-            gtk_button_set_focus_on_click(GTK_BUTTON(button), FALSE);
-
-            g_signal_connect(button, "clicked", G_CALLBACK(choose_group),
-                             group);
-
-            gtk_container_add(GTK_CONTAINER(alignment), button);
-            gtk_box_pack_start(GTK_BOX(sourcebox), alignment, TRUE, TRUE, 0);
-
-            group->_button = button;
-            group->_label = button_label;
-        }
-        while ((group_list = g_list_next(group_list)));
-
-        gtk_box_pack_start(GTK_BOX(master_vbox), sourcebox, FALSE, TRUE, 0);
-
-        source->_box = sourcebox;
-    }
-    while ((sources = g_list_next(sources)));
-
-    // Pad the whole sourceview
-    master_padding = gtk_alignment_new(0, 0, 1, 1);
-    gtk_alignment_set_padding(GTK_ALIGNMENT(master_padding), 0, 0, 4, 4);
-    gtk_container_add(GTK_CONTAINER(master_padding), master_vbox);
-
-    // Set up scrolled window
-    gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrollbox),
-                                        GTK_SHADOW_NONE);
-    
-    // Create viewport containing sourceview
-    viewport = gtk_viewport_new(gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(scrollbox)),
-                                gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(scrollbox)));
-    gtk_container_add(GTK_CONTAINER(viewport), master_padding);
-    gtk_container_add(GTK_CONTAINER(scrollbox), viewport);
-    
-    gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
-
-    return scrollbox;
-}*/
-
-void update_selection()
-{
-    GList *sources = all_sources;
-
-    do
-    {
-        SheepleSource *source = ((SheepleSource *) sources->data);
-        GList *group_list = (GList *) (source->groups);
-
-        do
-        {
-            SheepleGroup *group = ((SheepleGroup *) group_list->data);
-            const gchar *button_markup, *markup_str;
-            GtkReliefStyle new_style = GTK_RELIEF_NONE;
-
-            if (g_list_find(selected_groups, group))
-            {
-                new_style = GTK_RELIEF_NORMAL;
-                markup_str = "<small><b>%s</b></small>";
-            }
-            else
-            {
-                markup_str = "<small>%s</small>";
-            }
-
-            gtk_button_set_relief(GTK_BUTTON(group->_button), new_style);
-
-            button_markup = g_markup_printf_escaped(markup_str,
-                                                    (const gchar *)group->name);
-
-            gtk_label_set_markup(GTK_LABEL(group->_label), button_markup);
-        }
-        while ((group_list = g_list_next(group_list)));
-    }
-    while ((sources = g_list_next(sources)));
-}
-
 GList *create_default_sources()
 {
     GList *sources = NULL;
@@ -186,13 +54,12 @@ GList *create_default_sources()
     sources = g_list_prepend(sources, sheeple_contacts_matt);
     sources = g_list_prepend(sources, sheeple_contacts);
 
-    selected_groups = g_list_prepend(selected_groups, contacts_list->data);
-
     return sources;
 }
 
 int main(int argc, char **argv)
 {
+    GList * all_sources;
     GtkWidget *window, *hbox, *textview, *sourceview;
 
     gtk_init(&argc, &argv);
@@ -214,7 +81,6 @@ int main(int argc, char **argv)
     gtk_box_pack_start(GTK_BOX(hbox), textview, TRUE, TRUE, 0);
 
     gtk_container_add(GTK_CONTAINER(window), hbox);
-    update_selection();
 
     gtk_widget_grab_focus(textview);
 
