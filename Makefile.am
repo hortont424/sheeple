@@ -6,6 +6,7 @@ AUTOMAKE_OPTIONS = gnu dist-bzip2 subdir-objects
 
 ### initial values ###
 
+CLEANFILES = 
 bin_PROGRAMS = 
 lib_LTLIBRARIES = 
 AM_CPPFLAGS = \
@@ -54,7 +55,12 @@ libsheeple_la_SOURCES = \
 libsheeple_la_CFLAGS = $(SHEEPLE_CFLAGS) -Isrc
 libsheeple_la_LDFLAGS = $(SHEEPLE_LIBS)
 
-libsheepleheaders_HEADERS = src/libsheeple/sheeple.h
+libsheepleheaders_HEADERS = \
+    src/libsheeple/sheeple.h \
+    src/libsheeple/SheeleSourceView.h \
+    src/libsheeple/SheeleSource.h \
+    src/libsheeple/SheeleGroup.h
+
 libsheepleheadersdir = $(pkgincludedir)
 
 pkgconfig_DATA = src/libsheeple/libsheeple-1.0.pc
@@ -84,6 +90,46 @@ uninstall-local:
 	-rm -r $(docdir)
 	-rm -r $(uidir)
 	-rm -r $(datadir)/sheeple
+
+### gobject-introspection ###
+
+if HAVE_INTROSPECTION
+BUILT_GIRSOURCES =
+
+Sheeple-1.0.gir: $(INTROSPECTION_SCANNER) libsheeple.la
+	$(QUIET_GEN)$(INTROSPECTION_SCANNER) -v \
+		--namespace Sheeple --nsversion=@CLUTTER_API_VERSION@ \
+		--include=GObject-2.0 \
+		--include=Pango-1.0 \
+		--include=Gtk-2.0 \
+		--library=libclutter-@CLUTTER_FLAVOUR@-@CLUTTER_API_VERSION@.la \
+		--libtool="$(top_builddir)/libtool" \
+        --pkg gobject-2.0 \
+        --pkg gtk+-2.0 \
+        --output $@ \
+		$(libsheeple_la_SOURCES)
+
+BUILT_GIRSOURCES += Sheeple-1.0.gir
+
+# INTROSPECTION_GIRDIR/INTROSPECTION_TYPELIBDIR aren't the right place to
+# install anything - we need to install inside our prefix.
+girdir = $(datadir)/gir-1.0
+gir_DATA = $(BUILT_GIRSOURCES)
+
+typelibsdir = $(libdir)/girepository-1.0/
+
+typelibs_DATA = $(BUILT_GIRSOURCES:.gir=.typelib)
+
+%.typelib: %.gir $(INTROSPECTION_COMPILER)
+	$(QUIET_GEN) \
+	LD_LIBRARY_PATH=.libs$${LD_LIBRARY_PATH:+:$$LD_LIBRARY_PATH} \
+	$(INTROSPECTION_COMPILER) \
+		--includedir=$(srcdir) \
+		--includedir=. \
+		$(INTROSPECTION_COMPILER_OPTS) $< -o $(@F)
+
+CLEANFILES += $(BUILT_GIRSOURCES) $(typelibs_DATA)
+endif
 
 ### special build rules ###
 lint:

@@ -1,4 +1,5 @@
 AC_INIT(sheeple, 0.1)
+AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_CONFIG_HEADERS([config.h])
@@ -68,6 +69,12 @@ AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
 ##################################################
 
 CFLAGS="-Wall -pedantic -O0 -g --std=gnu99 -Werror -DGSEAL_ENABLE -DDISABLE_DEPRECATED"
+
+##################################################
+# Introspection
+##################################################
+
+GOBJECT_INTROSPECTION_CHECK([0.6.4])
 
 AC_OUTPUT([
 Makefile
