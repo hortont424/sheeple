@@ -7,6 +7,8 @@ struct _SheepleSourceViewPrivate
 {
     GList *sources;
     GList *selected_groups;
+    GHashTable *source_widgets; // mapping of SheepleGroup to SheepleSourceViewSourceWidgets
+    GHashTable *group_widgets; // mapping of SheepleGroup to SheepleSourceViewGroupWidgets
 
     GtkWidget *source_vbox;
 };
@@ -17,11 +19,23 @@ typedef struct _SheepleSourceViewSelectPrivateData
     SheepleGroup *group;
 } SheepleSourceViewSelectPrivateData;
 
+typedef struct _SheepleSourceViewSourceWidgets
+{
+    GtkWidget * box;
+} SheepleSourceViewSourceWidgets;
+
+typedef struct _SheepleSourceViewGroupWidgets
+{
+    GtkWidget * button, * label;
+} SheepleSourceViewGroupWidgets;
+
 static void sheeple_source_view_init(SheepleSourceView * self)
 {
     GtkWidget *master_padding, *viewport;
 
     self->priv = SHEEPLE_SOURCE_VIEW_GET_PRIVATE(self);
+    self->priv->source_widgets = g_hash_table_new(&g_direct_hash, &g_direct_equal);
+    self->priv->group_widgets = g_hash_table_new(&g_direct_hash, &g_direct_equal);
 
     // Create GtkAdjustments
     gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(self), NULL);
@@ -79,8 +93,13 @@ void _sheeple_source_view_update_selection(SheepleSourceView * self)
         do
         {
             SheepleGroup *group = ((SheepleGroup *) group_list->data);
+            SheepleSourceViewGroupWidgets *group_widgets;
+            
             const gchar *button_markup, *markup_str;
             GtkReliefStyle new_style = GTK_RELIEF_NONE;
+
+            group_widgets = g_hash_table_lookup(self->priv->group_widgets,
+                                                (gpointer)group);
 
             if (g_list_find(self->priv->selected_groups, group))
             {
@@ -92,13 +111,13 @@ void _sheeple_source_view_update_selection(SheepleSourceView * self)
                 markup_str = "<small>%s</small>";
             }
 
-            gtk_button_set_relief(GTK_BUTTON(group->_button), new_style);
+            gtk_button_set_relief(GTK_BUTTON(group_widgets->button), new_style);
 
             button_markup = g_markup_printf_escaped(markup_str,
                                                     sheeple_group_get_name
                                                     (group));
 
-            gtk_label_set_markup(GTK_LABEL(group->_label), button_markup);
+            gtk_label_set_markup(GTK_LABEL(group_widgets->label), button_markup);
         }
         while ((group_list = g_list_next(group_list)));
     }
@@ -125,6 +144,8 @@ void sheeple_source_view_set_sources(SheepleSourceView * self,
                                      GList * new_sources)
 {
     self->priv->sources = new_sources;
+    
+    // TODO: remove old sources / clean out hashtables
 
     gtk_container_foreach(GTK_CONTAINER(self->priv->source_vbox),
                           &_sheeple_source_view_remove_source_vbox_subview,
@@ -133,6 +154,10 @@ void sheeple_source_view_set_sources(SheepleSourceView * self,
     // Iterate over all sources, creating a section (and buttons) for each
     do
     {
+        SheepleSourceViewSourceWidgets *source_widgets =
+            (SheepleSourceViewSourceWidgets *)
+                calloc(1, sizeof(SheepleSourceViewSourceWidgets));
+    
         SheepleSource *source = ((SheepleSource *) new_sources->data);
 
         GtkWidget *sourcebox, *title_label;
@@ -153,7 +178,13 @@ void sheeple_source_view_set_sources(SheepleSourceView * self,
         // selection buttons for each group and packing them
         do
         {
-            SheepleSourceViewSelectPrivateData *cb_data = NULL;
+            SheepleSourceViewGroupWidgets *group_widgets =
+                (SheepleSourceViewGroupWidgets *)
+                    calloc(1, sizeof(SheepleSourceViewGroupWidgets));
+            SheepleSourceViewSelectPrivateData *cb_data =
+                (SheepleSourceViewSelectPrivateData *)
+                    calloc(1, sizeof(SheepleSourceViewSelectPrivateData));
+            
             SheepleGroup *group = ((SheepleGroup *) group_list->data);
 
             GtkWidget *button, *alignment, *button_label;
@@ -174,10 +205,6 @@ void sheeple_source_view_set_sources(SheepleSourceView * self,
             gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
             gtk_button_set_focus_on_click(GTK_BUTTON(button), FALSE);
 
-            cb_data =
-                (SheepleSourceViewSelectPrivateData *) calloc(1,
-                                                              sizeof
-                                                              (SheepleSourceViewSelectPrivateData));
             cb_data->group = group;
             cb_data->source_view = self;
 
@@ -187,15 +214,20 @@ void sheeple_source_view_set_sources(SheepleSourceView * self,
             gtk_container_add(GTK_CONTAINER(alignment), button);
             gtk_box_pack_start(GTK_BOX(sourcebox), alignment, TRUE, TRUE, 0);
 
-            group->_button = button;
-            group->_label = button_label;
+            group_widgets->button = button;
+            group_widgets->label = button_label;
+            
+            g_hash_table_insert(self->priv->group_widgets, group_list->data,
+                                group_widgets);
         }
         while ((group_list = g_list_next(group_list)));
 
-        gtk_box_pack_start(GTK_BOX(self->priv->source_vbox), sourcebox, FALSE, TRUE,
-                           0);
+        gtk_box_pack_start(GTK_BOX(self->priv->source_vbox),
+                           sourcebox, FALSE, TRUE, 0);
 
-        source->_box = sourcebox;
+        source_widgets->box = sourcebox;
+        g_hash_table_insert(self->priv->source_widgets, new_sources->data,
+                            source_widgets);
     }
     while ((new_sources = g_list_next(new_sources)));
 

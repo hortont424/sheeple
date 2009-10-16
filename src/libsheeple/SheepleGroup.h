@@ -19,10 +19,6 @@ struct _SheepleGroup
 {
     GObject parent_instance;
 
-    // Instance members
-
-    GtkWidget *_button, *_label;
-
     SheepleGroupPrivate *priv;
 };
 

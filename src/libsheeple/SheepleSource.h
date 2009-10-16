@@ -18,11 +18,7 @@ typedef struct _SheepleSourcePrivate SheepleSourcePrivate;
 struct _SheepleSource
 {
     GObject parent_instance;
-
-    // Instance members
-
-    GtkWidget *_box;
-
+    
     SheepleSourcePrivate *priv;
 };
 
