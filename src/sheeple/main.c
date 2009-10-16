@@ -28,7 +28,8 @@ GList *create_default_sources()
 {
     GList *sources = NULL;
     
-    GdkPixbuf * pbuf = gdk_pixbuf_new_from_file("/usr/share/icons/gnome-brave/16x16/apps/file-manager.png", NULL);
+    GdkPixbuf * pbuf = gdk_pixbuf_new_from_file_at_size("/usr/share/icons/gnome/scalable/apps/im-msn.svg", 16, 16, NULL);
+    GdkPixbuf * pbuf2 = gdk_pixbuf_new_from_file_at_size("/usr/share/icons/gnome/scalable/apps/system-users.svg", 16, 16, NULL);
 
     SheepleSource *sheeple_contacts, *sheeple_contacts_matt;
     SheepleGroup *group;
@@ -45,15 +46,15 @@ GList *create_default_sources()
         g_list_prepend(matt_list, group);
 
     group = sheeple_group_new_with_name("Family");
-    sheeple_group_set_pixbuf(group, pbuf);
+    sheeple_group_set_pixbuf(group, pbuf2);
     contacts_list =
         g_list_prepend(contacts_list, group);
     group = sheeple_group_new_with_name("RCOS");
-    sheeple_group_set_pixbuf(group, pbuf);
+    sheeple_group_set_pixbuf(group, pbuf2);
     contacts_list =
         g_list_prepend(contacts_list, group);
     group = sheeple_group_new_with_name("RPI Friends");
-    sheeple_group_set_pixbuf(group, pbuf);
+    sheeple_group_set_pixbuf(group, pbuf2);
     contacts_list =
         g_list_prepend(contacts_list, group);
 
@@ -69,6 +70,12 @@ GList *create_default_sources()
     return sources;
 }
 
+void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
+{
+    SheepleGroup * gr = sheeple_source_view_get_selection(sourceview)->data;
+    g_print("%s\n", sheeple_group_get_name(gr));
+}
+
 int main(int argc, char **argv)
 {
     GList *sources;
@@ -78,14 +85,16 @@ int main(int argc, char **argv)
 
     sources = create_default_sources();
 
+    textview = gtk_text_view_new();
+
     sourceview = sheeple_source_view_new();
     sheeple_source_view_set_sources(SHEEPLE_SOURCE_VIEW(sourceview), sources);
+    g_signal_connect(sourceview, "selection-changed",
+                     G_CALLBACK(sv_select_changed), textview);
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(GTK_WINDOW(window), 300, 400);
     g_signal_connect(window, "delete_event", gtk_main_quit, NULL);
-
-    textview = gtk_text_view_new();
 
     hbox = gtk_hbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), sourceview, FALSE, TRUE, 0);
