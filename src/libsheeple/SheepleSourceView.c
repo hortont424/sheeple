@@ -2,6 +2,15 @@
 #include <stdlib.h>
 
 G_DEFINE_TYPE(SheepleSourceView, sheeple_source_view, GTK_TYPE_SCROLLED_WINDOW)
+
+struct _SheepleSourceViewPrivate
+{
+    GList *sources;
+    GList *selected_groups;
+
+    GtkWidget *source_vbox;
+};
+
 typedef struct _SheepleSourceViewSelectPrivateData
 {
     SheepleSourceView *source_view;
@@ -12,6 +21,8 @@ static void sheeple_source_view_init(SheepleSourceView * self)
 {
     GtkWidget *master_padding, *viewport;
 
+    self->priv = SHEEPLE_SOURCE_VIEW_GET_PRIVATE(self);
+
     // Create GtkAdjustments
     gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(self), NULL);
     gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(self), NULL);
@@ -20,12 +31,12 @@ static void sheeple_source_view_init(SheepleSourceView * self)
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(self),
                                    GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
-    self->source_vbox = gtk_vbox_new(FALSE, 10);
+    self->priv->source_vbox = gtk_vbox_new(FALSE, 10);
 
     // Pad the whole sourceview
     master_padding = gtk_alignment_new(0, 0, 1, 1);
     gtk_alignment_set_padding(GTK_ALIGNMENT(master_padding), 0, 0, 4, 4);
-    gtk_container_add(GTK_CONTAINER(master_padding), self->source_vbox);
+    gtk_container_add(GTK_CONTAINER(master_padding), self->priv->source_vbox);
 
     // Set up scrolled window
     gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(self),
@@ -45,7 +56,7 @@ static void sheeple_source_view_init(SheepleSourceView * self)
 
 static void sheeple_source_view_class_init(SheepleSourceViewClass * klass)
 {
-
+    g_type_class_add_private(klass, sizeof(SheepleSourceViewPrivate));
 }
 
 GtkWidget *sheeple_source_view_new()
@@ -55,7 +66,7 @@ GtkWidget *sheeple_source_view_new()
 
 void _sheeple_source_view_update_selection(SheepleSourceView * self)
 {
-    GList *sources = self->sources;
+    GList *sources = self->priv->sources;
 
     if (!sources)
         return;
@@ -71,7 +82,7 @@ void _sheeple_source_view_update_selection(SheepleSourceView * self)
             const gchar *button_markup, *markup_str;
             GtkReliefStyle new_style = GTK_RELIEF_NONE;
 
-            if (g_list_find(self->selected_groups, group))
+            if (g_list_find(self->priv->selected_groups, group))
             {
                 new_style = GTK_RELIEF_NORMAL;
                 markup_str = "<small><b>%s</b></small>";
@@ -105,7 +116,7 @@ static void _sheeple_source_view_select(GtkButton * button, gpointer user_data)
 {
     SheepleSourceViewSelectPrivateData *private =
         (SheepleSourceViewSelectPrivateData *) user_data;
-    private->source_view->selected_groups =
+    private->source_view->priv->selected_groups =
         g_list_prepend(NULL, private->group);
     _sheeple_source_view_update_selection(private->source_view);
 }
@@ -113,9 +124,9 @@ static void _sheeple_source_view_select(GtkButton * button, gpointer user_data)
 void sheeple_source_view_set_sources(SheepleSourceView * self,
                                      GList * new_sources)
 {
-    self->sources = new_sources;
+    self->priv->sources = new_sources;
 
-    gtk_container_foreach(GTK_CONTAINER(self->source_vbox),
+    gtk_container_foreach(GTK_CONTAINER(self->priv->source_vbox),
                           &_sheeple_source_view_remove_source_vbox_subview,
                           NULL);
 
@@ -181,17 +192,18 @@ void sheeple_source_view_set_sources(SheepleSourceView * self,
         }
         while ((group_list = g_list_next(group_list)));
 
-        gtk_box_pack_start(GTK_BOX(self->source_vbox), sourcebox, FALSE, TRUE,
+        gtk_box_pack_start(GTK_BOX(self->priv->source_vbox), sourcebox, FALSE, TRUE,
                            0);
 
         source->_box = sourcebox;
     }
     while ((new_sources = g_list_next(new_sources)));
 
-    // select first group. this will eventually have to change (what if the first source has no groups!?)
-    self->selected_groups = g_list_prepend(NULL,
+    // select first group. this will eventually have to change
+    // (what if the first source has no groups!?)
+    self->priv->selected_groups = g_list_prepend(NULL,
                                            (sheeple_source_get_groups
-                                            ((SheepleSource *) self->sources->
+                                            ((SheepleSource *) self->priv->sources->
                                              data)->data));
 
     _sheeple_source_view_update_selection(self);

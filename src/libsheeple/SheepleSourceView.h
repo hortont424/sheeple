@@ -10,19 +10,17 @@
 #define SHEEPLE_SOURCE_VIEW_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST((klass), SHEEPLE_TYPE_SOURCE_VIEW, SheepleSourceViewClass))
 #define SHEEPLE_IS_SOURCE_VIEW_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE((klass), SHEEPLE_TYPE_SOURCE_VIEW))
 #define SHEEPLE_SOURCE_VIEW_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS((obj), SHEEPLE_TYPE_SOURCE_VIEW, SheepleSourceViewClass))
+#define SHEEPLE_SOURCE_VIEW_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE((obj), SHEEPLE_TYPE_SOURCE_VIEW, SheepleSourceViewPrivate))
 
 typedef struct _SheepleSourceView SheepleSourceView;
 typedef struct _SheepleSourceViewClass SheepleSourceViewClass;
+typedef struct _SheepleSourceViewPrivate SheepleSourceViewPrivate;
 
 struct _SheepleSourceView
 {
     GtkScrolledWindow parent_instance;
 
-    // Instance members
-    GList *sources;
-    GList *selected_groups;
-
-    GtkWidget *source_vbox;
+    SheepleSourceViewPrivate *priv;
 };
 
 struct _SheepleSourceViewClass
