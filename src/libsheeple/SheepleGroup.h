@@ -40,6 +40,6 @@ const char *sheeple_group_get_name(SheepleGroup * self);
 void sheeple_group_set_name(SheepleGroup * self, const char *name);
 
 GdkPixbuf *sheeple_group_get_pixbuf(SheepleGroup * self);
-void sheeple_group_set_pixbuf(SheepleGroup * self, GdkPixbuf *pixbuf);
+void sheeple_group_set_pixbuf(SheepleGroup * self, GdkPixbuf * pixbuf);
 
 #endif

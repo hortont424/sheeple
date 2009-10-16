@@ -18,7 +18,7 @@ typedef struct _SheepleSourcePrivate SheepleSourcePrivate;
 struct _SheepleSource
 {
     GObject parent_instance;
-    
+
     SheepleSourcePrivate *priv;
 };
 

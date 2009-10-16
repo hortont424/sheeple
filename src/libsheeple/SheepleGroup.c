@@ -49,7 +49,7 @@ static void sheeple_group_class_init(SheepleGroupClass * klass)
                                 "Unnamed",
                                 G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
     g_object_class_install_property(gobject_class, PROP_NAME, pspec);
-    
+
     pspec = g_param_spec_object("pixbuf", "Group Icon",
                                 "The icon used to represent the SheepleGroup",
                                 GDK_TYPE_PIXBUF,
@@ -73,7 +73,7 @@ sheeple_group_set_property(GObject * object,
         sheeple_group_set_name(self, g_value_dup_string(value));
         break;
     case PROP_PIXBUF:
-        if(self->priv->pixbuf)
+        if (self->priv->pixbuf)
             g_object_unref(self->priv->pixbuf);
         sheeple_group_set_pixbuf(self, g_value_get_object(value));
         break;
@@ -116,7 +116,8 @@ SheepleGroup *sheeple_group_new_with_name(const gchar * name)
 SheepleGroup *sheeple_group_new_with_name_and_pixbuf(const gchar * name,
                                                      GdkPixbuf * pixbuf)
 {
-    return g_object_new(SHEEPLE_TYPE_GROUP, "name", name, "pixbuf", pixbuf, NULL);
+    return g_object_new(SHEEPLE_TYPE_GROUP, "name", name, "pixbuf", pixbuf,
+                        NULL);
 }
 
 const char *sheeple_group_get_name(SheepleGroup * self)
@@ -134,7 +135,7 @@ GdkPixbuf *sheeple_group_get_pixbuf(SheepleGroup * self)
     return self->priv->pixbuf;
 }
 
-void sheeple_group_set_pixbuf(SheepleGroup * self, GdkPixbuf *pixbuf)
+void sheeple_group_set_pixbuf(SheepleGroup * self, GdkPixbuf * pixbuf)
 {
     self->priv->pixbuf = pixbuf;
 }
