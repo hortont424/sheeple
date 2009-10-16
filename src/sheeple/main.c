@@ -27,23 +27,35 @@
 GList *create_default_sources()
 {
     GList *sources = NULL;
+    
+    GdkPixbuf * pbuf = gdk_pixbuf_new_from_file("/usr/share/icons/gnome-brave/16x16/apps/file-manager.png", NULL);
 
     SheepleSource *sheeple_contacts, *sheeple_contacts_matt;
+    SheepleGroup *group;
 
     GList *contacts_list = NULL, *matt_list = NULL;
 
+    group = sheeple_group_new_with_name("Matt's Girls");
+    sheeple_group_set_pixbuf(group, pbuf);
     matt_list =
-        g_list_prepend(matt_list, sheeple_group_new_with_name("Matt's Girls"));
+        g_list_prepend(matt_list, group);
+    group = sheeple_group_new_with_name("Bus People");
+    sheeple_group_set_pixbuf(group, pbuf);
     matt_list =
-        g_list_prepend(matt_list, sheeple_group_new_with_name("Bus People"));
+        g_list_prepend(matt_list, group);
 
+    group = sheeple_group_new_with_name("Family");
+    sheeple_group_set_pixbuf(group, pbuf);
     contacts_list =
-        g_list_prepend(contacts_list, sheeple_group_new_with_name("Family"));
+        g_list_prepend(contacts_list, group);
+    group = sheeple_group_new_with_name("RCOS");
+    sheeple_group_set_pixbuf(group, pbuf);
     contacts_list =
-        g_list_prepend(contacts_list, sheeple_group_new_with_name("RCOS"));
+        g_list_prepend(contacts_list, group);
+    group = sheeple_group_new_with_name("RPI Friends");
+    sheeple_group_set_pixbuf(group, pbuf);
     contacts_list =
-        g_list_prepend(contacts_list,
-                       sheeple_group_new_with_name("RPI Friends"));
+        g_list_prepend(contacts_list, group);
 
     sheeple_contacts = sheeple_source_new_with_name("Contacts");
     sheeple_source_set_groups(sheeple_contacts, contacts_list);

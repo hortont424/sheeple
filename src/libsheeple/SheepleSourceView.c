@@ -25,7 +25,7 @@ typedef struct _SheepleSourceViewSourceWidgets
 
 typedef struct _SheepleSourceViewGroupWidgets
 {
-    GtkWidget *button, *label;
+    GtkWidget *button, *label, *hbox, *icon;
 } SheepleSourceViewGroupWidgets;
 
 static void sheeple_source_view_init(SheepleSourceView * self)
@@ -189,8 +189,10 @@ void sheeple_source_view_set_sources(SheepleSourceView * self,
 
             SheepleGroup *group = ((SheepleGroup *) group_list->data);
 
-            GtkWidget *button, *alignment, *button_label;
-            gchar *button_markup;
+            GtkWidget *button = NULL, *alignment = NULL, *button_label = NULL,
+                      *button_image = NULL, *button_hbox = NULL, *button_align = NULL;
+            gchar *button_markup = NULL;
+            GdkPixbuf * pixbuf = sheeple_group_get_pixbuf(group);
 
             alignment = gtk_alignment_new(0, 0, 0, 0);
             gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 0, 0, 20, 4);
@@ -199,11 +201,23 @@ void sheeple_source_view_set_sources(SheepleSourceView * self,
                                                     sheeple_group_get_name
                                                     (group));
 
+            button_hbox = gtk_hbox_new(FALSE, 4);
+            
+            if(pixbuf)
+            {
+                button_image = gtk_image_new_from_pixbuf(pixbuf);
+                gtk_box_pack_start(GTK_BOX(button_hbox), button_image, TRUE, TRUE, 0);
+            }
+            
             button_label = gtk_label_new(NULL);
             gtk_label_set_markup(GTK_LABEL(button_label), button_markup);
-
+            
+            button_align = gtk_alignment_new(0.0, 0.7, 0.0, 0.0);
+            gtk_container_add(GTK_CONTAINER(button_align), button_label);
+            gtk_box_pack_start(GTK_BOX(button_hbox), button_align, TRUE, TRUE, 0);
+            
             button = gtk_button_new();
-            gtk_container_add(GTK_CONTAINER(button), button_label);
+            gtk_container_add(GTK_CONTAINER(button), button_hbox);
             gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
             gtk_button_set_focus_on_click(GTK_BUTTON(button), FALSE);
 
