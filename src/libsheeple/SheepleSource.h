@@ -22,8 +22,8 @@ struct _SheepleSource
     // Instance members
 
     GtkWidget *_box;
-    
-    SheepleSourcePrivate * priv;
+
+    SheepleSourcePrivate *priv;
 };
 
 struct _SheepleSourceClass
@@ -38,10 +38,10 @@ GType sheeple_source_get_type(void);
 SheepleSource *sheeple_source_new();
 SheepleSource *sheeple_source_new_with_name(const gchar * name);
 
-const char *sheeple_source_get_name(SheepleSource *self);
-void sheeple_source_set_name(SheepleSource *self, const char *name);
+const char *sheeple_source_get_name(SheepleSource * self);
+void sheeple_source_set_name(SheepleSource * self, const char *name);
 
-GList *sheeple_source_get_groups(SheepleSource *self);
-void sheeple_source_set_groups(SheepleSource *self, GList *groups);
+GList *sheeple_source_get_groups(SheepleSource * self);
+void sheeple_source_set_groups(SheepleSource * self, GList * groups);
 
 #endif

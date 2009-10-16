@@ -22,8 +22,8 @@ struct _SheepleGroup
     // Instance members
 
     GtkWidget *_button, *_label;
-    
-    SheepleGroupPrivate * priv;
+
+    SheepleGroupPrivate *priv;
 };
 
 struct _SheepleGroupClass
@@ -37,8 +37,13 @@ GType sheeple_group_get_type(void);
 
 SheepleGroup *sheeple_group_new();
 SheepleGroup *sheeple_group_new_with_name(const gchar * name);
+SheepleGroup *sheeple_group_new_with_name_and_pixbuf(const gchar * name,
+                                                     GdkPixbuf * pixbuf);
 
-const char *sheeple_group_get_name(SheepleGroup *self);
-void sheeple_group_set_name(SheepleGroup *self, const char *name);
+const char *sheeple_group_get_name(SheepleGroup * self);
+void sheeple_group_set_name(SheepleGroup * self, const char *name);
+
+GdkPixbuf *sheeple_group_get_pixbuf(SheepleGroup * self);
+void sheeple_group_set_pixbuf(SheepleGroup * self, GdkPixbuf *pixbuf);
 
 #endif

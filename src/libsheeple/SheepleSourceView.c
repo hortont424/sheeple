@@ -11,7 +11,7 @@ typedef struct _SheepleSourceViewSelectPrivateData
 static void sheeple_source_view_init(SheepleSourceView * self)
 {
     GtkWidget *master_padding, *viewport;
-    
+
     // Create GtkAdjustments
     gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(self), NULL);
     gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(self), NULL);
@@ -84,7 +84,8 @@ void _sheeple_source_view_update_selection(SheepleSourceView * self)
             gtk_button_set_relief(GTK_BUTTON(group->_button), new_style);
 
             button_markup = g_markup_printf_escaped(markup_str,
-                                                    sheeple_group_get_name(group));
+                                                    sheeple_group_get_name
+                                                    (group));
 
             gtk_label_set_markup(GTK_LABEL(group->_label), button_markup);
         }
@@ -151,7 +152,8 @@ void sheeple_source_view_set_sources(SheepleSourceView * self,
             gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 0, 0, 20, 4);
 
             button_markup = g_markup_printf_escaped("<small>%s</small>",
-                                                    sheeple_group_get_name(group));
+                                                    sheeple_group_get_name
+                                                    (group));
 
             button_label = gtk_label_new(NULL);
             gtk_label_set_markup(GTK_LABEL(button_label), button_markup);
@@ -188,9 +190,9 @@ void sheeple_source_view_set_sources(SheepleSourceView * self,
 
     // select first group. this will eventually have to change (what if the first source has no groups!?)
     self->selected_groups = g_list_prepend(NULL,
-                                           (sheeple_source_get_groups((SheepleSource *)
-                                                              self->
-                                                              sources->data)->data));
+                                           (sheeple_source_get_groups
+                                            ((SheepleSource *) self->sources->
+                                             data)->data));
 
     _sheeple_source_view_update_selection(self);
 }
