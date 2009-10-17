@@ -78,7 +78,6 @@ sheeple_SOURCES = \
 	src/sheeple/main.c
 
 sheeple_CFLAGS = $(SHEEPLE_CFLAGS) -Isrc
-sheeple_LDFLAGS = -Wl,--export-dynamic
 sheeple_LDADD = $(SHEEPLE_LIBS) libsheeple.la
 
 ### extra-dist ###
