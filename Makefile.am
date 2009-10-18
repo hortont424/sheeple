@@ -151,3 +151,6 @@ indent:
 	cd src/libsheeple ; bash ../../indent.sh
 	cd src/sheeple ; bash ../../indent.sh
 
+todo:
+	cd src ; grep -n "TODO" libsheeple/*.[ch] sheeple/*.[ch]
+
