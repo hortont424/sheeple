@@ -37,7 +37,8 @@ GtkWidget *sheeple_source_view_new();
 void sheeple_source_view_set_sources(SheepleSourceView * self,
                                      GList * new_sources);
 
-void sheeple_source_view_set_selection(SheepleSourceView * self, GList * selected_groups);
-GList * sheeple_source_view_get_selection(SheepleSourceView * self);
+void sheeple_source_view_set_selection(SheepleSourceView * self,
+                                       GList * selected_groups);
+GList *sheeple_source_view_get_selection(SheepleSourceView * self);
 
 #endif

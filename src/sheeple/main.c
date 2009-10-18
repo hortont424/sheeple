@@ -27,9 +27,13 @@
 GList *create_default_sources()
 {
     GList *sources = NULL;
-    
-    GdkPixbuf * pbuf = gdk_pixbuf_new_from_file_at_size("/usr/share/icons/gnome/scalable/apps/im-msn.svg", 16, 16, NULL);
-    GdkPixbuf * pbuf2 = gdk_pixbuf_new_from_file_at_size("/usr/share/icons/gnome/scalable/apps/system-users.svg", 16, 16, NULL);
+
+    GdkPixbuf *pbuf =
+        gdk_pixbuf_new_from_file_at_size
+        ("/usr/share/icons/gnome/scalable/apps/im-msn.svg", 16, 16, NULL);
+    GdkPixbuf *pbuf2 =
+        gdk_pixbuf_new_from_file_at_size
+        ("/usr/share/icons/gnome/scalable/apps/system-users.svg", 16, 16, NULL);
 
     SheepleSource *sheeple_contacts, *sheeple_contacts_matt;
     SheepleGroup *group;
@@ -38,25 +42,20 @@ GList *create_default_sources()
 
     group = sheeple_group_new_with_name("Matt's Girls");
     sheeple_group_set_pixbuf(group, pbuf);
-    matt_list =
-        g_list_prepend(matt_list, group);
+    matt_list = g_list_prepend(matt_list, group);
     group = sheeple_group_new_with_name("Bus People");
     sheeple_group_set_pixbuf(group, pbuf);
-    matt_list =
-        g_list_prepend(matt_list, group);
+    matt_list = g_list_prepend(matt_list, group);
 
     group = sheeple_group_new_with_name("Family");
     sheeple_group_set_pixbuf(group, pbuf2);
-    contacts_list =
-        g_list_prepend(contacts_list, group);
+    contacts_list = g_list_prepend(contacts_list, group);
     group = sheeple_group_new_with_name("RCOS");
     sheeple_group_set_pixbuf(group, pbuf2);
-    contacts_list =
-        g_list_prepend(contacts_list, group);
+    contacts_list = g_list_prepend(contacts_list, group);
     group = sheeple_group_new_with_name("RPI Friends");
     sheeple_group_set_pixbuf(group, pbuf2);
-    contacts_list =
-        g_list_prepend(contacts_list, group);
+    contacts_list = g_list_prepend(contacts_list, group);
 
     sheeple_contacts = sheeple_source_new_with_name("Contacts");
     sheeple_source_set_groups(sheeple_contacts, contacts_list);
@@ -72,7 +71,7 @@ GList *create_default_sources()
 
 void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
 {
-    SheepleGroup * gr = sheeple_source_view_get_selection(sourceview)->data;
+    SheepleGroup *gr = sheeple_source_view_get_selection(sourceview)->data;
     g_print("%s\n", sheeple_group_get_name(gr));
 }
 

@@ -5,7 +5,7 @@ G_DEFINE_TYPE(SheepleSourceView, sheeple_source_view, GTK_TYPE_SCROLLED_WINDOW)
 enum
 {
     SIG_SELECTION_CHANGED,
-    
+
     SIG_LAST
 };
 
@@ -81,15 +81,13 @@ static void sheeple_source_view_init(SheepleSourceView * self)
 static void sheeple_source_view_class_init(SheepleSourceViewClass * klass)
 {
     g_type_class_add_private(klass, sizeof(SheepleSourceViewPrivate));
-    
-    signals[SIG_SELECTION_CHANGED] = 
+
+    signals[SIG_SELECTION_CHANGED] =
         g_signal_new("selection-changed",
-        SHEEPLE_TYPE_SOURCE_VIEW,
-        G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
-        0, NULL, NULL,
-        g_cclosure_marshal_VOID__VOID,
-        G_TYPE_NONE,
-        0, NULL);
+                     SHEEPLE_TYPE_SOURCE_VIEW,
+                     G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE |
+                     G_SIGNAL_NO_HOOKS, 0, NULL, NULL,
+                     g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0, NULL);
 }
 
 GtkWidget *sheeple_source_view_new()
@@ -120,7 +118,7 @@ void _sheeple_source_view_update_selection(SheepleSourceView * self)
             group_widgets = g_hash_table_lookup(self->priv->group_widgets,
                                                 (gpointer) group);
 
-            if (g_list_find(self->priv->selected_groups, group)) //TODO: wasteful
+            if (g_list_find(self->priv->selected_groups, group))    //TODO: wasteful
             {
                 new_style = GTK_RELIEF_NORMAL;
                 markup_str = "<b>%s</b>";
@@ -155,7 +153,7 @@ static void _sheeple_source_view_select(GtkButton * button, gpointer user_data)
 {
     SheepleSourceViewSelectPrivateData *private =
         (SheepleSourceViewSelectPrivateData *) user_data;
-    
+
     sheeple_source_view_set_selection(private->source_view,
                                       g_list_prepend(NULL, private->group));
 }
@@ -208,9 +206,9 @@ void sheeple_source_view_set_sources(SheepleSourceView * self,
             SheepleGroup *group = ((SheepleGroup *) group_list->data);
 
             GtkWidget *button = NULL, *alignment = NULL, *button_label = NULL,
-                      *button_image = NULL, *button_hbox = NULL, *button_align = NULL;
+                *button_image = NULL, *button_hbox = NULL, *button_align = NULL;
             gchar *button_markup = NULL;
-            GdkPixbuf * pixbuf = sheeple_group_get_pixbuf(group);
+            GdkPixbuf *pixbuf = sheeple_group_get_pixbuf(group);
 
             alignment = gtk_alignment_new(0, 0, 0, 0);
             gtk_alignment_set_padding(GTK_ALIGNMENT(alignment), 0, 0, 15, 4);
@@ -220,20 +218,22 @@ void sheeple_source_view_set_sources(SheepleSourceView * self,
                                                     (group));
 
             button_hbox = gtk_hbox_new(FALSE, 2);
-            
-            if(pixbuf)
+
+            if (pixbuf)
             {
                 button_image = gtk_image_new_from_pixbuf(pixbuf);
-                gtk_box_pack_start(GTK_BOX(button_hbox), button_image, TRUE, TRUE, 0);
+                gtk_box_pack_start(GTK_BOX(button_hbox), button_image, TRUE,
+                                   TRUE, 0);
             }
-            
+
             button_label = gtk_label_new(NULL);
             gtk_label_set_markup(GTK_LABEL(button_label), button_markup);
-            
-            button_align = gtk_alignment_new(0.0, 0.7, 0.0, 0.0); // TODO: wtf
+
+            button_align = gtk_alignment_new(0.0, 0.7, 0.0, 0.0);   // TODO: wtf
             gtk_container_add(GTK_CONTAINER(button_align), button_label);
-            gtk_box_pack_start(GTK_BOX(button_hbox), button_align, TRUE, TRUE, 2);
-            
+            gtk_box_pack_start(GTK_BOX(button_hbox), button_align, TRUE, TRUE,
+                               2);
+
             button = gtk_button_new();
             gtk_container_add(GTK_CONTAINER(button), button_hbox);
             gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
@@ -268,21 +268,24 @@ void sheeple_source_view_set_sources(SheepleSourceView * self,
     // select first group. this will eventually have to change
     // (what if the first source has no groups!?)
     sheeple_source_view_set_selection(self, g_list_prepend(NULL,
-                                                 (sheeple_source_get_groups
-                                                  ((SheepleSource *) self->
-                                                   priv->sources->data)->data)));
+                                                           (sheeple_source_get_groups
+                                                            ((SheepleSource *)
+                                                             self->priv->
+                                                             sources->data)->
+                                                            data)));
 }
 
-void sheeple_source_view_set_selection(SheepleSourceView * self, GList * selected_groups)
+void sheeple_source_view_set_selection(SheepleSourceView * self,
+                                       GList * selected_groups)
 {
     self->priv->selected_groups = selected_groups;
-    
+
     _sheeple_source_view_update_selection(self);
-    
+
     g_signal_emit(self, signals[SIG_SELECTION_CHANGED], 0);
 }
 
-GList * sheeple_source_view_get_selection(SheepleSourceView * self)
+GList *sheeple_source_view_get_selection(SheepleSourceView * self)
 {
     return self->priv->selected_groups;
 }
