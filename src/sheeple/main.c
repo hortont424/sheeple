@@ -110,6 +110,8 @@ int main(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
+    gtk_init(&argc, &argv);
+    
     SheepleGroup * gr = sheeple_group_new();
 
     return 0;
