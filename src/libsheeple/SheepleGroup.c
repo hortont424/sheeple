@@ -1,163 +1,130 @@
-#include "SheepleGroup.h"
 
-struct _SheepleGroupPrivate
-{
-    const gchar *name;
-    GdkPixbuf *pixbuf;
+#include <glib.h>
+#include <glib-object.h>
+#include <stdlib.h>
+#include <string.h>
+#include <gdk-pixbuf/gdk-pixdata.h>
+
+
+#define TYPE_SHEEPLE_GROUP (sheeple_group_get_type ())
+#define SHEEPLE_GROUP(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_SHEEPLE_GROUP, SheepleGroup))
+#define SHEEPLE_GROUP_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), TYPE_SHEEPLE_GROUP, SheepleGroupClass))
+#define IS_SHEEPLE_GROUP(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_SHEEPLE_GROUP))
+#define IS_SHEEPLE_GROUP_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), TYPE_SHEEPLE_GROUP))
+#define SHEEPLE_GROUP_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_SHEEPLE_GROUP, SheepleGroupClass))
+
+typedef struct _SheepleGroup SheepleGroup;
+typedef struct _SheepleGroupClass SheepleGroupClass;
+typedef struct _SheepleGroupPrivate SheepleGroupPrivate;
+#define _g_free0(var) (var = (g_free (var), NULL))
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+
+struct _SheepleGroup {
+	GObject parent_instance;
+	SheepleGroupPrivate * priv;
+	char* name;
+	GdkPixbuf* icon;
 };
 
-static void sheeple_group_dispose(GObject * gobject);
-static void sheeple_group_finalize(GObject * gobject);
-
-static void
-sheeple_group_set_property(GObject * object,
-                           guint property_id,
-                           const GValue * value, GParamSpec * pspec);
-
-static void
-sheeple_group_get_property(GObject * object,
-                           guint property_id,
-                           GValue * value, GParamSpec * pspec);
-
-G_DEFINE_TYPE(SheepleGroup, sheeple_group, G_TYPE_OBJECT)
-enum
-{
-    PROP_0,
-
-    PROP_NAME,
-    PROP_PIXBUF
+struct _SheepleGroupClass {
+	GObjectClass parent_class;
 };
 
-static void sheeple_group_init(SheepleGroup * self)
-{
-    self->priv = SHEEPLE_GROUP_GET_PRIVATE(self);
+
+static gpointer sheeple_group_parent_class = NULL;
+
+GType sheeple_group_get_type (void);
+enum  {
+	SHEEPLE_GROUP_DUMMY_PROPERTY
+};
+SheepleGroup* sheeple_group_new (void);
+SheepleGroup* sheeple_group_construct (GType object_type);
+SheepleGroup* sheeple_group_new_with_name (const char* name);
+SheepleGroup* sheeple_group_construct_with_name (GType object_type, const char* name);
+SheepleGroup* sheeple_group_new_with_name_and_icon (const char* name, GdkPixbuf* icon);
+SheepleGroup* sheeple_group_construct_with_name_and_icon (GType object_type, const char* name, GdkPixbuf* icon);
+static void sheeple_group_finalize (GObject* obj);
+
+
+
+SheepleGroup* sheeple_group_construct (GType object_type) {
+	SheepleGroup * self;
+	self = (SheepleGroup*) g_object_new (object_type, NULL);
+	return self;
 }
 
-static void sheeple_group_class_init(SheepleGroupClass * klass)
-{
-    GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
-    GParamSpec *pspec;
 
-    gobject_class->set_property = sheeple_group_set_property;
-    gobject_class->get_property = sheeple_group_get_property;
-
-    gobject_class->dispose = sheeple_group_dispose;
-    gobject_class->finalize = sheeple_group_finalize;
-
-    pspec = g_param_spec_string("name", "Group Name",
-                                "The displayable name of the SheepleGroup",
-                                "Unnamed",
-                                G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
-    g_object_class_install_property(gobject_class, PROP_NAME, pspec);
-
-    pspec = g_param_spec_object("pixbuf", "Group Icon",
-                                "The icon used to represent the SheepleGroup",
-                                GDK_TYPE_PIXBUF,
-                                G_PARAM_CONSTRUCT | G_PARAM_READWRITE);
-    g_object_class_install_property(gobject_class, PROP_PIXBUF, pspec);
-
-    g_type_class_add_private(klass, sizeof(SheepleGroupPrivate));
+SheepleGroup* sheeple_group_new (void) {
+	return sheeple_group_construct (TYPE_SHEEPLE_GROUP);
 }
 
-static void
-sheeple_group_set_property(GObject * object,
-                           guint property_id,
-                           const GValue * value, GParamSpec * pspec)
-{
-    SheepleGroup *self = SHEEPLE_GROUP(object);
 
-    switch (property_id)
-    {
-    case PROP_NAME:
-        g_free((gpointer) self->priv->name);
-        sheeple_group_set_name(self, g_value_dup_string(value));
-        break;
-    case PROP_PIXBUF:
-        if (self->priv->pixbuf)
-            g_object_unref(self->priv->pixbuf);
-        sheeple_group_set_pixbuf(self, g_value_get_object(value));
-        break;
-    default:
-        G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
-        break;
-    }
+SheepleGroup* sheeple_group_construct_with_name (GType object_type, const char* name) {
+	SheepleGroup * self;
+	char* _tmp0_;
+	g_return_val_if_fail (name != NULL, NULL);
+	self = (SheepleGroup*) g_object_new (object_type, NULL);
+	self->name = (_tmp0_ = g_strdup (name), _g_free0 (self->name), _tmp0_);
+	return self;
 }
 
-static void
-sheeple_group_get_property(GObject * object,
-                           guint property_id,
-                           GValue * value, GParamSpec * pspec)
-{
-    SheepleGroup *self = SHEEPLE_GROUP(object);
 
-    switch (property_id)
-    {
-    case PROP_NAME:
-        g_value_set_string(value, sheeple_group_get_name(self));
-        break;
-    case PROP_PIXBUF:
-        g_value_set_object(value, sheeple_group_get_pixbuf(self));
-    default:
-        G_OBJECT_WARN_INVALID_PROPERTY_ID(object, property_id, pspec);
-        break;
-    }
+SheepleGroup* sheeple_group_new_with_name (const char* name) {
+	return sheeple_group_construct_with_name (TYPE_SHEEPLE_GROUP, name);
 }
 
-SheepleGroup *sheeple_group_new()
-{
-    return g_object_new(SHEEPLE_TYPE_GROUP, NULL);
+
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
 }
 
-SheepleGroup *sheeple_group_new_with_name(const gchar * name)
-{
-    return g_object_new(SHEEPLE_TYPE_GROUP, "name", name, NULL);
+
+SheepleGroup* sheeple_group_construct_with_name_and_icon (GType object_type, const char* name, GdkPixbuf* icon) {
+	SheepleGroup * self;
+	char* _tmp0_;
+	GdkPixbuf* _tmp1_;
+	g_return_val_if_fail (name != NULL, NULL);
+	g_return_val_if_fail (icon != NULL, NULL);
+	self = (SheepleGroup*) g_object_new (object_type, NULL);
+	self->name = (_tmp0_ = g_strdup (name), _g_free0 (self->name), _tmp0_);
+	self->icon = (_tmp1_ = _g_object_ref0 (icon), _g_object_unref0 (self->icon), _tmp1_);
+	return self;
 }
 
-SheepleGroup *sheeple_group_new_with_name_and_pixbuf(const gchar * name,
-                                                     GdkPixbuf * pixbuf)
-{
-    return g_object_new(SHEEPLE_TYPE_GROUP, "name", name, "pixbuf", pixbuf,
-                        NULL);
+
+SheepleGroup* sheeple_group_new_with_name_and_icon (const char* name, GdkPixbuf* icon) {
+	return sheeple_group_construct_with_name_and_icon (TYPE_SHEEPLE_GROUP, name, icon);
 }
 
-const char *sheeple_group_get_name(SheepleGroup * self)
-{
-    return self->priv->name;
+
+static void sheeple_group_class_init (SheepleGroupClass * klass) {
+	sheeple_group_parent_class = g_type_class_peek_parent (klass);
+	G_OBJECT_CLASS (klass)->finalize = sheeple_group_finalize;
 }
 
-void sheeple_group_set_name(SheepleGroup * self, const char *name)
-{
-    self->priv->name = name;
+
+static void sheeple_group_instance_init (SheepleGroup * self) {
 }
 
-GdkPixbuf *sheeple_group_get_pixbuf(SheepleGroup * self)
-{
-    return self->priv->pixbuf;
+
+static void sheeple_group_finalize (GObject* obj) {
+	SheepleGroup * self;
+	self = SHEEPLE_GROUP (obj);
+	_g_free0 (self->name);
+	_g_object_unref0 (self->icon);
+	G_OBJECT_CLASS (sheeple_group_parent_class)->finalize (obj);
 }
 
-void sheeple_group_set_pixbuf(SheepleGroup * self, GdkPixbuf * pixbuf)
-{
-    self->priv->pixbuf = pixbuf;
+
+GType sheeple_group_get_type (void) {
+	static GType sheeple_group_type_id = 0;
+	if (sheeple_group_type_id == 0) {
+		static const GTypeInfo g_define_type_info = { sizeof (SheepleGroupClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) sheeple_group_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (SheepleGroup), 0, (GInstanceInitFunc) sheeple_group_instance_init, NULL };
+		sheeple_group_type_id = g_type_register_static (G_TYPE_OBJECT, "SheepleGroup", &g_define_type_info, 0);
+	}
+	return sheeple_group_type_id;
 }
 
-static void sheeple_group_dispose(GObject * gobject)
-{
-    //SheepleGroup *self = SHEEPLE_GROUP(gobject);
 
-    // Lose our reference to objects...
 
-    /* Chain up to the parent class */
-    G_OBJECT_CLASS(sheeple_group_parent_class)->dispose(gobject);
-}
 
-static void sheeple_group_finalize(GObject * gobject)
-{
-    SheepleGroup *self = SHEEPLE_GROUP(gobject);
-
-    // We're really going away, free things
-
-    g_free((gpointer) self->priv->name);
-
-    /* Chain up to the parent class */
-    G_OBJECT_CLASS(sheeple_group_parent_class)->finalize(gobject);
-}

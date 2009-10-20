@@ -17,14 +17,12 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <config.h>
-
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
 #include <libsheeple/sheeple.h>
 
-GList *create_default_sources()
+/*GList *create_default_sources()
 {
     GList *sources = NULL;
 
@@ -106,6 +104,13 @@ int main(int argc, char **argv)
     gtk_widget_show_all(window);
 
     gtk_main();
+
+    return 0;
+}*/
+
+int main(int argc, char **argv)
+{
+    SheepleGroup * gr = sheeple_group_new();
 
     return 0;
 }
