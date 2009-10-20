@@ -67,11 +67,11 @@ GList *create_default_sources()
     return sources;
 }
 
-/*void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
+void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
 {
     SheepleGroup *gr = sheeple_source_view_get_selection(sourceview)->data;
     g_print("%s\n", sheeple_group_get_name(gr));
-}*/
+}
 
 int main(int argc, char **argv)
 {
@@ -84,17 +84,17 @@ int main(int argc, char **argv)
 
     textview = gtk_text_view_new();
 
-    /*sourceview = sheeple_source_view_new();
+    sourceview = GTK_WIDGET(sheeple_source_view_new());
     sheeple_source_view_set_sources(SHEEPLE_SOURCE_VIEW(sourceview), sources);
     g_signal_connect(sourceview, "selection-changed",
                      G_CALLBACK(sv_select_changed), textview);
-    */
+    
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(GTK_WINDOW(window), 300, 400);
     g_signal_connect(window, "delete_event", gtk_main_quit, NULL);
 
     hbox = gtk_hbox_new(FALSE, 0);
-    //gtk_box_pack_start(GTK_BOX(hbox), sourceview, FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), sourceview, FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), textview, TRUE, TRUE, 0);
 
     gtk_container_add(GTK_CONTAINER(window), hbox);

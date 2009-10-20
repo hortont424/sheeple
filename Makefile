@@ -13,11 +13,11 @@ all: libsheeple.so sheeple
 libsheeple.so: src/libsheeple/*.vala
 	valac $(VALA_FLAGS) -C -H src/libsheeple/sheeple.h --library sheeple \
 	    src/libsheeple/*.vala --basedir src/libsheeple -d src/libsheeple
-	gcc $(SHEEPLE_CFLAGS) --shared -fPIC src/libsheeple/*.c \
+	gcc -g -O0 $(SHEEPLE_CFLAGS) --shared -fPIC src/libsheeple/*.c \
 	    -o libsheeple.so
 
 sheeple: src/sheeple/*.c
-	gcc $(SHEEPLE_CFLAGS) $(SHEEPLE_LDFLAGS) -I. -Isrc -L. \
+	gcc -g -O0 $(SHEEPLE_CFLAGS) $(SHEEPLE_LDFLAGS) -I. -Isrc -L. \
 	    -lsheeple src/sheeple/*.c -o sheeple
 
 todo:
@@ -30,6 +30,7 @@ clean:
 	rm -f src/libsheeple/*.[ch] src/libsheeple/*.so
 	rm -f src/sheeple/*.o
 	rm -f sheeple
+	rm -f libsheeple.so
 
 run: all
 	LD_LIBRARY_PATH=. ./sheeple
