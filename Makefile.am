@@ -111,8 +111,7 @@ Sheeple-1.0.gir: $(INTROSPECTION_SCANNER) libsheeple.la
         --pkg gobject-2.0 \
         --pkg gtk+-2.0 \
         --pkg pango \
-        --pkg libedataserver-1.2 \
-        --pkg libebook-1.2 \
+        --pkg couchdb-glib-1.0 \
         --pkg avahi-client \
         --pkg avahi-core \
         --pkg avahi-gobject \

@@ -27,7 +27,7 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
 AM_GLIB_GNU_GETTEXT
 IT_PROG_INTLTOOL([0.35.0])
 
-PKG_CHECK_MODULES(SHEEPLE, [gtk+-2.0 >= 2.12 libedataserver-1.2 libebook-1.2 
+PKG_CHECK_MODULES(SHEEPLE, [gtk+-2.0 >= 2.12 couchdb-glib-1.0
                             avahi-client avahi-core avahi-gobject avahi-glib
                             webkit-1.0])
 
