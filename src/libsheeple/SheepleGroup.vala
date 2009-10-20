@@ -5,8 +5,8 @@ public class SheepleGroup : GLib.Object
 {
 
     // Fields
-    public string name;
-    public Gdk.Pixbuf icon;
+    public string name {get; set;}
+    public Gdk.Pixbuf icon {get; set;}
     
     public SheepleGroup()
     {

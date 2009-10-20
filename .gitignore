@@ -2,12 +2,10 @@
 *.o
 *.gir
 *.typelib
-Makefile.in
-.dirstamp
 *.la
 *.lo
-.libs/
-libsheeple-1.0.pc
-.deps/
-/sheeple
+sheeple
 *.vapi
+*.so
+src/libsheeple/*.c
+src/libsheeple/*.h
