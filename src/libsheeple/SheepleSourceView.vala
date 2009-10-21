@@ -2,12 +2,12 @@ using GLib;
 using Gdk;
 using Gtk;
 
-struct _SourceWidgets
+internal struct _SourceWidgets
 {
     public Gtk.VBox box;
 }
 
-struct _GroupWidgets
+internal struct _GroupWidgets
 {
     public Gtk.Button button;
     public Gtk.Label label;
@@ -18,7 +18,7 @@ struct _GroupWidgets
 public class SheepleSourceView : Gtk.ScrolledWindow
 {
     public unowned GLib.List<SheepleSource> sources {get; set;}
-    public unowned GLib.List<SheepleGroup> selection {get; set;}
+    public SheepleGroup selection {get; set;}
     private GLib.HashTable<SheepleSource,_SourceWidgets?> source_widgets;
     private GLib.HashTable<SheepleGroup,_GroupWidgets?> group_widgets;
     private Gtk.VBox source_vbox;
@@ -48,5 +48,82 @@ public class SheepleSourceView : Gtk.ScrolledWindow
         viewport.set_shadow_type(Gtk.ShadowType.NONE);
         viewport.add(master_padding);
         this.add(viewport);
+        
+        this.notify["sources"].connect(update_sources);
+        this.notify["selection"].connect(update_selection);
+    }
+    
+    private void update_sources()
+    {
+        // TODO: clean out hashtables/remove old sources
+        this.source_vbox.foreach((ud) => { stdout.printf("%p\n", this); });
+        
+        foreach(SheepleSource src in this.sources)
+        {
+            Gtk.VBox source_box;
+            Gtk.Label source_label;
+            string title_markup;
+            
+            title_markup = GLib.Markup.printf_escaped("<b>%s</b>", src.name);
+            
+            source_label = new Gtk.Label(null);
+            source_label.set_markup(title_markup);
+            source_label.set_alignment(0, 0);
+            
+            source_box = new Gtk.VBox(false, 0);
+            source_box.pack_start(source_label, true, true, 4);
+            
+            foreach(SheepleGroup grp in src.groups)
+            {
+                Gtk.Button button;
+                Gtk.Alignment alignment;
+                Gtk.Label button_label;
+                Gtk.Image button_image;
+                Gtk.HBox button_hbox;
+                Gtk.Alignment button_align;
+                string button_markup;
+                
+                button_hbox = new Gtk.HBox(false, 2);
+                
+                if(grp.icon != null)
+                {
+                    button_image = new Gtk.Image.from_pixbuf(grp.icon);
+                    button_hbox.pack_start(button_image, true, true, 0);
+                }
+                
+                button_markup = GLib.Markup.printf_escaped("%s", grp.name);
+                
+                button_label = new Gtk.Label(null);
+                button_label.set_markup(button_markup);
+                
+                button_align = new Gtk.Alignment(0, 0.7f, 0, 0); // TODO: wtf!?
+                button_align.add(button_label);
+                
+                button_hbox.pack_start(button_align, true, true, 2);
+                
+                button = new Gtk.Button();
+                button.add(button_hbox);
+                button.relief = Gtk.ReliefStyle.NONE;
+                button.focus_on_click = false;
+                button.clicked.connect(() => {
+                    //this.selection = grp;
+                    stdout.printf("%p", grp);
+                });
+                
+                alignment = new Gtk.Alignment(0, 0, 0, 0);
+                alignment.set_padding(0, 0, 8, 4);
+                alignment.add(button);
+                
+                source_box.pack_start(alignment, true, true, 0);
+            }
+            
+            this.source_vbox.pack_start(source_box, false, true, 0);
+        }
+    }
+    
+    private void update_selection()
+    {
+        stdout.printf("click!");
     }
 }
+
