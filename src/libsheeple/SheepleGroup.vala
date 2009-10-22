@@ -3,8 +3,6 @@ using Gdk;
 
 public class SheepleGroup : GLib.Object
 {
-
-    // Fields
     public string name {get; set;}
     public Gdk.Pixbuf icon {get; set;}
     

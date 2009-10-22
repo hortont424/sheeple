@@ -3,8 +3,6 @@ using Gdk;
 
 public class SheepleSource : GLib.Object
 {
-
-    // Fields
     public string name {get; set;}
     public unowned List<SheepleGroup> groups {get; set;}
     

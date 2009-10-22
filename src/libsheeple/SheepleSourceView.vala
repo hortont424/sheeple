@@ -18,7 +18,7 @@ internal struct _GroupWidgets
 public class SheepleSourceView : Gtk.ScrolledWindow
 {
     public unowned GLib.List<SheepleSource> sources {get; set;}
-    public SheepleGroup selection {get; set;}
+    public unowned GLib.List<SheepleGroup> selection {get; set;}
     private GLib.HashTable<SheepleSource,_SourceWidgets?> source_widgets;
     private GLib.HashTable<SheepleGroup,_GroupWidgets?> group_widgets;
     private Gtk.VBox source_vbox;
@@ -63,6 +63,7 @@ public class SheepleSourceView : Gtk.ScrolledWindow
             Gtk.VBox source_box;
             Gtk.Label source_label;
             string title_markup;
+            _SourceWidgets source_widgets;
             
             title_markup = GLib.Markup.printf_escaped("<b>%s</b>", src.name);
             
@@ -73,15 +74,17 @@ public class SheepleSourceView : Gtk.ScrolledWindow
             source_box = new Gtk.VBox(false, 0);
             source_box.pack_start(source_label, true, true, 4);
             
-            foreach(SheepleGroup grp in src.groups)
+            foreach(SheepleGroup gr in src.groups)
             {
-                Gtk.Button button;
+                Gtk.Button button_widget;
                 Gtk.Alignment alignment;
                 Gtk.Label button_label;
                 Gtk.Image button_image;
                 Gtk.HBox button_hbox;
                 Gtk.Alignment button_align;
                 string button_markup;
+                SheepleGroup grp = gr; // Vala bug #599133
+                _GroupWidgets group_widgets;
                 
                 button_hbox = new Gtk.HBox(false, 2);
                 
@@ -101,29 +104,77 @@ public class SheepleSourceView : Gtk.ScrolledWindow
                 
                 button_hbox.pack_start(button_align, true, true, 2);
                 
-                button = new Gtk.Button();
-                button.add(button_hbox);
-                button.relief = Gtk.ReliefStyle.NONE;
-                button.focus_on_click = false;
-                button.clicked.connect(() => {
-                    //this.selection = grp;
-                    stdout.printf("%p", grp);
+                button_widget = new Gtk.Button();
+                button_widget.add(button_hbox);
+                button_widget.relief = Gtk.ReliefStyle.NONE;
+                button_widget.focus_on_click = false;
+                button_widget.clicked.connect(() => {
+                    GLib.List<SheepleGroup> newselection = new GLib.List<SheepleGroup>();
+                    newselection.prepend(grp);
+                    selection = newselection;
                 });
                 
                 alignment = new Gtk.Alignment(0, 0, 0, 0);
                 alignment.set_padding(0, 0, 8, 4);
-                alignment.add(button);
+                alignment.add(button_widget);
                 
                 source_box.pack_start(alignment, true, true, 0);
+                
+                group_widgets = _GroupWidgets() { 
+                    button = button_widget,
+                    label = button_label,
+                    hbox = button_hbox,
+                    icon = button_image
+                };
+                
+                this.group_widgets.insert(grp, group_widgets);
             }
             
             this.source_vbox.pack_start(source_box, false, true, 0);
+            
+            source_widgets = _SourceWidgets() {
+                box = source_box
+            };
+            
+            this.source_widgets.insert(src, source_widgets);
         }
+        
+        // select the first group. this will eventually have to change
+        // (what if the first source has no groups!?)
+        
+        GLib.List<SheepleGroup> newselection = new GLib.List<SheepleGroup>();
+        newselection.prepend(this.sources.data.groups.data);
+        this.selection = newselection;
     }
     
     private void update_selection()
     {
-        stdout.printf("click!");
+        foreach(SheepleSource src in this.sources)
+        {
+            foreach(SheepleGroup grp in src.groups)
+            {
+                _GroupWidgets group_widgets = this.group_widgets.lookup(grp);
+                string button_markup;
+                string markup_str = "%s";
+                Gtk.ReliefStyle new_style = Gtk.ReliefStyle.NONE;
+                
+                if(this.selection.find(grp) != null)
+                {
+                    new_style = Gtk.ReliefStyle.NORMAL;
+                    markup_str = "<b>%s</b>";
+                }
+                
+                button_markup = GLib.Markup.printf_escaped(markup_str, grp.name);
+                
+                group_widgets.button.relief = new_style;
+                group_widgets.label.set_markup(button_markup);
+            }
+        }
+        
+        /*foreach(SheepleGroup grp in this.selection)
+        {
+            stdout.printf("%s\n", grp.name);
+        }*/
     }
 }
 

@@ -16,7 +16,7 @@ libsheeple.so: src/libsheeple/*.vala
 	gcc -g -O0 $(SHEEPLE_CFLAGS) --shared -fPIC src/libsheeple/*.c \
 	    -o libsheeple.so
 
-sheeple: src/sheeple/*.c
+sheeple: libsheeple.so src/sheeple/*.c
 	gcc -g -O0 $(SHEEPLE_CFLAGS) $(SHEEPLE_LDFLAGS) -I. -Isrc -L. \
 	    -lsheeple src/sheeple/*.c -o sheeple
 
