@@ -2,7 +2,7 @@
 
 [CCode (cprefix = "CouchDB", lower_case_cprefix = "couch_db_")]
 namespace CouchDB {
-	[CCode (cname = "CouchDB", cprefix = "couchdb_", lower_case_cprefix = "couchdb_", cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cname = "CouchDB", cprefix = "couchdb_", lower_case_cprefix = "couchdb_", cheader_filename = "couchdb-glib.h")]
 	public class Connection : GLib.Object {
 		[CCode (cname = "couchdb_new", has_construct_function = false)]
 		public Connection (string hostname);
@@ -39,7 +39,7 @@ namespace CouchDB {
 		public virtual signal void document_updated (string dbname, GLib.Object document);
 	}
 	[Compact]
-	[CCode (ref_function = "couchdb_database_info_ref", unref_function = "couchdb_database_info_unref", type_id = "COUCH_DB_TYPE_DATABASE_INFO", cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (ref_function = "couchdb_database_info_ref", unref_function = "couchdb_database_info_unref", type_id = "COUCH_DB_TYPE_DATABASE_INFO", cheader_filename = "couchdb-glib.h")]
 	public class DatabaseInfo {
 		[CCode (cname = "couchdb_database_info_new", has_construct_function = false)]
 		public DatabaseInfo (string dbname, int doc_count, int doc_del_count, int update_seq, bool compact_running, int disk_size);
@@ -56,7 +56,7 @@ namespace CouchDB {
 		[CCode (cname = "couchdb_database_info_is_compact_running")]
 		public bool is_compact_running ();
 	}
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public class Document : GLib.Object {
 		[CCode (cname = "couchdb_document_new", has_construct_function = false)]
 		public Document (CouchDB.Connection couchdb);
@@ -270,7 +270,7 @@ namespace CouchDB {
 		public unowned string to_string ();
 	}
 	[Compact]
-	[CCode (ref_function = "couchdb_document_info_ref", unref_function = "couchdb_document_info_unref", type_id = "COUCH_DB_TYPE_DOCUMENT_INFO", cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (ref_function = "couchdb_document_info_ref", unref_function = "couchdb_document_info_unref", type_id = "COUCH_DB_TYPE_DOCUMENT_INFO", cheader_filename = "couchdb-glib.h")]
 	public class DocumentInfo {
 		[CCode (cname = "couchdb_document_info_new", has_construct_function = false)]
 		public DocumentInfo (string docid, string revision);
@@ -280,7 +280,7 @@ namespace CouchDB {
 		public unowned string get_revision ();
 	}
 	[Compact]
-	[CCode (ref_function = "couchdb_struct_field_ref", unref_function = "couchdb_struct_field_unref", type_id = "COUCH_DB_TYPE_STRUCT_FIELD", cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (ref_function = "couchdb_struct_field_ref", unref_function = "couchdb_struct_field_unref", type_id = "COUCH_DB_TYPE_STRUCT_FIELD", cheader_filename = "couchdb-glib.h")]
 	public class StructField {
 		[CCode (cname = "couchdb_struct_field_new", has_construct_function = false)]
 		public StructField ();
@@ -321,70 +321,70 @@ namespace CouchDB {
 		[CCode (cname = "couchdb_struct_field_to_string")]
 		public unowned string to_string ();
 	}
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_ADDRESS_DESCRIPTION_HOME;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_ADDRESS_DESCRIPTION_OTHER;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_ADDRESS_DESCRIPTION_WORK;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_EMAIL_DESCRIPTION_HOME;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_EMAIL_DESCRIPTION_OTHER;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_EMAIL_DESCRIPTION_WORK;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_IM_PROTOCOL_AIM;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_IM_PROTOCOL_GADU_GADU;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_IM_PROTOCOL_GROUPWISE;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_IM_PROTOCOL_ICQ;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_IM_PROTOCOL_IRC;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_IM_PROTOCOL_JABBER;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_IM_PROTOCOL_MSN;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_IM_PROTOCOL_SKYPE;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_IM_PROTOCOL_YAHOO;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_PHONE_DESCRIPTION_ASSISTANT;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_PHONE_DESCRIPTION_CALLBACK;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_PHONE_DESCRIPTION_CAR;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_PHONE_DESCRIPTION_COMPANY;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_PHONE_DESCRIPTION_HOME;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_PHONE_DESCRIPTION_HOME_FAX;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_PHONE_DESCRIPTION_MOBILE;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_PHONE_DESCRIPTION_OTHER;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_PHONE_DESCRIPTION_OTHER_FAX;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_PHONE_DESCRIPTION_PAGER;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_PHONE_DESCRIPTION_PRIMARY;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_PHONE_DESCRIPTION_RADIO;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_PHONE_DESCRIPTION_TELEX;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_PHONE_DESCRIPTION_WORK;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_PHONE_DESCRIPTION_WORK_FAX;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_URL_DESCRIPTION_BLOG;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string DOCUMENT_CONTACT_URL_DESCRIPTION_HOMEPAGE;
-	[CCode (cheader_filename = "couchdb-glib-1.0.h")]
+	[CCode (cheader_filename = "couchdb-glib.h")]
 	public const string RECORD_TYPE_CONTACT;
 }
