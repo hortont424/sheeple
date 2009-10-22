@@ -1,0 +1,18 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">Sheeple</name>
+  <shortdesc xml:lang="en">GNOME Contact Management Interface</shortdesc>
+  <homepage rdf:resource="http://sheeple.hortont.com" />
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Tim Horton</foaf:name>
+      <foaf:mbox rdf:resource="mailto:tim@hortont.com" />
+      <gnome:userid>hortont</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+</Project>
