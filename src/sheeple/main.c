@@ -79,6 +79,9 @@ int main(int argc, char **argv)
     GtkWidget *window, *hbox, *textview, *sourceview;
 
     gtk_init(&argc, &argv);
+    
+    SheepleContact * sc = sheeple_contact_new();
+    sheeple_contact_test(sc);
 
     sources = create_default_sources();
 
