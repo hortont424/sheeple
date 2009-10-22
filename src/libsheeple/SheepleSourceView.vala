@@ -2,12 +2,12 @@ using GLib;
 using Gdk;
 using Gtk;
 
-internal struct _SourceWidgets
+internal class _SourceWidgets
 {
     public Gtk.VBox box;
 }
 
-internal struct _GroupWidgets
+internal class _GroupWidgets
 {
     public Gtk.Button button;
     public Gtk.Label label;
@@ -51,6 +51,20 @@ public class SheepleSourceView : Gtk.ScrolledWindow
         
         this.notify["sources"].connect(update_sources);
         this.notify["selection"].connect(update_selection);
+    }
+    
+    public void select_first_group()
+    {
+        foreach(SheepleSource src in this.sources)
+        {
+            foreach(SheepleGroup grp in src.groups)
+            {
+                GLib.List<SheepleGroup> newselection = new GLib.List<SheepleGroup>();
+                newselection.prepend(grp);
+                this.selection = newselection;
+                return;
+            }
+        }
     }
     
     private void update_sources()
@@ -120,7 +134,7 @@ public class SheepleSourceView : Gtk.ScrolledWindow
                 
                 source_box.pack_start(alignment, true, true, 0);
                 
-                group_widgets = _GroupWidgets() { 
+                group_widgets = new _GroupWidgets() { 
                     button = button_widget,
                     label = button_label,
                     hbox = button_hbox,
@@ -132,19 +146,14 @@ public class SheepleSourceView : Gtk.ScrolledWindow
             
             this.source_vbox.pack_start(source_box, false, true, 0);
             
-            source_widgets = _SourceWidgets() {
+            source_widgets = new _SourceWidgets() {
                 box = source_box
             };
             
             this.source_widgets.insert(src, source_widgets);
         }
         
-        // select the first group. this will eventually have to change
-        // (what if the first source has no groups!?)
-        
-        GLib.List<SheepleGroup> newselection = new GLib.List<SheepleGroup>();
-        newselection.prepend(this.sources.data.groups.data);
-        this.selection = newselection;
+        this.select_first_group();
     }
     
     private void update_selection()
@@ -170,11 +179,6 @@ public class SheepleSourceView : Gtk.ScrolledWindow
                 group_widgets.label.set_markup(button_markup);
             }
         }
-        
-        /*foreach(SheepleGroup grp in this.selection)
-        {
-            stdout.printf("%s\n", grp.name);
-        }*/
     }
 }
 
