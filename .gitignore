@@ -2,6 +2,7 @@
 *.o
 *.gir
 *.typelib
+*.gi
 *.la
 *.lo
 sheeple
