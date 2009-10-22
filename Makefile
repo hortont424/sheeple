@@ -1,4 +1,4 @@
-.PHONY: clean run gitclean todo
+.PHONY: clean run gitclean todo vapi
 
 SHEEPLE_CFLAGS = `pkg-config --cflags gobject-2.0 gtk+-2.0 pango \
     couchdb-glib-1.0 avahi-client avahi-core avahi-gobject avahi-glib webkit-1.0`
@@ -20,6 +20,10 @@ sheeple: libsheeple.so src/sheeple/*.c
 	gcc -g -O0 $(SHEEPLE_CFLAGS) $(SHEEPLE_LDFLAGS) -I. -Isrc -L. \
 	    -lsheeple src/sheeple/*.c -o sheeple
 
+vapi:
+	cd vapi ; vala-gen-introspect couchdb-glib-1.0 couchdb-glib-1.0
+	cd vapi ; vapigen --pkg json-glib-1.0 --library couchdb-glib-1.0 couchdb-glib-1.0/couchdb-glib-1.0.gi
+
 todo:
 	cd src ; grep -n "TODO" libsheeple/*.vala sheeple/*.vala
 
@@ -27,7 +31,7 @@ gitclean:
 	git clean -x -f -d
 
 clean:
-	rm -f src/libsheeple/*.[ch] src/libsheeple/*.so
+	rm -f src/libsheeple/*.[cho] src/libsheeple/*.so src/libsheeple/*.vapi
 	rm -f src/sheeple/*.o
 	rm -f sheeple
 	rm -f libsheeple.so

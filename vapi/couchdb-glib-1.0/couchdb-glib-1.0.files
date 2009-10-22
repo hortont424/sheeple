@@ -1,0 +1,3 @@
+include/couchdb-glib-1.0/
+lib/libcouchdb-glib-1.0.so
+
