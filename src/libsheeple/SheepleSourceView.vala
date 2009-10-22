@@ -30,9 +30,6 @@ public class SheepleSourceView : Gtk.ScrolledWindow
         Gtk.Alignment master_padding;
         Gtk.Viewport viewport;
         
-        this.source_widgets = new GLib.HashTable<SheepleSource,_SourceWidgets?>(GLib.direct_hash,GLib.direct_equal);
-        this.group_widgets = new GLib.HashTable<SheepleGroup,_GroupWidgets?>(GLib.direct_hash,GLib.direct_equal);
-        
         this.set_hadjustment(null);
         this.set_vadjustment(null);
         this.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
@@ -69,8 +66,12 @@ public class SheepleSourceView : Gtk.ScrolledWindow
     
     private void update_sources()
     {
-        // TODO: clean out hashtables/remove old sources
-        this.source_vbox.foreach((ud) => { stdout.printf("%p\n", this); });
+        this.source_vbox.foreach((ud) => {
+            this.source_vbox.remove(ud);
+        });
+        
+        this.source_widgets = new GLib.HashTable<SheepleSource,_SourceWidgets?>(GLib.direct_hash,GLib.direct_equal);
+        this.group_widgets = new GLib.HashTable<SheepleGroup,_GroupWidgets?>(GLib.direct_hash,GLib.direct_equal);
         
         foreach(SheepleSource src in this.sources)
         {
@@ -153,6 +154,7 @@ public class SheepleSourceView : Gtk.ScrolledWindow
             this.source_widgets.insert(src, source_widgets);
         }
         
+        this.show_all();
         this.select_first_group();
     }
     
@@ -164,21 +166,21 @@ public class SheepleSourceView : Gtk.ScrolledWindow
             {
                 _GroupWidgets group_widgets = this.group_widgets.lookup(grp);
                 string button_markup;
-                string markup_str = "%s";
                 Gtk.ReliefStyle new_style = Gtk.ReliefStyle.NONE;
                 
                 if(this.selection.find(grp) != null)
-                {
                     new_style = Gtk.ReliefStyle.NORMAL;
-                    markup_str = "<b>%s</b>";
-                }
                 
-                button_markup = GLib.Markup.printf_escaped(markup_str, grp.name);
+                button_markup = GLib.Markup.printf_escaped(
+                    ((new_style == Gtk.ReliefStyle.NONE) ? "%s" : "<b>%s</b>"),
+                    grp.name);
                 
                 group_widgets.button.relief = new_style;
                 group_widgets.label.set_markup(button_markup);
             }
         }
+        
+        this.selection_changed();
     }
 }
 

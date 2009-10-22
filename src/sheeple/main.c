@@ -69,8 +69,8 @@ GList *create_default_sources()
 
 void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
 {
-    //SheepleGroup *gr = sheeple_source_view_get_selection(sourceview)->data;
-    //g_print("%s\n", sheeple_group_get_name(gr));
+    SheepleGroup *gr = sheeple_source_view_get_selection(sourceview)->data;
+    g_print("%s\n", sheeple_group_get_name(gr));
 }
 
 int main(int argc, char **argv)
@@ -102,6 +102,7 @@ int main(int argc, char **argv)
     gtk_widget_grab_focus(textview);
 
     gtk_widget_show_all(window);
+    sheeple_source_view_set_sources(SHEEPLE_SOURCE_VIEW(sourceview), sources);
 
     gtk_main();
 
