@@ -102,7 +102,10 @@ int main(int argc, char **argv)
     gtk_widget_grab_focus(textview);
 
     gtk_widget_show_all(window);
-    sheeple_source_view_set_sources(SHEEPLE_SOURCE_VIEW(sourceview), sources);
+    
+    int i;
+    for(i = 0; i < 5000; i++)
+        sheeple_source_view_set_sources(SHEEPLE_SOURCE_VIEW(sourceview), sources);
 
     gtk_main();
 

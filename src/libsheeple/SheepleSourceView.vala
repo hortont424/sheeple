@@ -4,15 +4,16 @@ using Gtk;
 
 internal class _SourceWidgets
 {
-    public Gtk.VBox box;
+    public unowned Gtk.VBox box;
+    public unowned Gtk.Label label;
 }
 
 internal class _GroupWidgets
 {
-    public Gtk.Button button;
-    public Gtk.Label label;
-    public Gtk.HBox hbox;
-    public Gtk.Image icon;
+    public unowned Gtk.Button button;
+    public unowned Gtk.Label label;
+    public unowned Gtk.HBox hbox;
+    public unowned Gtk.Image icon;
 }
 
 public class SheepleSourceView : Gtk.ScrolledWindow
@@ -66,9 +67,17 @@ public class SheepleSourceView : Gtk.ScrolledWindow
     
     private void update_sources()
     {
-        this.source_vbox.foreach((ud) => {
-            this.source_vbox.remove(ud);
-        });
+        if(this.group_widgets != null)
+        {
+            foreach(SheepleSource src in this.sources)
+            {
+                _SourceWidgets w = this.source_widgets.lookup(src);
+                this.source_vbox.remove(w.box);
+            }
+            
+            this.source_widgets.remove_all();
+            this.group_widgets.remove_all();
+        }
         
         this.source_widgets = new GLib.HashTable<SheepleSource,_SourceWidgets?>(GLib.direct_hash,GLib.direct_equal);
         this.group_widgets = new GLib.HashTable<SheepleGroup,_GroupWidgets?>(GLib.direct_hash,GLib.direct_equal);
@@ -148,7 +157,8 @@ public class SheepleSourceView : Gtk.ScrolledWindow
             this.source_vbox.pack_start(source_box, false, true, 0);
             
             source_widgets = new _SourceWidgets() {
-                box = source_box
+                box = source_box,
+                label = source_label
             };
             
             this.source_widgets.insert(src, source_widgets);
