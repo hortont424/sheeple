@@ -80,8 +80,8 @@ int main(int argc, char **argv)
 
     gtk_init(&argc, &argv);
     
-    SheepleContact * sc = sheeple_contact_new();
-    sheeple_contact_test(sc);
+    //SheepleContact * sc = sheeple_contact_new();
+    //sheeple_contact_test(sc);
 
     sources = create_default_sources();
 

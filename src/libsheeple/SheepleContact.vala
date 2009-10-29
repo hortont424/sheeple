@@ -1,4 +1,4 @@
-using GLib;
+/*using GLib;
 using CouchDB;
 
 public class SheepleContact : GLib.Object
@@ -14,9 +14,10 @@ public class SheepleContact : GLib.Object
         catch(GLib.Error e)
         {
         }
-        /*foreach(string db in dbs)
+        
+        foreach(string db in dbs)
         {
             //stdout.printf("%s\n", db);
-        }*/
+        }
     }
-}
+}*/
