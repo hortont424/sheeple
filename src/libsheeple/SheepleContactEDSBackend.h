@@ -2,6 +2,7 @@
 #define __SHEEPLE_CONTACT_EDS_BACKEND_H__
 
 #include <glib-object.h>
+#include <libebook/e-book.h>
 
 #define TYPE_SHEEPLE_CONTACT_EDS_BACKEND             (sheeple_contact_eds_backend_get_type ())
 #define SHEEPLE_CONTACT_EDS_BACKEND(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_SHEEPLE_CONTACT_EDS_BACKEND, SheepleContactEDSBackend))
@@ -16,14 +17,15 @@ typedef struct _SheepleContactEDSBackendClass   SheepleContactEDSBackendClass;
 
 struct _SheepleContactEDSBackend
 {
-  GObject parent_instance;
-
-  int instance_member;
+    GObject parent_instance;
+    
+    EBook * ebook;
+    EBookView * ebookview;
 };
 
 struct _SheepleContactEDSBackendClass
 {
-  GObjectClass parent_class;
+    GObjectClass parent_class;
 };
 
 SheepleContactEDSBackend * sheeple_contact_eds_backend_new ();
