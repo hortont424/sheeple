@@ -1,5 +1,6 @@
 using GLib;
 
-public class SheepleContact : GLib.Object
+public interface SheepleContact : GLib.Object
 {
+    public abstract char * full_name {get;}
 }

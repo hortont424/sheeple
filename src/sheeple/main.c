@@ -21,6 +21,10 @@
 #include <glib/gi18n.h>
 
 #include <libsheeple/sheeple.h>
+#include <libsheeple/SheepleEDSContact.h> // yuck
+#include <libsheeple/SheepleContactEDSBackend.h> // yuck
+
+SheepleContactBackend * eds;
 
 GList *create_default_sources()
 {
@@ -75,7 +79,8 @@ void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
 
 void contact_added(SheepleContactBackend * eds, char * contact_id, gpointer ud)
 {
-    g_print("contact added : %s\n", contact_id);
+    SheepleContact * ctc = sheeple_contact_backend_get_contact_by_id(eds, contact_id);
+    g_print("contact added : %s %s\n", contact_id, sheeple_contact_get_full_name(sheeple_contact_backend_get_contact_by_id(eds, contact_id)));
 }
 
 void contact_changed(SheepleContactBackend * eds, char * contact_id, gpointer ud)
@@ -91,7 +96,7 @@ int main(int argc, char **argv)
     g_thread_init(NULL);
     gtk_init(&argc, &argv);
     
-    SheepleContactBackend * eds = SHEEPLE_CONTACT_BACKEND(sheeple_contact_eds_backend_new());
+    eds = SHEEPLE_CONTACT_BACKEND(sheeple_contact_eds_backend_new());
     g_print("%s\n", sheeple_contact_backend_get_db_id(eds));
     g_signal_connect(eds, "contact_added", G_CALLBACK(contact_added), NULL);
     g_signal_connect(eds, "contact_changed", G_CALLBACK(contact_changed), NULL);
