@@ -81,8 +81,8 @@ int main(int argc, char **argv)
     g_thread_init(NULL);
     gtk_init(&argc, &argv);
     
-    SheepleContact * sc = sheeple_contact_new();
-    sheeple_contact_test(sc);
+    SheepleContactBackend * eds = sheeple_contact_eds_backend_new();
+    g_print("%s\n", sheeple_contact_backend_get_db_id(eds));
 
     sources = create_default_sources();
 
