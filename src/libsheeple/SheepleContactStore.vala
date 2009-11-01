@@ -3,7 +3,7 @@ using GLib;
 public class SheepleContactStoreItem
 {
     string id;
-    int db_id;
+    string db_id;
 }
 
 public class SheepleContactStore : GLib.Object

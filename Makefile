@@ -1,12 +1,16 @@
 .PHONY: clean run gitclean todo vapi
 
 SHEEPLE_CFLAGS = `pkg-config --cflags gobject-2.0 gtk+-2.0 pango \
-    couchdb-glib-1.0 avahi-client avahi-core avahi-gobject avahi-glib webkit-1.0`
+    couchdb-glib-1.0 avahi-client avahi-core avahi-gobject avahi-glib \
+    webkit-1.0 dbus-glib-1 gnome-keyring-1`
 
 SHEEPLE_LDFLAGS = `pkg-config --libs gobject-2.0 gtk+-2.0 pango \
-    couchdb-glib-1.0 avahi-client avahi-core avahi-gobject avahi-glib webkit-1.0`
+    couchdb-glib-1.0 avahi-client avahi-core avahi-gobject avahi-glib \
+    webkit-1.0 dbus-glib-1 gnome-keyring-1`
 
-VALA_FLAGS = --pkg gobject-2.0 --pkg gobject-2.0 --pkg gtk+-2.0 --vapidir=vapi --pkg couchdb-glib-1.0 --pkg json-glib-1.0
+VALA_FLAGS = --pkg gobject-2.0 --pkg gobject-2.0 --pkg gtk+-2.0 --vapidir=vapi \
+             --pkg couchdb-glib-1.0 --pkg json-glib-1.0 --pkg dbus-glib-1 \
+             --pkg gnome-keyring-1
 
 all: libsheeple.so sheeple
 
@@ -31,7 +35,7 @@ gitclean:
 	git clean -x -f -d
 
 clean:
-	rm -f src/libsheeple/*.[cho] src/libsheeple/*.so src/libsheeple/*.vapi
+	rm -f src/libsheeple/*.o src/libsheeple/*.so src/libsheeple/*.vapi
 	rm -f src/sheeple/*.o
 	rm -f sheeple
 	rm -f libsheeple.so
