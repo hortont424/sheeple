@@ -16,7 +16,9 @@ enum
   PROP_FULL_NAME,
   PROP_GIVEN_NAME,
   PROP_FAMILY_NAME,
-  PROP_NICKNAME
+  PROP_NICKNAME,
+  
+  PROP_EMAIL
 };
 
 void sheeple_eds_contact_set_econtact(SheepleEDSContact *self, EContact *ec)
@@ -56,6 +58,7 @@ DEFINE_EDS_GETSETTERS(const gchar *, FULL_NAME, full_name);
 DEFINE_EDS_GETSETTERS(const gchar *, GIVEN_NAME, given_name);
 DEFINE_EDS_GETSETTERS(const gchar *, FAMILY_NAME, family_name);
 DEFINE_EDS_GETSETTERS(const gchar *, NICKNAME, nickname);
+DEFINE_EDS_GETSETTERS(GList *, EMAIL, email);
 
 static void sheeple_eds_contact_interface_init (SheepleContactIface *iface);
 
@@ -84,6 +87,8 @@ eds_contact_set_property (GObject *object,
         DEFINE_EDS_SETPROP(string, FAMILY_NAME, family_name)
         DEFINE_EDS_SETPROP(string, NICKNAME, nickname)
         
+        DEFINE_EDS_SETPROP(object, EMAIL, email)
+        
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
             break;
@@ -108,6 +113,8 @@ eds_contact_get_property (GObject *object,
         DEFINE_EDS_GETPROP(string, GIVEN_NAME, given_name)
         DEFINE_EDS_GETPROP(string, FAMILY_NAME, family_name)
         DEFINE_EDS_GETPROP(string, NICKNAME, nickname)
+        
+        DEFINE_EDS_GETPROP(object, EMAIL, email)
         
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -145,6 +152,8 @@ sheeple_eds_contact_class_init (SheepleEDSContactClass *self)
     INSTALL_EDS_PROP(GIVEN_NAME, "given-name");
     INSTALL_EDS_PROP(FAMILY_NAME, "family-name");
     INSTALL_EDS_PROP(NICKNAME, "nickname");
+    
+    INSTALL_EDS_PROP(EMAIL, "email");
 }
 
 SheepleEDSContact *
@@ -160,4 +169,6 @@ sheeple_eds_contact_interface_init (SheepleContactIface *iface)
     INSTALL_EDS_GETSETTERS(given_name);
     INSTALL_EDS_GETSETTERS(family_name);
     INSTALL_EDS_GETSETTERS(nickname);
+    
+    INSTALL_EDS_GETSETTERS(email);
 }

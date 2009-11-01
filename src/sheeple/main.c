@@ -80,7 +80,9 @@ void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
 void contact_added(SheepleContactBackend * eds, char * contact_id, gpointer ud)
 {
     SheepleContact * ctc = sheeple_contact_backend_get_contact_by_id(eds, contact_id);
-    g_print("contact added : %s %s\n", contact_id, sheeple_contact_get_family_name(sheeple_contact_backend_get_contact_by_id(eds, contact_id)));
+    GList * emails = sheeple_contact_get_email(ctc);
+    gchar * email_addr = (emails && emails->data) ? (emails->data) : "";
+    g_print("contact added : %s %s\n", contact_id, email_addr);
 }
 
 void contact_changed(SheepleContactBackend * eds, char * contact_id, gpointer ud)

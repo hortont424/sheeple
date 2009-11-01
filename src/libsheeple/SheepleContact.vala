@@ -7,5 +7,5 @@ public interface SheepleContact : GLib.Object
     public abstract string family_name {get; set;}
     public abstract string nickname {get; set;}
     
-    //public abstract GLib.List<string
+    public abstract GLib.List<string> email {get; set;}
 }
