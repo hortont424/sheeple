@@ -3,6 +3,7 @@
 
 #include <glib-object.h>
 #include <libebook/e-book.h>
+#include "sheeple.h"
 
 #define TYPE_SHEEPLE_EDS_CONTACT             (sheeple_eds_contact_get_type ())
 #define SHEEPLE_EDS_CONTACT(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_SHEEPLE_EDS_CONTACT, SheepleEDSContact))

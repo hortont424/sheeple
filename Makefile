@@ -14,7 +14,7 @@ VALA_FLAGS = --pkg gobject-2.0 --pkg gobject-2.0 --pkg gtk+-2.0 --vapidir=vapi \
 
 all: libsheeple.so sheeple
 
-libsheeple.so: src/libsheeple/*.vala
+libsheeple.so: src/libsheeple/*.vala src/libsheeple/*.c src/libsheeple/*.h
 	valac $(VALA_FLAGS) -C -H src/libsheeple/sheeple.h --library sheeple \
 	    src/libsheeple/*.vala --basedir src/libsheeple -d src/libsheeple
 	gcc -g -O0 $(SHEEPLE_CFLAGS) --shared -fPIC src/libsheeple/*.c \
