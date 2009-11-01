@@ -12,8 +12,50 @@ enum
   PROP_0,
 
   PROP_ECONTACT,
-  PROP_FULL_NAME
+  
+  PROP_FULL_NAME,
+  PROP_GIVEN_NAME,
+  PROP_FAMILY_NAME,
+  PROP_NICKNAME
 };
+
+void sheeple_eds_contact_set_econtact(SheepleEDSContact *self, EContact *ec)
+{
+    self->priv->econtact = ec;
+}
+
+EContact * sheeple_eds_contact_get_econtact(SheepleEDSContact *self)
+{
+    return self->priv->econtact;
+}
+
+#define INSTALL_EDS_GETSETTERS(smallpropname) \
+    iface->set_ ## smallpropname = &sheeple_eds_contact_set_ ## smallpropname; \
+    iface->get_ ## smallpropname = &sheeple_eds_contact_get_ ## smallpropname;
+
+#define INSTALL_EDS_PROP(propname, propstring) \
+    g_object_class_override_property (gobject_class, PROP_ ## propname, propstring);
+
+#define DEFINE_EDS_GETSETTERS(typename, propname, smallpropname) \
+    void sheeple_eds_contact_set_ ## smallpropname (SheepleContact *self, typename prop) \
+        { e_contact_set(SHEEPLE_EDS_CONTACT(self)->priv->econtact, E_CONTACT_ ## propname, prop); } \
+    typename sheeple_eds_contact_get_ ## smallpropname (SheepleContact *self) \
+        { e_contact_get(SHEEPLE_EDS_CONTACT(self)->priv->econtact, E_CONTACT_ ## propname); }
+
+#define DEFINE_EDS_SETPROP(type, propname, smallpropname) \
+    case PROP_ ## propname :\
+        sheeple_eds_contact_set_ ## smallpropname (SHEEPLE_CONTACT(self), g_value_get_ ## type (value)); \
+        break;
+
+#define DEFINE_EDS_GETPROP(type, propname, smallpropname) \
+    case PROP_ ## propname: \
+        g_value_set_ ## type (value, sheeple_eds_contact_get_ ## smallpropname (SHEEPLE_CONTACT(self))); \
+        break;
+
+DEFINE_EDS_GETSETTERS(const gchar *, FULL_NAME, full_name);
+DEFINE_EDS_GETSETTERS(const gchar *, GIVEN_NAME, given_name);
+DEFINE_EDS_GETSETTERS(const gchar *, FAMILY_NAME, family_name);
+DEFINE_EDS_GETSETTERS(const gchar *, NICKNAME, nickname);
 
 static void sheeple_eds_contact_interface_init (SheepleContactIface *iface);
 
@@ -36,6 +78,12 @@ eds_contact_set_property (GObject *object,
                 g_object_unref (self->priv->econtact);
             sheeple_eds_contact_set_econtact(self, g_value_get_object (value));
             break;
+        
+        DEFINE_EDS_SETPROP(string, FULL_NAME, full_name)
+        DEFINE_EDS_SETPROP(string, GIVEN_NAME, given_name)
+        DEFINE_EDS_SETPROP(string, FAMILY_NAME, family_name)
+        DEFINE_EDS_SETPROP(string, NICKNAME, nickname)
+        
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
             break;
@@ -55,9 +103,12 @@ eds_contact_get_property (GObject *object,
         case PROP_ECONTACT:
             g_value_set_object (value, sheeple_eds_contact_get_econtact(self));
             break;
-        case PROP_FULL_NAME:
-            g_value_set_string (value, sheeple_eds_contact_get_full_name(self));
-            break;
+        
+        DEFINE_EDS_GETPROP(string, FULL_NAME, full_name)
+        DEFINE_EDS_GETPROP(string, GIVEN_NAME, given_name)
+        DEFINE_EDS_GETPROP(string, FAMILY_NAME, family_name)
+        DEFINE_EDS_GETPROP(string, NICKNAME, nickname)
+        
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
             break;
@@ -90,22 +141,10 @@ sheeple_eds_contact_class_init (SheepleEDSContactClass *self)
     g_object_class_install_property (gobject_class, PROP_ECONTACT,
                                      econtact_param_spec);
     
-    g_object_class_override_property (gobject_class, PROP_FULL_NAME, "full-name");
-}
-
-EContact * sheeple_eds_contact_get_econtact(SheepleEDSContact *self)
-{
-    return self->priv->econtact;
-}
-
-void sheeple_eds_contact_set_econtact(SheepleEDSContact *self, EContact *ec)
-{
-    self->priv->econtact = ec;
-}
-
-char * sheeple_eds_contact_get_full_name(SheepleEDSContact *self)
-{
-    return e_contact_get(self->priv->econtact, E_CONTACT_FULL_NAME);
+    INSTALL_EDS_PROP(FULL_NAME, "full-name");
+    INSTALL_EDS_PROP(GIVEN_NAME, "given-name");
+    INSTALL_EDS_PROP(FAMILY_NAME, "family-name");
+    INSTALL_EDS_PROP(NICKNAME, "nickname");
 }
 
 SheepleEDSContact *
@@ -117,5 +156,8 @@ sheeple_eds_contact_new (EContact * contact)
 static void
 sheeple_eds_contact_interface_init (SheepleContactIface *iface)
 {
-    iface->get_full_name = &sheeple_eds_contact_get_full_name;
+    INSTALL_EDS_GETSETTERS(full_name);
+    INSTALL_EDS_GETSETTERS(given_name);
+    INSTALL_EDS_GETSETTERS(family_name);
+    INSTALL_EDS_GETSETTERS(nickname);
 }

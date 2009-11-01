@@ -32,9 +32,4 @@ struct _SheepleEDSContactClass
 SheepleEDSContact * sheeple_eds_contact_new ();
 GType sheeple_eds_contact_get_type (void);
 
-EContact * sheeple_eds_contact_get_econtact(SheepleEDSContact *self);
-void sheeple_eds_contact_set_econtact(SheepleEDSContact *self, EContact *ec);
-
-char * sheeple_eds_contact_get_full_name(SheepleEDSContact *self);
-
 #endif
