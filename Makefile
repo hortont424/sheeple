@@ -2,15 +2,15 @@
 
 SHEEPLE_CFLAGS = `pkg-config --cflags gobject-2.0 gtk+-2.0 pango \
     couchdb-glib-1.0 avahi-client avahi-core avahi-gobject avahi-glib \
-    webkit-1.0 dbus-glib-1 gnome-keyring-1 libebook-1.2`
+    webkit-1.0 dbus-glib-1 gnome-keyring-1 libebook-1.2 webkit-1.0`
 
 SHEEPLE_LDFLAGS = `pkg-config --libs gobject-2.0 gtk+-2.0 pango \
     couchdb-glib-1.0 avahi-client avahi-core avahi-gobject avahi-glib \
-    webkit-1.0 dbus-glib-1 gnome-keyring-1 libebook-1.2`
+    webkit-1.0 dbus-glib-1 gnome-keyring-1 libebook-1.2 webkit-1.0`
 
 VALA_FLAGS = --pkg gobject-2.0 --pkg gobject-2.0 --pkg gtk+-2.0 --vapidir=vapi \
              --pkg couchdb-glib-1.0 --pkg json-glib-1.0 --pkg dbus-glib-1 \
-             --pkg gnome-keyring-1
+             --pkg gnome-keyring-1 --pkg webkit-1.0
 
 all: libsheeple.so sheeple
 

@@ -93,7 +93,7 @@ void contact_changed(SheepleContactBackend * eds, char * contact_id, gpointer ud
 int main(int argc, char **argv)
 {
     GList *sources;
-    GtkWidget *window, *hbox, *textview, *sourceview;
+    GtkWidget *window, *hbox, *sourceview, *contactview;
 
     g_thread_init(NULL);
     gtk_init(&argc, &argv);
@@ -105,12 +105,12 @@ int main(int argc, char **argv)
 
     sources = create_default_sources();
 
-    textview = gtk_text_view_new();
-
     sourceview = GTK_WIDGET(sheeple_source_view_new());
     sheeple_source_view_set_sources(SHEEPLE_SOURCE_VIEW(sourceview), sources);
     g_signal_connect(sourceview, "selection-changed",
-                     G_CALLBACK(sv_select_changed), textview);
+                     G_CALLBACK(sv_select_changed), NULL);
+    
+    contactview = GTK_WIDGET(sheeple_contact_view_new());
     
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(GTK_WINDOW(window), 300, 400);
@@ -118,11 +118,11 @@ int main(int argc, char **argv)
 
     hbox = gtk_hbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), sourceview, FALSE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox), textview, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), contactview, TRUE, TRUE, 0);
 
     gtk_container_add(GTK_CONTAINER(window), hbox);
 
-    gtk_widget_grab_focus(textview);
+    gtk_widget_grab_focus(contactview);
 
     gtk_widget_show_all(window);
 
