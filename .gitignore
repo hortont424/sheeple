@@ -14,4 +14,7 @@ src/libsheeple/SheepleContactStore.[ch]
 src/libsheeple/SheepleGroup.[ch]
 src/libsheeple/SheepleSource.[ch]
 src/libsheeple/SheepleSourceView.[ch]
+src/libsheeple/SheepleContactList.[ch]
+src/libsheeple/SheepleContactView.[ch]
+src/libsheeple/SheepleMetaContact.[ch]
 src/libsheeple/sheeple.h

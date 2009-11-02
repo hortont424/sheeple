@@ -8,13 +8,20 @@ public class SheepleContactStoreBackendContact
 
 public class SheepleContactStoreMetaContact
 {
+    public int refcount;
     public SheepleMetaContact metacontact;
     public GLib.List<SheepleContactStoreBackendContact> subcontacts;
     
     public SheepleContactStoreMetaContact()
     {
+        this.refcount = 0;
         this.metacontact = null;
         this.subcontacts = new GLib.List<SheepleContactStoreBackendContact>();
+    }
+    
+    public void invalidate()
+    {
+        this.metacontact = null;
     }
 }
 
@@ -46,15 +53,41 @@ public class SheepleContactStore : GLib.Object
             backend_contact.db_id = backend_id;
             
             meta.subcontacts.prepend(backend_contact);
+            meta.refcount++;
+            
             this.contact_store.insert(contact_id, meta); // NEED A BETTER WAY TO COME UP WITH OUR
                                                          // OWN UUID (right now, use the one from EDS)
         });
+        
+        backend.contact_removed.connect((backend, contact_id) => {
+            SheepleContactStoreMetaContact meta = this.contact_store.lookup(contact_id);
+            
+            if(meta != null)
+            {
+                meta.refcount--;
+                meta.invalidate();
+            }
+        });
+        
+        backend.contact_changed.connect((backend, contact_id) => {
+            SheepleContactStoreMetaContact meta = this.contact_store.lookup(contact_id);
+            
+            if(meta != null)
+            {
+                meta.invalidate();
+            }
+        });
     }
     
-    SheepleContact get_contact(string id)
+    SheepleContact? get_contact(string id)
     {
         SheepleContactStoreMetaContact meta = this.contact_store.lookup(id);
         SheepleMetaContact contact = meta.metacontact;
+        
+        if(meta.refcount == 0)
+        {
+            return null;
+        }
         
         if(contact == null)
         {
@@ -63,7 +96,10 @@ public class SheepleContactStore : GLib.Object
             foreach(SheepleContactStoreBackendContact subcontact in meta.subcontacts)
             {
                 SheepleContactBackend backend = this.contact_backends.lookup(subcontact.db_id);
-                contact.merge_with_contact(backend.get_contact(subcontact.id));
+                SheepleContact merge_contact = backend.get_contact(subcontact.id);
+                
+                if(merge_contact != null)
+                    contact.merge_with_contact(merge_contact);
             }
         }
         
