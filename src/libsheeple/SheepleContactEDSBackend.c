@@ -17,7 +17,7 @@ sheeple_contact_eds_backend_get_db_id (SheepleContactBackend *self)
 }
 
 static SheepleContact *
-sheeple_contact_eds_backend_get_contact_by_id (SheepleContactBackend *self, const char *id)
+sheeple_contact_eds_backend_get_contact (SheepleContactBackend *self, const char *id)
 {
     SheepleContactEDSBackend * backend = SHEEPLE_CONTACT_EDS_BACKEND(self);
     EContact * econtact;
@@ -29,7 +29,7 @@ static void
 sheeple_contact_eds_backend_interface_init (SheepleContactBackendIface *iface)
 {
     iface->get_db_id = sheeple_contact_eds_backend_get_db_id;
-    iface->get_contact_by_id = sheeple_contact_eds_backend_get_contact_by_id;
+    iface->get_contact = sheeple_contact_eds_backend_get_contact;
 }
 
 void contacts_added_handler (EBookView *ebookview, gpointer added, gpointer self)

@@ -79,7 +79,7 @@ void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
 
 void contact_added(SheepleContactBackend * eds, char * contact_id, gpointer ud)
 {
-    SheepleContact * ctc = sheeple_contact_backend_get_contact_by_id(eds, contact_id);
+    SheepleContact * ctc = sheeple_contact_backend_get_contact(eds, contact_id);
     GList * emails = sheeple_contact_get_email(ctc);
     gchar * email_addr = (emails && emails->data) ? (emails->data) : "";
     g_print("contact added : %s %s\n", contact_id, email_addr);
@@ -98,10 +98,12 @@ int main(int argc, char **argv)
     g_thread_init(NULL);
     gtk_init(&argc, &argv);
     
+    SheepleContactStore * contact_store = sheeple_contact_store_new();
     eds = SHEEPLE_CONTACT_BACKEND(sheeple_contact_eds_backend_new());
-    g_print("%s\n", sheeple_contact_backend_get_db_id(eds));
-    g_signal_connect(eds, "contact_added", G_CALLBACK(contact_added), NULL);
-    g_signal_connect(eds, "contact_changed", G_CALLBACK(contact_changed), NULL);
+    sheeple_contact_store_add_backend(contact_store, eds);
+    //g_print("%s\n", sheeple_contact_backend_get_db_id(eds));
+    //g_signal_connect(eds, "contact_added", G_CALLBACK(contact_added), NULL);
+    //g_signal_connect(eds, "contact_changed", G_CALLBACK(contact_changed), NULL);
 
     sources = create_default_sources();
 
