@@ -34,6 +34,9 @@ public class SheepleContactStore : GLib.Object
     
     private GLib.HashTable<string,SheepleContactBackend> contact_backends;
     
+    public signal void contact_added(string contact_id);
+    public signal void contact_changed(string contact_id);
+    public signal void contact_removed(string contact_id);
     public signal void ready();
     
     public SheepleContactStore()
@@ -69,6 +72,8 @@ public class SheepleContactStore : GLib.Object
             
             this.contact_store.insert(contact_id, meta); // NEED A BETTER WAY TO COME UP WITH OUR
                                                          // OWN UUID (right now, use the one from EDS)
+            
+            this.contact_added(contact_id);
         });
         
         backend.contact_removed.connect((backend, contact_id) => {
@@ -79,6 +84,8 @@ public class SheepleContactStore : GLib.Object
                 meta.refcount--;
                 meta.invalidate();
             }
+            
+            this.contact_removed(contact_id);
         });
         
         backend.contact_changed.connect((backend, contact_id) => {
@@ -88,6 +95,8 @@ public class SheepleContactStore : GLib.Object
             {
                 meta.invalidate();
             }
+            
+            this.contact_changed(contact_id);
         });
         
         backend.ready.connect(() => {
