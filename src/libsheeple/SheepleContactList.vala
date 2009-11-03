@@ -13,10 +13,11 @@ public class SheepleContactList : Gtk.ScrolledWindow
         this.treeview = new Gtk.TreeView();
         this.treeview.set_headers_visible(false);
         
-        this.listmodel = new Gtk.ListStore(1, typeof (string));
+        this.listmodel = new Gtk.ListStore(2, typeof(string), typeof(string));
         this.treeview.set_model(this.listmodel);
 
-        this.treeview.insert_column_with_attributes(-1, "Contacts", new CellRendererText(), "text", 0, null);
+        this.treeview.insert_column_with_attributes(-1, "Icon", new CellRendererPixbuf(), "icon-name", 0, null);
+        this.treeview.insert_column_with_attributes(-1, "Contacts", new CellRendererText(), "text", 1, null);
         
         var cs = SheepleContactStore.get_contact_store();
         cs.ready.connect(contact_store_ready);
@@ -32,9 +33,9 @@ public class SheepleContactList : Gtk.ScrolledWindow
         {
             TreeIter iter;
             this.listmodel.append(out iter);
-            this.listmodel.set(iter, 0, cs.get_contact(c_id).full_name, -1);
+            this.listmodel.set(iter, 0, "gtk-orientation-portrait", 1, cs.get_contact(c_id).full_name, -1);
         }
         
-        this.listmodel.set_sort_column_id(0, Gtk.SortType.ASCENDING);
+        this.listmodel.set_sort_column_id(1, Gtk.SortType.ASCENDING);
     }
 }
