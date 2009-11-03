@@ -9,4 +9,5 @@ public interface SheepleContactBackend : GLib.Object
     public signal void contact_added(string contact);
     public signal void contact_changed(string contact);
     public signal void contact_removed(string contact);
+    public signal void ready();
 }

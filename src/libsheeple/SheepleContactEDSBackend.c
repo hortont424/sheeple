@@ -71,6 +71,11 @@ void contacts_removed_handler (EBookView *ebookview, gpointer added, gpointer se
     }
 }
 
+void sequence_complete_handler (EBookView *ebookview, gpointer added, gpointer self)
+{
+    g_signal_emit_by_name(self, "ready", NULL);
+}
+
 static void
 sheeple_contact_eds_backend_init (SheepleContactEDSBackend *self)
 {
@@ -83,6 +88,7 @@ sheeple_contact_eds_backend_init (SheepleContactEDSBackend *self)
     g_signal_connect(self->ebookview, "contacts-added", G_CALLBACK(contacts_added_handler), self);
     g_signal_connect(self->ebookview, "contacts-changed", G_CALLBACK(contacts_changed_handler), self);
     g_signal_connect(self->ebookview, "contacts-removed", G_CALLBACK(contacts_removed_handler), self);
+    g_signal_connect(self->ebookview, "sequence-complete", G_CALLBACK(sequence_complete_handler), self);
     e_book_view_start(self->ebookview);
 }
 
