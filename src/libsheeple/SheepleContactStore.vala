@@ -91,6 +91,7 @@ public class SheepleContactStore : GLib.Object
         });
         
         backend.ready.connect(() => {
+            // this needs to only fire when all registered backends are ready!
             this.ready();
         });
     }
