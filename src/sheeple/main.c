@@ -80,7 +80,7 @@ void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
 int main(int argc, char **argv)
 {
     GList *sources;
-    GtkWidget *window, *hbox, *sourceview, *contactview, *contactlistview, *frame;
+    GtkWidget *window, *hbox, *sourceview, *contactview, *contactlistview, *pane;
 
     g_thread_init(NULL);
     gtk_init(&argc, &argv);
@@ -103,17 +103,16 @@ int main(int argc, char **argv)
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(GTK_WINDOW(window), 300, 400);
     g_signal_connect(window, "delete_event", gtk_main_quit, NULL);
-
-
-    //frame = gtk_frame_new(NULL);
-    //gtk_container_add(GTK_CONTAINER(frame), contactlistview);
+    
+    pane = gtk_hpaned_new();
+    gtk_paned_add1(GTK_PANED(pane), contactlistview);
+    gtk_paned_add2(GTK_PANED(pane), contactview);
+    //gtk_paned_set_position(GTK_PANED(pane), 400);
 
     hbox = gtk_hbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), sourceview, FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), gtk_vseparator_new(), FALSE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox), contactlistview, FALSE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox), gtk_vseparator_new(), FALSE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox), contactview, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), pane, TRUE, TRUE, 0);
 
     gtk_container_add(GTK_CONTAINER(window), hbox);
 

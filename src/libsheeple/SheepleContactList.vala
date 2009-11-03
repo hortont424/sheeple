@@ -1,32 +1,27 @@
 using GLib;
 using Gtk;
 
-public class SheepleContactList : Gtk.VBox
+public class SheepleContactList : Gtk.ScrolledWindow
 {
-    private Gtk.ScrolledWindow scroll_window;
-    private Gtk.VBox contacts_box;
-    private Gtk.Label onebox;
+    private Gtk.TreeView treeview;
+    private Gtk.ListStore listmodel;
     
     public SheepleContactList()
     {
-        Gtk.Viewport viewport;
-        this.contacts_box = new Gtk.VBox(true, 10);
+        this.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
         
-        this.scroll_window = new Gtk.ScrolledWindow(null, null);
-        this.scroll_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
-        this.scroll_window.set_shadow_type(Gtk.ShadowType.NONE);
+        this.treeview = new Gtk.TreeView();
+        this.treeview.set_headers_visible(false);
         
-        viewport = new Gtk.Viewport(this.scroll_window.hadjustment, this.scroll_window.vadjustment);
-        viewport.set_shadow_type(Gtk.ShadowType.NONE);
-        viewport.add(this.contacts_box);
-        
-        this.scroll_window.add(viewport);
-        
+        this.listmodel = new Gtk.ListStore(1, typeof (string));
+        this.treeview.set_model(this.listmodel);
+
+        this.treeview.insert_column_with_attributes(-1, "Contacts", new CellRendererText(), "text", 0, null);
         
         var cs = SheepleContactStore.get_contact_store();
         cs.ready.connect(contact_store_ready);
-                
-        this.pack_start(scroll_window, true, true, 0);
+        
+        this.add(this.treeview);
         this.show_all();
     }
     
@@ -35,9 +30,11 @@ public class SheepleContactList : Gtk.VBox
         var cs = SheepleContactStore.get_contact_store();
         foreach(string c_id in cs.get_contacts())
         {
-            onebox = new Gtk.Label(cs.get_contact(c_id).full_name);
-            this.contacts_box.pack_start(onebox, false, true, 0);
-            onebox.show();
+            TreeIter iter;
+            this.listmodel.append(out iter);
+            this.listmodel.set(iter, 0, cs.get_contact(c_id).full_name, -1);
         }
+        
+        this.listmodel.set_sort_column_id(0, Gtk.SortType.ASCENDING);
     }
 }
