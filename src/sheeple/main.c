@@ -77,33 +77,17 @@ void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
     g_print("%s\n", sheeple_group_get_name(gr));
 }
 
-void contact_added(SheepleContactBackend * eds, char * contact_id, gpointer ud)
-{
-    SheepleContact * ctc = sheeple_contact_backend_get_contact(eds, contact_id);
-    GList * emails = sheeple_contact_get_email(ctc);
-    gchar * email_addr = (emails && emails->data) ? (emails->data) : "";
-    g_print("contact added : %s %s\n", contact_id, email_addr);
-}
-
-void contact_changed(SheepleContactBackend * eds, char * contact_id, gpointer ud)
-{
-    g_print("contact changed : %s\n", contact_id);
-}
-
 int main(int argc, char **argv)
 {
     GList *sources;
-    GtkWidget *window, *hbox, *sourceview, *contactview;
+    GtkWidget *window, *hbox, *sourceview, *contactview, *contactlistview, *frame;
 
     g_thread_init(NULL);
     gtk_init(&argc, &argv);
     
-    SheepleContactStore * contact_store = sheeple_contact_store_new();
+    SheepleContactStore * contact_store = sheeple_contact_store_get_contact_store();
     eds = SHEEPLE_CONTACT_BACKEND(sheeple_contact_eds_backend_new());
     sheeple_contact_store_add_backend(contact_store, eds);
-    //g_print("%s\n", sheeple_contact_backend_get_db_id(eds));
-    //g_signal_connect(eds, "contact_added", G_CALLBACK(contact_added), NULL);
-    //g_signal_connect(eds, "contact_changed", G_CALLBACK(contact_changed), NULL);
 
     sources = create_default_sources();
 
@@ -114,12 +98,21 @@ int main(int argc, char **argv)
     
     contactview = GTK_WIDGET(sheeple_contact_view_new());
     
+    contactlistview = GTK_WIDGET(sheeple_contact_list_new());
+    
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(GTK_WINDOW(window), 300, 400);
     g_signal_connect(window, "delete_event", gtk_main_quit, NULL);
 
+
+    //frame = gtk_frame_new(NULL);
+    //gtk_container_add(GTK_CONTAINER(frame), contactlistview);
+
     hbox = gtk_hbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), sourceview, FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), gtk_vseparator_new(), FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), contactlistview, FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), gtk_vseparator_new(), FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), contactview, TRUE, TRUE, 0);
 
     gtk_container_add(GTK_CONTAINER(window), hbox);

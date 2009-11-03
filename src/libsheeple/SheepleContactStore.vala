@@ -27,15 +27,27 @@ public class SheepleContactStoreMetaContact
 
 public class SheepleContactStore : GLib.Object
 {
+    private static SheepleContactStore instance = null;
+
     // This should eventually be persistent
     private GLib.HashTable<string,SheepleContactStoreMetaContact> contact_store;
     
     private GLib.HashTable<string,SheepleContactBackend> contact_backends;
     
+    public signal void ready();
+    
     public SheepleContactStore()
     {
-        this.contact_store = new GLib.HashTable<string,SheepleContactStoreMetaContact>(GLib.str_hash,GLib.direct_equal);
-        this.contact_backends = new GLib.HashTable<string,SheepleContactBackend>(GLib.str_hash,GLib.direct_equal);
+        this.contact_store = new GLib.HashTable<string,SheepleContactStoreMetaContact>(GLib.str_hash,GLib.str_equal);
+        this.contact_backends = new GLib.HashTable<string,SheepleContactBackend>(GLib.str_hash,GLib.str_equal);
+    }
+    
+    public static SheepleContactStore get_contact_store()
+    {
+        if(instance == null)
+            instance = new SheepleContactStore();
+        
+        return instance;
     }
     
     public void add_backend(SheepleContactBackend backend)
@@ -77,17 +89,23 @@ public class SheepleContactStore : GLib.Object
                 meta.invalidate();
             }
         });
+        
+        backend.ready.connect(() => {
+            this.ready();
+        });
     }
     
-    SheepleContact? get_contact(string id)
+    public SheepleContact? get_contact(string id)
     {
         SheepleContactStoreMetaContact meta = this.contact_store.lookup(id);
+        
+        if(meta == null)
+            return null;
+        
         SheepleMetaContact contact = meta.metacontact;
         
         if(meta.refcount == 0)
-        {
             return null;
-        }
         
         if(contact == null)
         {
@@ -106,7 +124,7 @@ public class SheepleContactStore : GLib.Object
         return contact;
     }
     
-    GLib.List<unowned string> get_contacts()
+    public GLib.List<unowned string> get_contacts()
     {
         return this.contact_store.get_keys();
     }
