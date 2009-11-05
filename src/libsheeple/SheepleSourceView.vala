@@ -19,7 +19,7 @@ internal class _GroupWidgets
 public class SheepleSourceView : Gtk.ScrolledWindow
 {
     public unowned SheepleStore store {get; set;}
-    public unowned GLib.List<SheepleGroup> selection {get; set;}
+    public unowned GLib.List<unowned SheepleGroup> selection {get; set;}
     private GLib.HashTable<SheepleSource,_SourceWidgets?> source_widgets;
     private GLib.HashTable<SheepleGroup,_GroupWidgets?> group_widgets;
     private Gtk.VBox source_vbox;
@@ -54,20 +54,6 @@ public class SheepleSourceView : Gtk.ScrolledWindow
         this.notify["selection"].connect(update_selection);
     }
     
-    public void select_first_group()
-    {
-        /*foreach(SheepleSource src in this.sources)
-        {
-            foreach(string grp in src.get_groups())
-            {
-                GLib.List<SheepleGroup> newselection = new GLib.List<SheepleGroup>();
-                newselection.prepend(src.get_group(grp));
-                this.selection = newselection;
-                return;
-            }
-        }*/
-    }
-    
     private void add_group(SheepleGroup grp, Gtk.VBox source_box)
     {
         Gtk.Button button_widget;
@@ -100,11 +86,12 @@ public class SheepleSourceView : Gtk.ScrolledWindow
         button_widget = new Gtk.Button();
         button_widget.add(button_hbox);
         button_widget.relief = Gtk.ReliefStyle.NONE;
+        
         button_widget.focus_on_click = false;
         button_widget.clicked.connect(() => {
             GLib.List<SheepleGroup> newselection = new GLib.List<SheepleGroup>();
             newselection.prepend(grp);
-            selection = newselection;
+            this.selection = newselection;
         });
         
         alignment = new Gtk.Alignment(0, 0, 0, 0);
@@ -123,6 +110,13 @@ public class SheepleSourceView : Gtk.ScrolledWindow
         this.group_widgets.insert(grp, group_widgets);
         
         alignment.show_all();
+        
+        if(this.selection == null)
+        {
+            GLib.List<SheepleGroup> newselection = new GLib.List<SheepleGroup>();
+            newselection.prepend(grp);
+            this.selection = newselection;
+        }
     }
     
     private void add_source(SheepleSource src)
@@ -167,12 +161,15 @@ public class SheepleSourceView : Gtk.ScrolledWindow
     
     private void update_selection()
     {
-        /*foreach(SheepleSource src in this.sources)
+        foreach(SheepleSource src in this.store.get_sources())
         {
-            foreach(string gr in src.get_groups())
+            foreach(SheepleGroup grp in src.get_groups())
             {
-                SheepleGroup grp = src.get_group(gr);
                 _GroupWidgets group_widgets = this.group_widgets.lookup(grp);
+                
+                if(group_widgets == null)
+                    continue;
+                
                 string button_markup;
                 Gtk.ReliefStyle new_style = Gtk.ReliefStyle.NONE;
                 
@@ -188,7 +185,7 @@ public class SheepleSourceView : Gtk.ScrolledWindow
             }
         }
         
-        this.selection_changed();*/
+        this.selection_changed();
     }
 }
 

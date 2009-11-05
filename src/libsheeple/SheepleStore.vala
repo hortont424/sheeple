@@ -160,7 +160,7 @@ public class SheepleStore : GLib.Object
         return contact;
     }
     
-    public GLib.List<SheepleSource> get_sources()
+    public GLib.List<unowned SheepleSource> get_sources()
     {
         return this.contact_sources.get_values();
     }

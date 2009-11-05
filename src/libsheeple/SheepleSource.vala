@@ -45,7 +45,7 @@ public class SheepleSource : GLib.Object
         return this.groups.lookup(id);
     }
     
-    public GLib.List<SheepleGroup> get_groups()
+    public GLib.List<unowned SheepleGroup> get_groups()
     {
         return this.groups.get_values();
     }
