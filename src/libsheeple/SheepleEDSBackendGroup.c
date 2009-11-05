@@ -13,7 +13,8 @@ G_DEFINE_TYPE_WITH_CODE (SheepleEDSBackendGroup, sheeple_eds_backend_group, G_TY
 static char *
 sheeple_eds_backend_group_get_group_id (SheepleBackendGroup *self)
 {
-    return strdup("some-group"); // TODO: implement!
+    SheepleEDSBackendGroup * backend = SHEEPLE_EDS_BACKEND_GROUP(self);
+    return strdup(e_source_peek_uid(backend->source));
 }
 
 static SheepleContact *

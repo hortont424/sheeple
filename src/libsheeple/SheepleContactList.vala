@@ -29,11 +29,11 @@ public class SheepleContactList : Gtk.ScrolledWindow
     private void contact_store_ready()
     {
         var cs = SheepleStore.get_store();
-        foreach(string c_id in cs.get_contacts())
+        foreach(SheepleContact contact in cs.get_contacts())
         {
             TreeIter iter;
             this.listmodel.append(out iter);
-            this.listmodel.set(iter, 0, "gtk-orientation-portrait", 1, cs.get_contact(c_id).full_name, -1);
+            this.listmodel.set(iter, 0, "gtk-orientation-portrait", 1, contact.full_name, -1);
         }
         
         this.listmodel.set_sort_column_id(1, Gtk.SortType.ASCENDING);

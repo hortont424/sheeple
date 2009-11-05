@@ -68,7 +68,7 @@ public class SheepleSourceView : Gtk.ScrolledWindow
         }*/
     }
     
-    private void add_group(string group_id, string source_id, Gtk.VBox source_box)
+    private void add_group(SheepleGroup grp, Gtk.VBox source_box)
     {
         Gtk.Button button_widget;
         Gtk.Alignment alignment;
@@ -77,7 +77,6 @@ public class SheepleSourceView : Gtk.ScrolledWindow
         Gtk.HBox button_hbox;
         Gtk.Alignment button_align;
         string button_markup;
-        SheepleGroup grp = this.store.get_group(group_id, source_id);
         _GroupWidgets group_widgets;
         
         button_hbox = new Gtk.HBox(false, 2);
@@ -126,14 +125,12 @@ public class SheepleSourceView : Gtk.ScrolledWindow
         alignment.show_all();
     }
     
-    private void add_source(string source_id)
+    private void add_source(SheepleSource src)
     {
         Gtk.VBox source_box;
         Gtk.Label source_label;
         string title_markup;
         _SourceWidgets source_widgets;
-        
-        SheepleSource src = this.store.get_source(source_id);
         
         title_markup = GLib.Markup.printf_escaped("<b>%s</b>", src.name);
         
@@ -153,7 +150,7 @@ public class SheepleSourceView : Gtk.ScrolledWindow
         
         this.source_widgets.insert(src, source_widgets);
         
-        src.group_added.connect((group_id) => { this.add_group(group_id, source_id, source_box); } );
+        src.group_added.connect((group) => { this.add_group(group, source_box); } );
         
         source_box.show_all();
     }

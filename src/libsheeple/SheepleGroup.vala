@@ -9,7 +9,7 @@ public class SheepleGroup : GLib.Object
     
     private GLib.HashTable<string,SheepleContact> contacts;
     
-    public signal void contact_added(string contact);
+    public signal void contact_added(string contact); // eventually make these sheeplecontact params
     public signal void contact_changed(string contact);
     public signal void contact_removed(string contact);
     public signal void ready();
@@ -23,7 +23,8 @@ public class SheepleGroup : GLib.Object
         
         this.backend_group.contact_added.connect((grp, contact_id) => {
             // TODO: make sure it's not already there
-            this.contacts.insert(contact_id, this.backend_group.get_contact(contact_id));
+            SheepleContact contact = this.backend_group.get_contact(contact_id);
+            this.contacts.insert(contact_id, contact);
             this.contact_added(contact_id);
         });
         
@@ -47,13 +48,18 @@ public class SheepleGroup : GLib.Object
         return this.contacts.lookup(id);
     }
     
-    public GLib.List<string> get_contacts()
+    public GLib.List<SheepleContact> get_contacts()
     {
-        return this.contacts.get_keys();
+        return this.contacts.get_values();
     }
     
     public void start()
     {
         this.backend_group.start();
+    }
+    
+    public string get_group_id()
+    {
+        return this.backend_group.get_group_id();
     }
 }

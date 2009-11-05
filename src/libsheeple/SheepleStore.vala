@@ -35,12 +35,12 @@ public class SheepleStore : GLib.Object
     
     private GLib.HashTable<string,SheepleSource> contact_sources;
     
-    public signal void source_added(string db_id);
-    public signal void source_removed(string db_id);
+    public signal void source_added(SheepleSource db);
+    public signal void source_removed(SheepleSource db);
     
-    public signal void contact_added(string contact_id);
-    public signal void contact_changed(string contact_id);
-    public signal void contact_removed(string contact_id);
+    public signal void contact_added(SheepleContact contact);
+    public signal void contact_changed(SheepleContact contact);
+    public signal void contact_removed(SheepleContact contact);
     public signal void ready();
     
     public SheepleStore()
@@ -63,8 +63,8 @@ public class SheepleStore : GLib.Object
         SheepleSource contact_source = new SheepleSource(backend_id, backend);
         this.contact_sources.insert(backend_id, contact_source);
         
-        contact_source.group_added.connect((src, group_id) => {
-            SheepleGroup grp = contact_source.get_group(group_id);
+        contact_source.group_added.connect((src, grp) => {
+            //SheepleGroup grp = contact_source.get_group(group_id);
             
             grp.contact_added.connect((backend, contact_id) => {
                 // Theoretically, eventually, we find contacts that might be merge candidates,
@@ -73,7 +73,7 @@ public class SheepleStore : GLib.Object
                 SheepleStoreBackendContact backend_contact = new SheepleStoreBackendContact();
                 
                 backend_contact.id = contact_id;
-                backend_contact.group_id = group_id;
+                backend_contact.group_id = grp.get_group_id();
                 backend_contact.db_id = backend_id;
                 
                 meta.subcontacts.prepend(backend_contact);
@@ -82,19 +82,18 @@ public class SheepleStore : GLib.Object
                 this.contact_store.insert(contact_id, meta); // NEED A BETTER WAY TO COME UP WITH OUR
                                                              // OWN UUID (right now, use the one from EDS)
                 
-                this.contact_added(contact_id);
+                this.contact_added(this.resolve_contact(meta));
             });
             
             grp.contact_removed.connect((backend, contact_id) => {
                 SheepleStoreMetaContact meta = this.contact_store.lookup(contact_id);
+                this.contact_removed(this.resolve_contact(meta));
                 
                 if(meta != null)
                 {
                     meta.refcount--;
                     meta.invalidate();
                 }
-                
-                this.contact_removed(contact_id);
             });
             
             grp.contact_changed.connect((backend, contact_id) => {
@@ -105,7 +104,7 @@ public class SheepleStore : GLib.Object
                     meta.invalidate();
                 }
                 
-                this.contact_changed(contact_id);
+                this.contact_changed(this.resolve_contact(meta));
             });
             
             grp.ready.connect(() => {
@@ -127,13 +126,11 @@ public class SheepleStore : GLib.Object
         
         contact_source.start();
         
-        this.source_added(backend_id);
+        this.source_added(contact_source);
     }
     
-    public SheepleContact? get_contact(string id)
+    public SheepleContact? resolve_contact(SheepleStoreMetaContact meta)
     {
-        SheepleStoreMetaContact meta = this.contact_store.lookup(id);
-        
         if(meta == null)
             return null;
         
@@ -148,6 +145,7 @@ public class SheepleStore : GLib.Object
             
             foreach(SheepleStoreBackendContact subcontact in meta.subcontacts)
             {
+                stdout.printf("src %s grp %s con %s\n", subcontact.db_id, subcontact.group_id, subcontact.id);
                 SheepleSource src = this.contact_sources.lookup(subcontact.db_id);
                 SheepleGroup grp = src.get_group(subcontact.group_id);
                 SheepleContact merge_contact = grp.get_contact(subcontact.id);
@@ -160,19 +158,20 @@ public class SheepleStore : GLib.Object
         return contact;
     }
     
-    public SheepleSource get_source(string source_id)
+    public GLib.List<SheepleSource> get_sources()
     {
-        return this.contact_sources.lookup(source_id);
+        return this.contact_sources.get_values();
     }
     
-    public SheepleGroup get_group(string group_id, string source_id)
+    public GLib.List<SheepleContact> get_contacts()
     {
-        return this.contact_sources.lookup(source_id).get_group(group_id);
-    }
-    
-    public GLib.List<unowned string> get_contacts()
-    {
-        return this.contact_store.get_keys();
+        GLib.List<SheepleContact> contacts = new GLib.List<SheepleContact>();
+        
+        foreach(SheepleStoreMetaContact mc in this.contact_store.get_values())
+        {
+            contacts.prepend(this.resolve_contact(mc));
+        }
+        return contacts;
     }
 }
 
