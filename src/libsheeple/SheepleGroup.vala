@@ -5,31 +5,40 @@ public class SheepleGroup : GLib.Object
 {
     public string name {get; set;}
     public Gdk.Pixbuf icon {get; set;}
-    public SheepleContactBackendGroup backend_group {get; set;}
+    private SheepleBackendGroup backend_group;
     
-    private GLib.List<string> _contacts;
-    public GLib.List<string> contacts {get { return _contacts; } set { _contacts = value.copy(); }}
-    
-    public abstract SheepleContact get_contact(string id);
+    private GLib.HashTable<string,SheepleContact> contacts;
     
     public signal void contact_added(string contact);
     public signal void contact_changed(string contact);
     public signal void contact_removed(string contact);
     public signal void ready();
     
-    public SheepleGroup()
-    {
-    }
-    
-    public SheepleGroup.with_name(string name)
+    public SheepleGroup(string name, SheepleBackendGroup backend_group)
     {
         this.name = name;
+        this.backend_group = backend_group;
+        this.contacts = new GLib.HashTable<string,SheepleContact>(GLib.str_hash, GLib.str_equal);
+        
+        this.backend_group.contact_added.connect((grp, contact_id) => {
+            // TODO: make sure it's not already there
+            contacts.insert(contact_id, this.backend_group.get_contact(contact_id));
+            this.contact_added(contact_id);
+        });
+        
+        this.backend_group.contact_changed.connect((grp, contact_id) => {
+            this.contact_changed(contact_id);
+        });
+        
+        this.backend_group.contact_changed.connect((grp, contact_id) => {
+            // TODO: make sure it exists
+            contacts.remove(contact_id);
+            this.contact_removed(contact_id);
+        });
     }
     
-    public SheepleGroup.with_name_and_icon(string name, Gdk.Pixbuf icon)
+    public SheepleContact get_contact(string id)
     {
-        this.name = name;
-        this.icon = icon;
+        return this.contacts.lookup(id);
     }
-
 }

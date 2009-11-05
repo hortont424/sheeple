@@ -8,7 +8,7 @@ public class SheepleSource : GLib.Object
     private GLib.List<SheepleGroup> _groups;
     public GLib.List<SheepleGroup> groups {get { return _groups; } set { _groups = value.copy(); }}
     
-    public SheepleContactBackend backend {get; set;}
+    public SheepleBackend backend {get; set;}
     
     public SheepleSource()
     {

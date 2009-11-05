@@ -22,7 +22,8 @@
 
 #include <libsheeple/sheeple.h>
 #include <libsheeple/SheepleEDSContact.h> // yuck
-#include <libsheeple/SheepleContactEDSBackend.h> // yuck
+#include <libsheeple/SheepleEDSBackend.h> // yuck
+#include <libsheeple/SheepleEDSBackendGroup.h> // yuck
 
 SheepleContactBackend * eds;
 
@@ -86,7 +87,7 @@ int main(int argc, char **argv)
     gtk_init(&argc, &argv);
     
     SheepleContactStore * contact_store = sheeple_contact_store_get_contact_store();
-    eds = SHEEPLE_CONTACT_BACKEND(sheeple_contact_eds_backend_new());
+    eds = SHEEPLE_BACKEND(sheeple_eds_backend_new());
     sheeple_contact_store_add_backend(contact_store, eds);
 
     sources = create_default_sources();

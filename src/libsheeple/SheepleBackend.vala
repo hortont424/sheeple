@@ -1,10 +1,8 @@
 using GLib;
 
-public interface SheepleContactBackendGroup : GLib.Object
+public interface SheepleBackendGroup : GLib.Object
 {
     public abstract string get_group_id();
-    
-    private GLib.HashTable<string,SheepleContact> contacts;
     
     public abstract SheepleContact get_contact(string id);
     
@@ -14,9 +12,11 @@ public interface SheepleContactBackendGroup : GLib.Object
     public signal void ready();
 }
 
-public interface SheepleContactBackend : GLib.Object
+public interface SheepleBackend : GLib.Object
 {
     public abstract string get_db_id();
+    
+    public abstract SheepleGroup get_group(string id);
     
     public signal void group_added(string group);
     public signal void group_changed(string group);

@@ -8,9 +8,9 @@
 sheeple
 *.vapi
 *.so
-src/libsheeple/SheepleContactBackend.[ch]
+src/libsheeple/SheepleBackend.[ch]
 src/libsheeple/SheepleContact.[ch]
-src/libsheeple/SheepleContactStore.[ch]
+src/libsheeple/SheepleStore.[ch]
 src/libsheeple/SheepleGroup.[ch]
 src/libsheeple/SheepleSource.[ch]
 src/libsheeple/SheepleSourceView.[ch]

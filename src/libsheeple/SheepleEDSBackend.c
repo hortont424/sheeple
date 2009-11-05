@@ -1,35 +1,35 @@
 #include <glib.h>
 
-#include "SheepleContactEDSBackend.h"
+#include "SheepleEDSBackendGroup.h"
 #include "SheepleEDSContact.h"
 #include "sheeple.h"
 
-static void sheeple_contact_eds_backend_interface_init (SheepleContactBackendIface *iface);
+static void sheeple_eds_backend_group_interface_init (SheepleBackendGroupIface *iface);
 
-G_DEFINE_TYPE_WITH_CODE (SheepleContactEDSBackend, sheeple_contact_eds_backend, G_TYPE_OBJECT,
-                         G_IMPLEMENT_INTERFACE (TYPE_SHEEPLE_CONTACT_BACKEND,
-                                                sheeple_contact_eds_backend_interface_init));
+G_DEFINE_TYPE_WITH_CODE (SheepleEDSBackendGroup, sheeple_eds_backend_group, G_TYPE_OBJECT,
+                         G_IMPLEMENT_INTERFACE (TYPE_SHEEPLE_BACKEND,
+                                                sheeple_eds_backend_group_interface_init));
 
 static char *
-sheeple_contact_eds_backend_get_db_id (SheepleContactBackend *self)
+sheeple_eds_backend_group_get_group_id (SheepleBackendGroup *self)
 {
-    return "evolution-data-server";
+    return "some-group"; // TODO: implement!
 }
 
 static SheepleContact *
-sheeple_contact_eds_backend_get_contact (SheepleContactBackend *self, const char *id)
+sheeple_eds_backend_group_get_contact (SheepleBackendGroup *self, const char *id)
 {
-    SheepleContactEDSBackend * backend = SHEEPLE_CONTACT_EDS_BACKEND(self);
+    SheepleEDSBackendGroup * backend = SHEEPLE_EDS_BACKEND_GROUP(self);
     EContact * econtact;
     e_book_get_contact(backend->ebook, id, &econtact, NULL);
     return SHEEPLE_CONTACT(sheeple_eds_contact_new(econtact));
 }
 
 static void
-sheeple_contact_eds_backend_interface_init (SheepleContactBackendIface *iface)
+sheeple_eds_backend_group_interface_init (SheepleBackendGroupIface *iface)
 {
-    iface->get_db_id = sheeple_contact_eds_backend_get_db_id;
-    iface->get_contact = sheeple_contact_eds_backend_get_contact;
+    iface->get_group_id = sheeple_eds_backend_group_get_group_id;
+    iface->get_contact = sheeple_eds_backend_group_get_contact;
 }
 
 void contacts_added_handler (EBookView *ebookview, gpointer added, gpointer self)
@@ -77,7 +77,7 @@ void sequence_complete_handler (EBookView *ebookview, gpointer added, gpointer s
 }
 
 static void
-sheeple_contact_eds_backend_init (SheepleContactEDSBackend *self)
+sheeple_eds_backend_group_init (SheepleEDSBackendGroup *self)
 {
     self->ebook = e_book_new_default_addressbook(NULL);
     e_book_open(self->ebook, FALSE, NULL);
@@ -93,12 +93,12 @@ sheeple_contact_eds_backend_init (SheepleContactEDSBackend *self)
 }
 
 static void
-sheeple_contact_eds_backend_class_init (SheepleContactEDSBackendClass *self)
+sheeple_eds_backend_group_class_init (SheepleEDSBackendGroupClass *self)
 {
 }
 
-SheepleContactEDSBackend *
-sheeple_contact_eds_backend_new ()
+SheepleEDSBackendGroup *
+sheeple_eds_backend_group_new ()
 {
-    return g_object_new(TYPE_SHEEPLE_CONTACT_EDS_BACKEND, NULL);
+    return g_object_new(TYPE_SHEEPLE_EDS_BACKEND_GROUP, NULL);
 }

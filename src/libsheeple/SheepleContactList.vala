@@ -19,7 +19,7 @@ public class SheepleContactList : Gtk.ScrolledWindow
         this.treeview.insert_column_with_attributes(-1, "Icon", new CellRendererPixbuf(), "icon-name", 0, null);
         this.treeview.insert_column_with_attributes(-1, "Contacts", new CellRendererText(), "text", 1, null);
         
-        var cs = SheepleContactStore.get_contact_store();
+        var cs = SheepleStore.get_store();
         cs.ready.connect(contact_store_ready);
         
         this.add(this.treeview);
@@ -28,7 +28,7 @@ public class SheepleContactList : Gtk.ScrolledWindow
     
     private void contact_store_ready()
     {
-        var cs = SheepleContactStore.get_contact_store();
+        var cs = SheepleStore.get_store();
         foreach(string c_id in cs.get_contacts())
         {
             TreeIter iter;

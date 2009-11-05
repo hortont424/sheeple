@@ -45,7 +45,7 @@ public class SheepleStore : GLib.Object
         this.contact_sources = new GLib.List<SheepleSource>();
     }
     
-    public static SheepleStore get_contact_store()
+    public static SheepleStore get_store()
     {
         if(instance == null)
             instance = new SheepleStore();
@@ -53,11 +53,13 @@ public class SheepleStore : GLib.Object
         return instance;
     }
     
-    public void add_backend(SheepleContactBackend backend)
+    public void add_backend(SheepleBackend backend)
     {
         string backend_id = backend.get_db_id();
         SheepleSource contact_source = new SheepleSource.with_backend(backend);
-        this.contact_sources.insert(backend_id, backend);
+        this.contact_sources.prepend(contact_source);
+        
+        /*
         backend.contact_added.connect((backend, contact_id) => {
             // Theoretically, eventually, we find contacts that might be merge candidates,
             // then ask the user if they're actually the same person or not
@@ -103,12 +105,12 @@ public class SheepleStore : GLib.Object
         backend.ready.connect(() => {
             // this needs to only fire when all registered backends are ready!
             this.ready();
-        });
+        });*/
     }
     
     public SheepleContact? get_contact(string id)
     {
-        SheepleStoreMetaContact meta = this.contact_store.lookup(id);
+        /*SheepleStoreMetaContact meta = this.contact_store.lookup(id);
         
         if(meta == null)
             return null;
@@ -124,7 +126,7 @@ public class SheepleStore : GLib.Object
             
             foreach(SheepleStoreBackendContact subcontact in meta.subcontacts)
             {
-                SheepleContactBackend backend = this.contact_backends.lookup(subcontact.db_id);
+                SheepleBackend backend = this.contact_backends.lookup(subcontact.db_id);
                 SheepleContact merge_contact = backend.get_contact(subcontact.id);
                 
                 if(merge_contact != null)
@@ -132,7 +134,9 @@ public class SheepleStore : GLib.Object
             }
         }
         
-        return contact;
+        return contact;*/
+        
+        return null;
     }
     
     public GLib.List<unowned string> get_contacts()
