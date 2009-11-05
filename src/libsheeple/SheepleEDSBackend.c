@@ -37,6 +37,10 @@ sheeple_eds_backend_start (SheepleBackend *self)
         {
             source = source_elem->data;
             
+            EBook * book = e_book_new(source, NULL);
+            if(!book) // don't throw groups for non-addressbook sources
+                continue;
+            
             g_signal_emit_by_name(backend, "group-added",
                                   e_source_peek_uid(source), NULL);
         }
@@ -51,10 +55,14 @@ sheeple_eds_backend_get_group (SheepleBackend *self, const char *id)
     e_book_get_contact(backend->ebook, id, &econtact, NULL);
     return SHEEPLE_CONTACT(sheeple_eds_contact_new(econtact));*/
     
-    SheepleEDSBackend * backend = SHEEPLE_EDS_BACKEND(self);
+    SheepleEDSBackend *backend = SHEEPLE_EDS_BACKEND(self);
     
-    ESource * src = e_source_list_peek_source_by_uid(backend->source_list, id);
-    return SHEEPLE_BACKEND_GROUP(sheeple_eds_backend_group_new(src));
+    ESource *src = e_source_list_peek_source_by_uid(backend->source_list, id);
+    
+    SheepleEDSBackendGroup *backend_group = sheeple_eds_backend_group_new();
+    sheeple_eds_backend_group_set_esource(backend_group, src);
+    
+    return SHEEPLE_BACKEND_GROUP(backend_group);
 }
 
 static void
@@ -62,6 +70,7 @@ sheeple_eds_backend_interface_init (SheepleBackendIface *iface)
 {
     iface->get_db_id = sheeple_eds_backend_get_db_id;
     iface->get_group = sheeple_eds_backend_get_group;
+    iface->start = sheeple_eds_backend_start;
 }
 
 void contacts_added_handler (EBookView *ebookview, gpointer added, gpointer self)

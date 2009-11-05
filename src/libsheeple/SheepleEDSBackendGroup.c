@@ -7,15 +7,8 @@
 static void sheeple_eds_backend_group_interface_init (SheepleBackendGroupIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (SheepleEDSBackendGroup, sheeple_eds_backend_group, G_TYPE_OBJECT,
-                         G_IMPLEMENT_INTERFACE (TYPE_SHEEPLE_BACKEND,
+                         G_IMPLEMENT_INTERFACE (TYPE_SHEEPLE_BACKEND_GROUP,
                                                 sheeple_eds_backend_group_interface_init));
-
-enum
-{
-    PROP_0,
-    
-    PROP_SOURCE
-};
 
 static char *
 sheeple_eds_backend_group_get_group_id (SheepleBackendGroup *self)
@@ -90,46 +83,25 @@ static void sequence_complete_handler (EBookView *ebookview, gpointer added, gpo
 }
 
 static void
-sheeple_eds_backend_group_set_property (GObject *object, guint property_id,
-                                        const GValue *value, GParamSpec *pspec)
-{
-    SheepleEDSBackendGroup *self = SHEEPLE_EDS_BACKEND_GROUP(object);
-
-    switch (property_id)
-    {
-    case PROP_SOURCE:
-        //TODO: g_free (self->priv->name);
-        self->source = g_value_get_object(value);
-        break;
-
-    default:
-        /* We don't have any other property... */
-        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-        break;
-    }
-}
-
-static void
-sheeple_eds_backend_group_get_property (GObject *object, guint property_id,
-                                        GValue *value, GParamSpec *pspec)
-{
-    SheepleEDSBackendGroup *self = SHEEPLE_EDS_BACKEND_GROUP(object);
-
-    switch (property_id)
-    {
-    case PROP_SOURCE:
-        g_value_set_object (value, self->source);
-        break;
-    default:
-        /* We don't have any other property... */
-        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-        break;
-    }
-}
-
-static void
 sheeple_eds_backend_group_init (SheepleEDSBackendGroup *self)
 {
+}
+
+static void
+sheeple_eds_backend_group_class_init (SheepleEDSBackendGroupClass *self)
+{
+}
+
+SheepleEDSBackendGroup *
+sheeple_eds_backend_group_new ()
+{
+    return g_object_new(TYPE_SHEEPLE_EDS_BACKEND_GROUP, NULL);
+}
+
+void sheeple_eds_backend_group_set_esource(SheepleEDSBackendGroup *self, ESource *src)
+{
+    g_print("%p\n\n\n", src);
+    self->source = src;
     self->ebook = e_book_new(self->source, NULL); // TODO: error
     e_book_open(self->ebook, FALSE, NULL);
     
@@ -140,27 +112,6 @@ sheeple_eds_backend_group_init (SheepleEDSBackendGroup *self)
     g_signal_connect(self->ebookview, "contacts-changed", G_CALLBACK(contacts_changed_handler), self);
     g_signal_connect(self->ebookview, "contacts-removed", G_CALLBACK(contacts_removed_handler), self);
     g_signal_connect(self->ebookview, "sequence-complete", G_CALLBACK(sequence_complete_handler), self);
-}
-
-static void
-sheeple_eds_backend_group_class_init (SheepleEDSBackendGroupClass *self)
-{
-    GObjectClass *gobject_class = G_OBJECT_CLASS (self);
-    GParamSpec *pspec;
-    gobject_class->set_property = sheeple_eds_backend_group_set_property;
-    gobject_class->get_property = sheeple_eds_backend_group_get_property;
-
-    pspec = g_param_spec_object ("source",
-                                 "ESource of BackendGroup",
-                                 "Represented ESource",
-                                 E_TYPE_SOURCE,
-                                 G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE);
-    g_object_class_install_property (gobject_class, PROP_SOURCE, pspec);
-}
-
-SheepleEDSBackendGroup *
-sheeple_eds_backend_group_new (ESource * src)
-{
-    return g_object_new(TYPE_SHEEPLE_EDS_BACKEND_GROUP, "source", src, NULL);
+    g_print("done setting esource\n\n\n");
 }
 

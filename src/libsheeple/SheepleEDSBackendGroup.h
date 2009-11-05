@@ -32,4 +32,6 @@ struct _SheepleEDSBackendGroupClass
 SheepleEDSBackendGroup * sheeple_eds_backend_group_new ();
 GType sheeple_eds_backend_group_get_type (void);
 
+void sheeple_eds_backend_group_set_esource(SheepleEDSBackendGroup *self, ESource *src);
+
 #endif

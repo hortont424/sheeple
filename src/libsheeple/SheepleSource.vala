@@ -32,6 +32,8 @@ public class SheepleSource : GLib.Object
         this.backend.ready.connect((grp) => {
             this.ready();
         });
+        
+        this.backend.start();
     }
     
     public SheepleGroup get_group(string id)

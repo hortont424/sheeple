@@ -56,9 +56,14 @@ public class SheepleStore : GLib.Object
     public void add_backend(SheepleBackend backend)
     {
         string backend_id = backend.get_db_id();
-        stdout.printf("%s\n", backend_id);
-        //SheepleSource contact_source = new SheepleSource(backend_id, backend);
-        //this.contact_sources.prepend(contact_source);
+        SheepleSource contact_source = new SheepleSource(backend_id, backend);
+        this.contact_sources.prepend(contact_source);
+        
+        contact_source.group_added.connect((src, group_id) => {
+            stdout.printf("%s\n", group_id);
+        });
+        
+        //contact_source.start();
         
         /*
         backend.contact_added.connect((backend, contact_id) => {
