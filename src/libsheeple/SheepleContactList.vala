@@ -5,9 +5,12 @@ public class SheepleContactList : Gtk.ScrolledWindow
 {
     private Gtk.TreeView treeview;
     private Gtk.ListStore listmodel;
+    public unowned SheepleGroup group {get; set;}
     
     public SheepleContactList()
     {
+        this.group = null;
+    
         this.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
         
         this.treeview = new Gtk.TreeView();
@@ -20,17 +23,27 @@ public class SheepleContactList : Gtk.ScrolledWindow
         this.treeview.insert_column_with_attributes(-1, "Contacts", new CellRendererText(), "text", 1, null);
         
         var cs = SheepleStore.get_store();
-        cs.ready.connect(contact_store_ready);
+        cs.ready.connect(update_contact_list);
         
         this.add(this.treeview);
         this.show_all();
+        
+        this.notify["group"].connect(update_contact_list);
+        // TODO: register for add/remove/change notifications each time we change group! 
     }
     
-    private void contact_store_ready()
+    private void update_contact_list()
     {
         this.listmodel.clear();
-        var cs = SheepleStore.get_store();
-        foreach(SheepleContact contact in cs.get_contacts())
+        
+        GLib.List<unowned SheepleContact> contact_list;
+        
+        if(this.group == null)
+            contact_list = SheepleStore.get_store().get_contacts();
+        else
+            contact_list = this.group.get_contacts();
+        
+        foreach(SheepleContact contact in contact_list)
         {
             TreeIter iter;
             this.listmodel.append(out iter);

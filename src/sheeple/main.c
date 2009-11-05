@@ -26,71 +26,27 @@
 #include <libsheeple/SheepleEDSBackendGroup.h> // yuck
 
 SheepleBackend * eds;
-
-GList *create_default_sources()
-{
-    /*GList *sources = NULL;
-
-    GdkPixbuf *pbuf =
-        gdk_pixbuf_new_from_file_at_size
-        ("/usr/share/icons/gnome/scalable/apps/im-msn.svg", 16, 16, NULL);
-    GdkPixbuf *pbuf2 =
-        gdk_pixbuf_new_from_file_at_size
-        ("/usr/share/icons/gnome/scalable/apps/system-users.svg", 16, 16, NULL);
-
-    SheepleSource *sheeple_contacts, *sheeple_contacts_matt;
-    SheepleGroup *group;
-
-    GList *contacts_list = NULL, *matt_list = NULL;
-
-    group = sheeple_group_new_with_name("Matt's Girls");
-    sheeple_group_set_name(group, "Matt's Girls");
-    sheeple_group_set_icon(group, pbuf);
-    matt_list = g_list_prepend(matt_list, group);
-    group = sheeple_group_new_with_name("Bus People");
-    sheeple_group_set_icon(group, pbuf);
-    matt_list = g_list_prepend(matt_list, group);
-
-    group = sheeple_group_new_with_name("Family");
-    sheeple_group_set_icon(group, pbuf2);
-    contacts_list = g_list_prepend(contacts_list, group);
-    group = sheeple_group_new_with_name("RCOS");
-    sheeple_group_set_icon(group, pbuf2);
-    contacts_list = g_list_prepend(contacts_list, group);
-    group = sheeple_group_new_with_name("RPI Friends");
-    sheeple_group_set_icon(group, pbuf2);
-    contacts_list = g_list_prepend(contacts_list, group);
-
-    sheeple_contacts = sheeple_source_new_with_name("Contacts");
-    sheeple_source_set_groups(sheeple_contacts, contacts_list);
-
-    sheeple_contacts_matt = sheeple_source_new_with_name("Matt's Contacts");
-    sheeple_source_set_groups(sheeple_contacts_matt, matt_list);
-
-    sources = g_list_prepend(sources, sheeple_contacts_matt);
-    sources = g_list_prepend(sources, sheeple_contacts);
-
-    return sources;*/
-}
+SheepleContactList * contactlistview;
 
 void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
 {
     SheepleGroup *gr = sheeple_source_view_get_selection(sourceview)->data;
-    g_print("%s\n", sheeple_group_get_name(gr));
+    GValue gr_val = { 0, };
+    g_value_init(&gr_val, G_TYPE_OBJECT);
+    g_value_set_object(&gr_val, gr);
+    g_object_set_property(G_OBJECT(contactlistview), "group", &gr_val);
 }
 
 int main(int argc, char **argv)
 {
     GList *sources;
-    GtkWidget *window, *hbox, *sourceview, *contactview, *contactlistview, *pane;
+    GtkWidget *window, *hbox, *sourceview, *contactview, *pane;
 
     g_thread_init(NULL);
     gtk_init(&argc, &argv);
     
     SheepleStore * contact_store = sheeple_store_get_store();
     eds = SHEEPLE_BACKEND(sheeple_eds_backend_new());
-
-    //sources = create_default_sources();
 
     sourceview = GTK_WIDGET(sheeple_source_view_new());
     sheeple_source_view_set_store(SHEEPLE_SOURCE_VIEW(sourceview), contact_store);
@@ -99,7 +55,7 @@ int main(int argc, char **argv)
     
     contactview = GTK_WIDGET(sheeple_contact_view_new());
     
-    contactlistview = GTK_WIDGET(sheeple_contact_list_new());
+    contactlistview = sheeple_contact_list_new();
     
     sheeple_store_add_backend(contact_store, eds);
     
@@ -108,9 +64,8 @@ int main(int argc, char **argv)
     g_signal_connect(window, "delete_event", gtk_main_quit, NULL);
     
     pane = gtk_hpaned_new();
-    gtk_paned_add1(GTK_PANED(pane), contactlistview);
+    gtk_paned_add1(GTK_PANED(pane), GTK_WIDGET(contactlistview));
     gtk_paned_add2(GTK_PANED(pane), contactview);
-    //gtk_paned_set_position(GTK_PANED(pane), 400);
 
     hbox = gtk_hbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), sourceview, FALSE, TRUE, 0);

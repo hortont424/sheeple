@@ -172,7 +172,6 @@ public class SheepleStore : GLib.Object
         foreach(SheepleStoreMetaContact mc in this.contact_store.get_values())
         {
             contacts.prepend(this.resolve_contact(mc));
-            stdout.printf("%s\n", this.resolve_contact(mc).full_name);
         }
         return contacts;
     }
