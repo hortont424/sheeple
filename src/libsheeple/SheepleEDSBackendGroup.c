@@ -14,7 +14,7 @@ static char *
 sheeple_eds_backend_group_get_group_id (SheepleBackendGroup *self)
 {
     SheepleEDSBackendGroup * backend = SHEEPLE_EDS_BACKEND_GROUP(self);
-    return strdup(e_source_peek_uid(backend->source));
+    return e_source_peek_uid(backend->source);
 }
 
 static SheepleContact *

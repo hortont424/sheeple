@@ -150,6 +150,11 @@ public class SheepleSourceView : Gtk.ScrolledWindow
         
         this.source_widgets.insert(src, source_widgets);
         
+        foreach(SheepleGroup grp in src.get_groups())
+        {
+            this.add_group(grp, source_box);
+        }
+        
         src.group_added.connect((group) => { this.add_group(group, source_box); } );
         
         source_box.show_all();
