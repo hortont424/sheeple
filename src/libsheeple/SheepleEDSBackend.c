@@ -74,32 +74,15 @@ sheeple_eds_backend_interface_init (SheepleBackendIface *iface)
     iface->start = sheeple_eds_backend_start;
 }
 
-void contacts_added_handler (EBookView *ebookview, gpointer added, gpointer self)
+void group_added_handler (EBookView *ebookview, gpointer added, gpointer self)
 {
-    /*GList *list = (GList*)added, *elem;
-    EContact * contact;
-
-    for(elem = list; elem; elem = elem->next)
-    {
-        contact = elem->data;
-        g_signal_emit_by_name(self, "contact-added",
-                              e_contact_get(contact, E_CONTACT_UID), NULL);
-    }*/
-    
-    // TODO: not sure how this works!
+    g_signal_emit_by_name(self, "group-added", e_source_peek_uid(E_SOURCE(added)), NULL);
+    g_print("added group: %s\n\n", 
 }
 
-void contacts_removed_handler (EBookView *ebookview, gpointer added, gpointer self)
+void group_removed_handler (EBookView *ebookview, gpointer removed, gpointer self)
 {
-    /*GList *list = (GList*)added, *elem;
-    EContact * contact;
-
-    for(elem = list; elem; elem = elem->next)
-    {
-        contact = elem->data;
-        g_signal_emit_by_name(self, "contact-removed",
-                              e_contact_get(contact, E_CONTACT_UID), NULL);
-    }*/
+    g_signal_emit_by_name(self, "group-removed", e_source_peek_uid(E_SOURCE(removed)), NULL);
 }
 
 static void
@@ -107,8 +90,9 @@ sheeple_eds_backend_init (SheepleEDSBackend *self)
 {
     e_book_get_addressbooks(&(self->source_list), NULL); // TODO: error
 
-    g_signal_connect(self->source_list, "group-added", G_CALLBACK(contacts_added_handler), self);
-    g_signal_connect(self->source_list, "group-removed", G_CALLBACK(contacts_removed_handler), self);
+    // TODO: these signals seem to not be fired!?
+    g_signal_connect(self->source_list, "group-added", G_CALLBACK(group_added_handler), self);
+    g_signal_connect(self->source_list, "group-removed", G_CALLBACK(group_removed_handler), self);
 }
 
 static void

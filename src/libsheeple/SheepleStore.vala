@@ -119,13 +119,6 @@ public class SheepleStore : GLib.Object
             //this.group_added(group_id);
         });
         
-        //contact_source.group_removed((src, group_id) => {
-            //this.group_removed(group_id);
-        //});
-        
-        contact_source.ready.connect((cs) => {
-        });
-        
         contact_source.start();
         
         this.source_added(contact_source);
