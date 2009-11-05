@@ -3,6 +3,7 @@
 
 #include <glib-object.h>
 #include <libebook/e-book.h>
+#include <libedataserver/e-source-list.h>
 
 #define TYPE_SHEEPLE_EDS_BACKEND             (sheeple_eds_backend_get_type ())
 #define SHEEPLE_EDS_BACKEND(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_SHEEPLE_EDS_BACKEND, SheepleEDSBackend))
@@ -19,8 +20,7 @@ struct _SheepleEDSBackend
 {
     GObject parent_instance;
     
-    EBook * ebook;
-    EBookView * ebookview;
+    ESourceList * source_list;
 };
 
 struct _SheepleEDSBackendClass

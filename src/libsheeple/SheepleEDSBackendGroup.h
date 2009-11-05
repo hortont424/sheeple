@@ -19,8 +19,9 @@ struct _SheepleEDSBackendGroup
 {
     GObject parent_instance;
     
-    EBook * ebook;
-    EBookView * ebookview;
+    ESource *source;
+    EBook *ebook;
+    EBookView *ebookview;
 };
 
 struct _SheepleEDSBackendGroupClass

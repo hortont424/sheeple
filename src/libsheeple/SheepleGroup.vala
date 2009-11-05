@@ -22,7 +22,7 @@ public class SheepleGroup : GLib.Object
         
         this.backend_group.contact_added.connect((grp, contact_id) => {
             // TODO: make sure it's not already there
-            contacts.insert(contact_id, this.backend_group.get_contact(contact_id));
+            this.contacts.insert(contact_id, this.backend_group.get_contact(contact_id));
             this.contact_added(contact_id);
         });
         
@@ -32,13 +32,20 @@ public class SheepleGroup : GLib.Object
         
         this.backend_group.contact_changed.connect((grp, contact_id) => {
             // TODO: make sure it exists
-            contacts.remove(contact_id);
+            this.contacts.remove(contact_id);
             this.contact_removed(contact_id);
         });
+        
+        this.backend_group.start();
     }
     
     public SheepleContact get_contact(string id)
     {
         return this.contacts.lookup(id);
+    }
+    
+    public GLib.List<string> get_contacts()
+    {
+        return this.contacts.get_keys();
     }
 }

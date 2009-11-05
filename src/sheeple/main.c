@@ -25,11 +25,11 @@
 #include <libsheeple/SheepleEDSBackend.h> // yuck
 #include <libsheeple/SheepleEDSBackendGroup.h> // yuck
 
-SheepleContactBackend * eds;
+SheepleBackend * eds;
 
 GList *create_default_sources()
 {
-    GList *sources = NULL;
+    /*GList *sources = NULL;
 
     GdkPixbuf *pbuf =
         gdk_pixbuf_new_from_file_at_size
@@ -44,6 +44,7 @@ GList *create_default_sources()
     GList *contacts_list = NULL, *matt_list = NULL;
 
     group = sheeple_group_new_with_name("Matt's Girls");
+    sheeple_group_set_name(group, "Matt's Girls");
     sheeple_group_set_icon(group, pbuf);
     matt_list = g_list_prepend(matt_list, group);
     group = sheeple_group_new_with_name("Bus People");
@@ -69,7 +70,7 @@ GList *create_default_sources()
     sources = g_list_prepend(sources, sheeple_contacts_matt);
     sources = g_list_prepend(sources, sheeple_contacts);
 
-    return sources;
+    return sources;*/
 }
 
 void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
@@ -86,16 +87,16 @@ int main(int argc, char **argv)
     g_thread_init(NULL);
     gtk_init(&argc, &argv);
     
-    SheepleContactStore * contact_store = sheeple_contact_store_get_contact_store();
+    SheepleStore * contact_store = sheeple_store_get_store();
     eds = SHEEPLE_BACKEND(sheeple_eds_backend_new());
-    sheeple_contact_store_add_backend(contact_store, eds);
+    sheeple_store_add_backend(contact_store, eds);
 
-    sources = create_default_sources();
+    //sources = create_default_sources();
 
-    sourceview = GTK_WIDGET(sheeple_source_view_new());
-    sheeple_source_view_set_sources(SHEEPLE_SOURCE_VIEW(sourceview), sources);
-    g_signal_connect(sourceview, "selection-changed",
-                     G_CALLBACK(sv_select_changed), NULL);
+    //sourceview = GTK_WIDGET(sheeple_source_view_new());
+    //sheeple_source_view_set_sources(SHEEPLE_SOURCE_VIEW(sourceview), sources);
+    //g_signal_connect(sourceview, "selection-changed",
+    //                 G_CALLBACK(sv_select_changed), NULL);
     
     contactview = GTK_WIDGET(sheeple_contact_view_new());
     
@@ -111,7 +112,7 @@ int main(int argc, char **argv)
     //gtk_paned_set_position(GTK_PANED(pane), 400);
 
     hbox = gtk_hbox_new(FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox), sourceview, FALSE, TRUE, 0);
+    //gtk_box_pack_start(GTK_BOX(hbox), sourceview, FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), gtk_vseparator_new(), FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), pane, TRUE, TRUE, 0);
 

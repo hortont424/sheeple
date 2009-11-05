@@ -10,6 +10,8 @@ public interface SheepleBackendGroup : GLib.Object
     public signal void contact_changed(string contact);
     public signal void contact_removed(string contact);
     public signal void ready();
+    
+    public abstract void start();
 }
 
 public interface SheepleBackend : GLib.Object
@@ -19,7 +21,8 @@ public interface SheepleBackend : GLib.Object
     public abstract SheepleGroup get_group(string id);
     
     public signal void group_added(string group);
-    public signal void group_changed(string group);
     public signal void group_removed(string group);
     public signal void ready();
+    
+    public abstract void start();
 }

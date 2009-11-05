@@ -5,23 +5,42 @@ public class SheepleSource : GLib.Object
 {
     public string name {get; set;}
     
-    private GLib.List<SheepleGroup> _groups;
-    public GLib.List<SheepleGroup> groups {get { return _groups; } set { _groups = value.copy(); }}
+    private GLib.HashTable<string,SheepleGroup> groups;
     
     public SheepleBackend backend {get; set;}
     
-    public SheepleSource()
-    {
-    }
+    public signal void group_added(string group);
+    public signal void group_removed(string group);
+    public signal void ready();
     
-    public SheepleSource.with_backend(SheepleBackend backend)
-    {
-        this.backend = backend;
-    }
-    
-    public SheepleSource.with_name(string name) // TODO: get rid of this
+    public SheepleSource(string name, SheepleBackend backend)
     {
         this.name = name;
+        this.backend = backend;
+        this.groups = new GLib.HashTable<string,SheepleGroup>(GLib.str_hash, GLib.str_equal);
+        
+        this.backend.group_added.connect((grp, id) => {
+            this.groups.insert(id, this.backend.get_group(id));
+            this.group_added(id);
+        });
+        
+        this.backend.group_removed.connect((grp, id) => {
+            this.groups.remove(id);
+            this.group_removed(id);
+        });
+        
+        this.backend.ready.connect((grp) => {
+            this.ready();
+        });
     }
-
+    
+    public SheepleGroup get_group(string id)
+    {
+        return this.groups.lookup(id);
+    }
+    
+    public GLib.List<string> get_groups()
+    {
+        return this.groups.get_keys();
+    }
 }

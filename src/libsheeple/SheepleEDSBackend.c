@@ -1,6 +1,7 @@
 #include <glib.h>
 
 #include "SheepleEDSBackend.h"
+#include "SheepleEDSBackendGroup.h"
 #include "SheepleEDSContact.h"
 #include "sheeple.h"
 
@@ -13,39 +14,57 @@ G_DEFINE_TYPE_WITH_CODE (SheepleEDSBackend, sheeple_eds_backend, G_TYPE_OBJECT,
 static char *
 sheeple_eds_backend_get_db_id (SheepleBackend *self)
 {
-    return "evolution-data-server";
+    return strdup("evolution-data-server");
+}
+
+static void
+sheeple_eds_backend_start (SheepleBackend *self)
+{
+    SheepleEDSBackend * backend = SHEEPLE_EDS_BACKEND(self);
+    GSList *groups = e_source_list_peek_groups(backend->source_list);
+    GSList *elem;
+    ESourceGroup *group;
+    
+    for(elem = groups; elem; elem = elem->next)
+    {
+        group = elem->data;
+        
+        GSList *sources = e_source_group_peek_sources(group);
+        GSList *source_elem;
+        ESource *source;
+        
+        for(source_elem = sources; source_elem; source_elem = source_elem->next)
+        {
+            source = source_elem->data;
+            
+            g_signal_emit_by_name(backend, "group-added",
+                                  e_source_peek_uid(source), NULL);
+        }
+    }
 }
 
 static SheepleBackendGroup *
 sheeple_eds_backend_get_group (SheepleBackend *self, const char *id)
 {
-    SheepleEDSBackend * backend = SHEEPLE_EDS_BACKEND(self);
+    /*SheepleEDSBackend * backend = SHEEPLE_EDS_BACKEND(self);
     EContact * econtact;
     e_book_get_contact(backend->ebook, id, &econtact, NULL);
-    return SHEEPLE_CONTACT(sheeple_eds_contact_new(econtact));
+    return SHEEPLE_CONTACT(sheeple_eds_contact_new(econtact));*/
+    
+    SheepleEDSBackend * backend = SHEEPLE_EDS_BACKEND(self);
+    
+    ESource * src = e_source_list_peek_source_by_uid(backend->source_list, id);
+    return SHEEPLE_BACKEND_GROUP(sheeple_eds_backend_group_new(src));
 }
 
 static void
 sheeple_eds_backend_interface_init (SheepleBackendIface *iface)
 {
     iface->get_db_id = sheeple_eds_backend_get_db_id;
-    iface->get_group = sheeple_eds_backend_get_contact;
+    iface->get_group = sheeple_eds_backend_get_group;
 }
 
 void contacts_added_handler (EBookView *ebookview, gpointer added, gpointer self)
-{
-    GList *list = (GList*)added, *elem;
-    EContact * contact;
-
-    for(elem = list; elem; elem = elem->next)
-    {
-        contact = elem->data;
-        g_signal_emit_by_name(self, "contact-added",
-                              e_contact_get(contact, E_CONTACT_UID), NULL);
-    }
-}
-
-void contacts_changed_handler (EBookView *ebookview, gpointer added, gpointer self)
 {
     /*GList *list = (GList*)added, *elem;
     EContact * contact;
@@ -53,9 +72,11 @@ void contacts_changed_handler (EBookView *ebookview, gpointer added, gpointer se
     for(elem = list; elem; elem = elem->next)
     {
         contact = elem->data;
-        g_signal_emit_by_name(self, "contact-changed",
+        g_signal_emit_by_name(self, "contact-added",
                               e_contact_get(contact, E_CONTACT_UID), NULL);
     }*/
+    
+    // TODO: not sure how this works!
 }
 
 void contacts_removed_handler (EBookView *ebookview, gpointer added, gpointer self)
@@ -71,25 +92,13 @@ void contacts_removed_handler (EBookView *ebookview, gpointer added, gpointer se
     }*/
 }
 
-void sequence_complete_handler (EBookView *ebookview, gpointer added, gpointer self)
-{
-    g_signal_emit_by_name(self, "ready", NULL);
-}
-
 static void
 sheeple_eds_backend_init (SheepleEDSBackend *self)
 {
-    self->ebook = e_book_new_default_addressbook(NULL);
-    e_book_open(self->ebook, FALSE, NULL);
-    
-    EBookQuery * q = e_book_query_any_field_contains("");
-    
-    e_book_get_book_view(self->ebook, q, NULL, 0, &(self->ebookview), NULL);
-    g_signal_connect(self->ebookview, "contacts-added", G_CALLBACK(contacts_added_handler), self);
-    //g_signal_connect(self->ebookview, "contacts-changed", G_CALLBACK(contacts_changed_handler), self);
-    //g_signal_connect(self->ebookview, "contacts-removed", G_CALLBACK(contacts_removed_handler), self);
-    g_signal_connect(self->ebookview, "sequence-complete", G_CALLBACK(sequence_complete_handler), self);
-    e_book_view_start(self->ebookview);
+    e_book_get_addressbooks(&(self->source_list), NULL); // TODO: error
+
+    g_signal_connect(self->source_list, "group-added", G_CALLBACK(contacts_added_handler), self);
+    g_signal_connect(self->source_list, "group-removed", G_CALLBACK(contacts_removed_handler), self);
 }
 
 static void

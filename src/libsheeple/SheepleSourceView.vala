@@ -2,6 +2,8 @@ using GLib;
 using Gdk;
 using Gtk;
 
+// TODO: port to signal-based api
+
 internal class _SourceWidgets
 {
     public unowned Gtk.VBox box;
@@ -55,10 +57,10 @@ public class SheepleSourceView : Gtk.ScrolledWindow
     {
         foreach(SheepleSource src in this.sources)
         {
-            foreach(SheepleGroup grp in src.groups)
+            foreach(string grp in src.get_groups())
             {
                 GLib.List<SheepleGroup> newselection = new GLib.List<SheepleGroup>();
-                newselection.prepend(grp);
+                newselection.prepend(src.get_group(grp));
                 this.selection = newselection;
                 return;
             }
@@ -98,7 +100,7 @@ public class SheepleSourceView : Gtk.ScrolledWindow
             source_box = new Gtk.VBox(false, 0);
             source_box.pack_start(source_label, true, true, 4);
             
-            foreach(SheepleGroup gr in src.groups)
+            foreach(string gr in src.get_groups())
             {
                 Gtk.Button button_widget;
                 Gtk.Alignment alignment;
@@ -107,7 +109,7 @@ public class SheepleSourceView : Gtk.ScrolledWindow
                 Gtk.HBox button_hbox;
                 Gtk.Alignment button_align;
                 string button_markup;
-                SheepleGroup grp = gr; // Vala bug #599133
+                SheepleGroup grp = src.get_group(gr); // Vala bug #599133
                 _GroupWidgets group_widgets;
                 
                 button_hbox = new Gtk.HBox(false, 2);
@@ -172,8 +174,9 @@ public class SheepleSourceView : Gtk.ScrolledWindow
     {
         foreach(SheepleSource src in this.sources)
         {
-            foreach(SheepleGroup grp in src.groups)
+            foreach(string gr in src.get_groups())
             {
+                SheepleGroup grp = src.get_group(gr);
                 _GroupWidgets group_widgets = this.group_widgets.lookup(grp);
                 string button_markup;
                 Gtk.ReliefStyle new_style = Gtk.ReliefStyle.NONE;
