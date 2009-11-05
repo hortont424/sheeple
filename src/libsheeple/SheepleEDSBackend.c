@@ -14,7 +14,7 @@ G_DEFINE_TYPE_WITH_CODE (SheepleEDSBackend, sheeple_eds_backend, G_TYPE_OBJECT,
 static char *
 sheeple_eds_backend_get_db_id (SheepleBackend *self)
 {
-    return strdup("evolution-data-server");
+    return strdup("Evolution");
 }
 
 static void

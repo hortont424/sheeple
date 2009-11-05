@@ -35,6 +35,8 @@ public class SheepleStore : GLib.Object
     
     private GLib.HashTable<string,SheepleSource> contact_sources;
     
+    private int subready_count = 0;
+    
     public signal void source_added(SheepleSource db);
     public signal void source_removed(SheepleSource db);
     
@@ -64,8 +66,6 @@ public class SheepleStore : GLib.Object
         this.contact_sources.insert(backend_id, contact_source);
         
         contact_source.group_added.connect((src, grp) => {
-            //SheepleGroup grp = contact_source.get_group(group_id);
-            
             grp.contact_added.connect((backend, contact_id) => {
                 // Theoretically, eventually, we find contacts that might be merge candidates,
                 // then ask the user if they're actually the same person or not
@@ -109,8 +109,10 @@ public class SheepleStore : GLib.Object
             
             grp.ready.connect(() => {
                 // TODO: FIXME: this needs to only fire when all registered backends, groups, etc. are ready!
-                this.ready();
+                this.subready();
             });
+            
+            this.subready_count++;
             
             grp.start();
             
@@ -129,6 +131,14 @@ public class SheepleStore : GLib.Object
         this.source_added(contact_source);
     }
     
+    private void subready()
+    {
+        this.subready_count--;
+        
+        if(this.subready_count == 0)
+            this.ready();
+    }
+    
     public SheepleContact? resolve_contact(SheepleStoreMetaContact meta)
     {
         if(meta == null)
@@ -145,7 +155,6 @@ public class SheepleStore : GLib.Object
             
             foreach(SheepleStoreBackendContact subcontact in meta.subcontacts)
             {
-                stdout.printf("src %s grp %s con %s\n", subcontact.db_id, subcontact.group_id, subcontact.id);
                 SheepleSource src = this.contact_sources.lookup(subcontact.db_id);
                 SheepleGroup grp = src.get_group(subcontact.group_id);
                 SheepleContact merge_contact = grp.get_contact(subcontact.id);
@@ -170,6 +179,7 @@ public class SheepleStore : GLib.Object
         foreach(SheepleStoreMetaContact mc in this.contact_store.get_values())
         {
             contacts.prepend(this.resolve_contact(mc));
+            stdout.printf("%s\n", this.resolve_contact(mc).full_name);
         }
         return contacts;
     }

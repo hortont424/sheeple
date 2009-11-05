@@ -28,6 +28,7 @@ public class SheepleContactList : Gtk.ScrolledWindow
     
     private void contact_store_ready()
     {
+        this.listmodel.clear();
         var cs = SheepleStore.get_store();
         foreach(SheepleContact contact in cs.get_contacts())
         {
