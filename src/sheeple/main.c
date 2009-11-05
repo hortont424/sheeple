@@ -89,18 +89,19 @@ int main(int argc, char **argv)
     
     SheepleStore * contact_store = sheeple_store_get_store();
     eds = SHEEPLE_BACKEND(sheeple_eds_backend_new());
-    sheeple_store_add_backend(contact_store, eds);
 
     //sources = create_default_sources();
 
-    //sourceview = GTK_WIDGET(sheeple_source_view_new());
-    //sheeple_source_view_set_sources(SHEEPLE_SOURCE_VIEW(sourceview), sources);
-    //g_signal_connect(sourceview, "selection-changed",
-    //                 G_CALLBACK(sv_select_changed), NULL);
+    sourceview = GTK_WIDGET(sheeple_source_view_new());
+    sheeple_source_view_set_store(SHEEPLE_SOURCE_VIEW(sourceview), contact_store);
+    g_signal_connect(sourceview, "selection-changed",
+                     G_CALLBACK(sv_select_changed), NULL);
     
     contactview = GTK_WIDGET(sheeple_contact_view_new());
     
     contactlistview = GTK_WIDGET(sheeple_contact_list_new());
+    
+    sheeple_store_add_backend(contact_store, eds);
     
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(GTK_WINDOW(window), 300, 400);
@@ -112,7 +113,7 @@ int main(int argc, char **argv)
     //gtk_paned_set_position(GTK_PANED(pane), 400);
 
     hbox = gtk_hbox_new(FALSE, 0);
-    //gtk_box_pack_start(GTK_BOX(hbox), sourceview, FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), sourceview, FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), gtk_vseparator_new(), FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), pane, TRUE, TRUE, 0);
 

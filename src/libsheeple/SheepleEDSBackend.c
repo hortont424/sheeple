@@ -41,7 +41,8 @@ sheeple_eds_backend_start (SheepleBackend *self)
             if(!book) // don't throw groups for non-addressbook sources
                 continue;
             
-            g_print("group added!!\n");
+            g_print("%s\n", e_source_peek_name(source));
+            
             g_signal_emit_by_name(backend, "group-added",
                                   e_source_peek_uid(source), NULL);
         }
@@ -53,11 +54,6 @@ sheeple_eds_backend_start (SheepleBackend *self)
 static SheepleGroup *
 sheeple_eds_backend_get_group (SheepleBackend *self, const char *id)
 {
-    /*SheepleEDSBackend * backend = SHEEPLE_EDS_BACKEND(self);
-    EContact * econtact;
-    e_book_get_contact(backend->ebook, id, &econtact, NULL);
-    return SHEEPLE_CONTACT(sheeple_eds_contact_new(econtact));*/
-    
     SheepleEDSBackend *backend = SHEEPLE_EDS_BACKEND(self);
     
     ESource *src = e_source_list_peek_source_by_uid(backend->source_list, id);
@@ -65,7 +61,7 @@ sheeple_eds_backend_get_group (SheepleBackend *self, const char *id)
     SheepleEDSBackendGroup *backend_group = sheeple_eds_backend_group_new();
     sheeple_eds_backend_group_set_esource(backend_group, src);
     
-    SheepleGroup *grp = sheeple_group_new("arst", SHEEPLE_BACKEND_GROUP(backend_group));
+    SheepleGroup *grp = sheeple_group_new(e_source_peek_name(src), SHEEPLE_BACKEND_GROUP(backend_group));
     
     return grp;
 }

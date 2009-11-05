@@ -35,6 +35,9 @@ public class SheepleStore : GLib.Object
     
     private GLib.HashTable<string,SheepleSource> contact_sources;
     
+    public signal void source_added(string db_id);
+    public signal void source_removed(string db_id);
+    
     public signal void contact_added(string contact_id);
     public signal void contact_changed(string contact_id);
     public signal void contact_removed(string contact_id);
@@ -61,8 +64,6 @@ public class SheepleStore : GLib.Object
         this.contact_sources.insert(backend_id, contact_source);
         
         contact_source.group_added.connect((src, group_id) => {
-            stdout.printf("Got group added in SheepleStore: %s\n", group_id);
-            stdout.printf("want to look for group: %s\n", group_id);
             SheepleGroup grp = contact_source.get_group(group_id);
             
             grp.contact_added.connect((backend, contact_id) => {
@@ -110,16 +111,23 @@ public class SheepleStore : GLib.Object
             grp.ready.connect(() => {
                 // TODO: FIXME: this needs to only fire when all registered backends, groups, etc. are ready!
                 this.ready();
-                stdout.printf("Store Ready!\n");
             });
             
             grp.start();
+            
+            //this.group_added(group_id);
         });
+        
+        //contact_source.group_removed((src, group_id) => {
+            //this.group_removed(group_id);
+        //});
         
         contact_source.ready.connect((cs) => {
         });
         
         contact_source.start();
+        
+        this.source_added(backend_id);
     }
     
     public SheepleContact? get_contact(string id)
@@ -150,6 +158,16 @@ public class SheepleStore : GLib.Object
         }
         
         return contact;
+    }
+    
+    public SheepleSource get_source(string source_id)
+    {
+        return this.contact_sources.lookup(source_id);
+    }
+    
+    public SheepleGroup get_group(string group_id, string source_id)
+    {
+        return this.contact_sources.lookup(source_id).get_group(group_id);
     }
     
     public GLib.List<unowned string> get_contacts()

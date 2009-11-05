@@ -19,8 +19,6 @@ public class SheepleGroup : GLib.Object
         this.name = name;
         this.backend_group = backend_group;
         
-        stdout.printf("backend_group = %p\n", this.backend_group);
-        
         this.contacts = new GLib.HashTable<string,SheepleContact>(GLib.str_hash, GLib.str_equal);
         
         this.backend_group.contact_added.connect((grp, contact_id) => {
@@ -56,7 +54,6 @@ public class SheepleGroup : GLib.Object
     
     public void start()
     {
-        stdout.printf("start sheeplegroup\n");
         this.backend_group.start();
     }
 }

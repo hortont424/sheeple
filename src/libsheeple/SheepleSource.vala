@@ -21,7 +21,6 @@ public class SheepleSource : GLib.Object
         
         this.backend.group_added.connect((grp, id) => {
             this.groups.insert(id, this.backend.get_group(id));
-            stdout.printf("got group added in SheepleSource\n");
             this.group_added(id);
         });
         
@@ -42,16 +41,11 @@ public class SheepleSource : GLib.Object
     
     public SheepleGroup get_group(string id)
     {
-        stdout.printf("looking up group: %s\n", id);
         return this.groups.lookup(id);
     }
     
     public GLib.List<string> get_groups()
     {
-        foreach(string one in this.groups.get_keys())
-        {
-            stdout.printf("key: %s\n", one);
-        }
         return this.groups.get_keys();
     }
 }

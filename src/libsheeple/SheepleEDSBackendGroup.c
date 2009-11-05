@@ -27,7 +27,6 @@ sheeple_eds_backend_group_get_contact (SheepleBackendGroup *self, const char *id
 
 static void sheeple_eds_backend_group_start (SheepleEDSBackendGroup *self)
 {
-    g_print("sheeple_eds_backend_group_start\n");
     e_book_view_start(self->ebookview);
 }
 
