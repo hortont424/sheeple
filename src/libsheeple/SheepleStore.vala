@@ -29,10 +29,10 @@ public class SheepleStore : GLib.Object
 {
     private static SheepleStore instance = null;
 
-    // This should eventually be persistent
+    // This (well at least the subcontacts field) should eventually be persistent
     private GLib.HashTable<string,SheepleStoreMetaContact> contact_store;
     
-    private GLib.HashTable<string,SheepleContactBackend> contact_backends;
+    private GLib.List<SheepleSource> contact_sources;
     
     public signal void contact_added(string contact_id);
     public signal void contact_changed(string contact_id);
@@ -42,7 +42,7 @@ public class SheepleStore : GLib.Object
     public SheepleStore()
     {
         this.contact_store = new GLib.HashTable<string,SheepleStoreMetaContact>(GLib.str_hash,GLib.str_equal);
-        this.contact_backends = new GLib.HashTable<string,SheepleContactBackend>(GLib.str_hash,GLib.str_equal);
+        this.contact_sources = new GLib.List<SheepleSource>();
     }
     
     public static SheepleStore get_contact_store()
@@ -56,7 +56,8 @@ public class SheepleStore : GLib.Object
     public void add_backend(SheepleContactBackend backend)
     {
         string backend_id = backend.get_db_id();
-        this.contact_backends.insert(backend_id, backend);
+        SheepleSource contact_source = new SheepleSource.with_backend(backend);
+        this.contact_sources.insert(backend_id, backend);
         backend.contact_added.connect((backend, contact_id) => {
             // Theoretically, eventually, we find contacts that might be merge candidates,
             // then ask the user if they're actually the same person or not

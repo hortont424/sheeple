@@ -9,7 +9,7 @@ public class SheepleMetaContact : GLib.Object, SheepleContact
     public string family_name {get; set;}
     public string nickname {get; set;}
     
-    public GLib.List<string> _email;
+    private GLib.List<string> _email;
     public GLib.List<string> email {get { return _email; } set { _email = value.copy(); }}
     
     public SheepleMetaContact()

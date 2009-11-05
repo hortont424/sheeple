@@ -7,7 +7,15 @@ public class SheepleGroup : GLib.Object
     public Gdk.Pixbuf icon {get; set;}
     public SheepleContactBackendGroup backend_group {get; set;}
     
-    public GLib.List<SheepleContact> contacts {get; private set;} // todo wtf
+    private GLib.List<string> _contacts;
+    public GLib.List<string> contacts {get { return _contacts; } set { _contacts = value.copy(); }}
+    
+    public abstract SheepleContact get_contact(string id);
+    
+    public signal void contact_added(string contact);
+    public signal void contact_changed(string contact);
+    public signal void contact_removed(string contact);
+    public signal void ready();
     
     public SheepleGroup()
     {
