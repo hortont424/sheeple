@@ -77,7 +77,6 @@ sheeple_eds_backend_interface_init (SheepleBackendIface *iface)
 void group_added_handler (EBookView *ebookview, gpointer added, gpointer self)
 {
     g_signal_emit_by_name(self, "group-added", e_source_peek_uid(E_SOURCE(added)), NULL);
-    g_print("added group: %s\n\n", 
 }
 
 void group_removed_handler (EBookView *ebookview, gpointer removed, gpointer self)
