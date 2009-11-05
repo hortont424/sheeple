@@ -31,6 +31,8 @@ public class SheepleContactList : Gtk.ScrolledWindow
         var cs = SheepleStore.get_store();
         foreach(string c_id in cs.get_contacts())
         {
+            stdout.printf("c_id = %s\n", c_id);
+            stdout.printf("contact = %p\n", cs.get_contact(c_id));
             TreeIter iter;
             this.listmodel.append(out iter);
             this.listmodel.set(iter, 0, "gtk-orientation-portrait", 1, cs.get_contact(c_id).full_name, -1);

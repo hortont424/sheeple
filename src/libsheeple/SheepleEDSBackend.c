@@ -41,13 +41,16 @@ sheeple_eds_backend_start (SheepleBackend *self)
             if(!book) // don't throw groups for non-addressbook sources
                 continue;
             
+            g_print("group added!!\n");
             g_signal_emit_by_name(backend, "group-added",
                                   e_source_peek_uid(source), NULL);
         }
     }
+    
+    g_signal_emit_by_name(backend, "ready", NULL);
 }
 
-static SheepleBackendGroup *
+static SheepleGroup *
 sheeple_eds_backend_get_group (SheepleBackend *self, const char *id)
 {
     /*SheepleEDSBackend * backend = SHEEPLE_EDS_BACKEND(self);
@@ -62,7 +65,9 @@ sheeple_eds_backend_get_group (SheepleBackend *self, const char *id)
     SheepleEDSBackendGroup *backend_group = sheeple_eds_backend_group_new();
     sheeple_eds_backend_group_set_esource(backend_group, src);
     
-    return SHEEPLE_BACKEND_GROUP(backend_group);
+    SheepleGroup *grp = sheeple_group_new("arst", SHEEPLE_BACKEND_GROUP(backend_group));
+    
+    return grp;
 }
 
 static void

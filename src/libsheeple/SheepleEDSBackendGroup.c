@@ -25,8 +25,9 @@ sheeple_eds_backend_group_get_contact (SheepleBackendGroup *self, const char *id
     return SHEEPLE_CONTACT(sheeple_eds_contact_new(econtact));
 }
 
-static void sheeple_eds_backend_start (SheepleEDSBackendGroup *self)
+static void sheeple_eds_backend_group_start (SheepleEDSBackendGroup *self)
 {
+    g_print("sheeple_eds_backend_group_start\n");
     e_book_view_start(self->ebookview);
 }
 
@@ -35,7 +36,7 @@ sheeple_eds_backend_group_interface_init (SheepleBackendGroupIface *iface)
 {
     iface->get_group_id = sheeple_eds_backend_group_get_group_id;
     iface->get_contact = sheeple_eds_backend_group_get_contact;
-    iface->start = sheeple_eds_backend_start;
+    iface->start = sheeple_eds_backend_group_start;
 }
 
 static void contacts_added_handler (EBookView *ebookview, gpointer added, gpointer self)
@@ -98,9 +99,9 @@ sheeple_eds_backend_group_new ()
     return g_object_new(TYPE_SHEEPLE_EDS_BACKEND_GROUP, NULL);
 }
 
+// TODO: this is disgusting, why can't it be a construct property
 void sheeple_eds_backend_group_set_esource(SheepleEDSBackendGroup *self, ESource *src)
 {
-    g_print("%p\n\n\n", src);
     self->source = src;
     self->ebook = e_book_new(self->source, NULL); // TODO: error
     e_book_open(self->ebook, FALSE, NULL);
@@ -112,6 +113,5 @@ void sheeple_eds_backend_group_set_esource(SheepleEDSBackendGroup *self, ESource
     g_signal_connect(self->ebookview, "contacts-changed", G_CALLBACK(contacts_changed_handler), self);
     g_signal_connect(self->ebookview, "contacts-removed", G_CALLBACK(contacts_removed_handler), self);
     g_signal_connect(self->ebookview, "sequence-complete", G_CALLBACK(sequence_complete_handler), self);
-    g_print("done setting esource\n\n\n");
 }
 
