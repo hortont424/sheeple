@@ -5,6 +5,9 @@ public class SheepleGroup : GLib.Object
 {
     public string name {get; set;}
     public Gdk.Pixbuf icon {get; set;}
+    public SheepleContactBackendGroup backend_group {get; set;}
+    
+    public GLib.List<SheepleContact> contacts {get; private set;} // todo wtf
     
     public SheepleGroup()
     {

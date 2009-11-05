@@ -1,22 +1,22 @@
 using GLib;
 
-public class SheepleContactStoreBackendContact
+public class SheepleStoreBackendContact
 {
     public string id;
     public string db_id;
 }
 
-public class SheepleContactStoreMetaContact
+public class SheepleStoreMetaContact
 {
     public int refcount;
     public SheepleMetaContact metacontact;
-    public GLib.List<SheepleContactStoreBackendContact> subcontacts;
+    public GLib.List<SheepleStoreBackendContact> subcontacts;
     
-    public SheepleContactStoreMetaContact()
+    public SheepleStoreMetaContact()
     {
         this.refcount = 0;
         this.metacontact = null;
-        this.subcontacts = new GLib.List<SheepleContactStoreBackendContact>();
+        this.subcontacts = new GLib.List<SheepleStoreBackendContact>();
     }
     
     public void invalidate()
@@ -25,12 +25,12 @@ public class SheepleContactStoreMetaContact
     }
 }
 
-public class SheepleContactStore : GLib.Object
+public class SheepleStore : GLib.Object
 {
-    private static SheepleContactStore instance = null;
+    private static SheepleStore instance = null;
 
     // This should eventually be persistent
-    private GLib.HashTable<string,SheepleContactStoreMetaContact> contact_store;
+    private GLib.HashTable<string,SheepleStoreMetaContact> contact_store;
     
     private GLib.HashTable<string,SheepleContactBackend> contact_backends;
     
@@ -39,16 +39,16 @@ public class SheepleContactStore : GLib.Object
     public signal void contact_removed(string contact_id);
     public signal void ready();
     
-    public SheepleContactStore()
+    public SheepleStore()
     {
-        this.contact_store = new GLib.HashTable<string,SheepleContactStoreMetaContact>(GLib.str_hash,GLib.str_equal);
+        this.contact_store = new GLib.HashTable<string,SheepleStoreMetaContact>(GLib.str_hash,GLib.str_equal);
         this.contact_backends = new GLib.HashTable<string,SheepleContactBackend>(GLib.str_hash,GLib.str_equal);
     }
     
-    public static SheepleContactStore get_contact_store()
+    public static SheepleStore get_contact_store()
     {
         if(instance == null)
-            instance = new SheepleContactStore();
+            instance = new SheepleStore();
         
         return instance;
     }
@@ -61,8 +61,8 @@ public class SheepleContactStore : GLib.Object
             // Theoretically, eventually, we find contacts that might be merge candidates,
             // then ask the user if they're actually the same person or not
             
-            SheepleContactStoreMetaContact meta = new SheepleContactStoreMetaContact();
-            SheepleContactStoreBackendContact backend_contact = new SheepleContactStoreBackendContact();
+            SheepleStoreMetaContact meta = new SheepleStoreMetaContact();
+            SheepleStoreBackendContact backend_contact = new SheepleStoreBackendContact();
             
             backend_contact.id = contact_id;
             backend_contact.db_id = backend_id;
@@ -77,7 +77,7 @@ public class SheepleContactStore : GLib.Object
         });
         
         backend.contact_removed.connect((backend, contact_id) => {
-            SheepleContactStoreMetaContact meta = this.contact_store.lookup(contact_id);
+            SheepleStoreMetaContact meta = this.contact_store.lookup(contact_id);
             
             if(meta != null)
             {
@@ -89,7 +89,7 @@ public class SheepleContactStore : GLib.Object
         });
         
         backend.contact_changed.connect((backend, contact_id) => {
-            SheepleContactStoreMetaContact meta = this.contact_store.lookup(contact_id);
+            SheepleStoreMetaContact meta = this.contact_store.lookup(contact_id);
             
             if(meta != null)
             {
@@ -107,7 +107,7 @@ public class SheepleContactStore : GLib.Object
     
     public SheepleContact? get_contact(string id)
     {
-        SheepleContactStoreMetaContact meta = this.contact_store.lookup(id);
+        SheepleStoreMetaContact meta = this.contact_store.lookup(id);
         
         if(meta == null)
             return null;
@@ -121,7 +121,7 @@ public class SheepleContactStore : GLib.Object
         {
             meta.metacontact = contact = new SheepleMetaContact();
             
-            foreach(SheepleContactStoreBackendContact subcontact in meta.subcontacts)
+            foreach(SheepleStoreBackendContact subcontact in meta.subcontacts)
             {
                 SheepleContactBackend backend = this.contact_backends.lookup(subcontact.db_id);
                 SheepleContact merge_contact = backend.get_contact(subcontact.id);

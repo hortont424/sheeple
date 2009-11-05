@@ -5,6 +5,7 @@ public class SheepleSource : GLib.Object
 {
     public string name {get; set;}
     public unowned List<SheepleGroup> groups {get; set;}
+    public SheepleContactBackend backend {get; set;}
     
     public SheepleSource()
     {
