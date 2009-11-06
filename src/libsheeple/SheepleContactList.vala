@@ -5,11 +5,35 @@ public class SheepleContactList : Gtk.ScrolledWindow
 {
     private Gtk.TreeView treeview;
     private Gtk.ListStore listmodel;
-    public unowned SheepleGroup group {get; set;}
+    
+    public unowned SheepleGroup _group;
+    public unowned SheepleGroup group
+    {
+        get
+        {
+            return _group;
+        }
+        
+        set
+        {
+            if(_group != null)
+            {
+                _group.contact_added.disconnect(update_contact_list);
+                _group.contact_changed.disconnect(update_contact_list);
+                _group.contact_removed.disconnect(update_contact_list);
+            }
+                
+            _group = value;
+            
+            _group.contact_added.connect(update_contact_list);
+            _group.contact_changed.connect(update_contact_list);
+            _group.contact_removed.connect(update_contact_list);
+        }
+    }
     
     public SheepleContactList()
     {
-        this.group = null;
+        this._group = null;
     
         this.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC);
         
@@ -29,7 +53,6 @@ public class SheepleContactList : Gtk.ScrolledWindow
         this.show_all();
         
         this.notify["group"].connect(update_contact_list);
-        // TODO: register for add/remove/change notifications each time we change group! 
     }
     
     private void update_contact_list()

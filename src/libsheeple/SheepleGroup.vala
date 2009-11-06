@@ -32,7 +32,7 @@ public class SheepleGroup : GLib.Object
             this.contact_changed(contact_id);
         });
         
-        this.backend_group.contact_changed.connect((grp, contact_id) => {
+        this.backend_group.contact_removed.connect((grp, contact_id) => {
             // TODO: make sure it exists
             this.contacts.remove(contact_id);
             this.contact_removed(contact_id);
