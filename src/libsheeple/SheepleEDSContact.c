@@ -18,7 +18,8 @@ enum
   PROP_FAMILY_NAME,
   PROP_NICKNAME,
   
-  PROP_EMAIL
+  PROP_EMAIL,
+  PROP_PHONE
 };
 
 void sheeple_eds_contact_set_econtact(SheepleEDSContact *self, EContact *ec)
@@ -59,6 +60,23 @@ DEFINE_EDS_GETSETTERS(const gchar *, GIVEN_NAME, given_name);
 DEFINE_EDS_GETSETTERS(const gchar *, FAMILY_NAME, family_name);
 DEFINE_EDS_GETSETTERS(const gchar *, NICKNAME, nickname);
 DEFINE_EDS_GETSETTERS(GList *, EMAIL, email);
+//DEFINE_EDS_GETSETTERS(GList *, PHONE, phone);
+
+// TODO: DEFINE_EDS_GETSETTERS_PROP macros
+
+void sheeple_eds_contact_set_phone(SheepleContact *self, GList * prop)
+{
+    //e_contact_set(SHEEPLE_EDS_CONTACT(self)->priv->econtact, E_CONTACT_PHONE, prop);
+}
+
+GList * sheeple_eds_contact_get_phone(SheepleContact * self)
+{
+    //e_contact_get(SHEEPLE_EDS_CONTACT(self)->priv->econtact, E_CONTACT_PHONE);
+    GList * phones;
+    g_object_get(SHEEPLE_EDS_CONTACT(self)->priv->econtact, "phone", &phones, NULL);
+    return phones;
+}
+
 
 static void sheeple_eds_contact_interface_init (SheepleContactIface *iface);
 
@@ -88,6 +106,7 @@ eds_contact_set_property (GObject *object,
         DEFINE_EDS_SETPROP(string, NICKNAME, nickname)
         
         DEFINE_EDS_SETPROP(object, EMAIL, email)
+        DEFINE_EDS_SETPROP(object, PHONE, phone)
         
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -115,6 +134,7 @@ eds_contact_get_property (GObject *object,
         DEFINE_EDS_GETPROP(string, NICKNAME, nickname)
         
         DEFINE_EDS_GETPROP(object, EMAIL, email)
+        DEFINE_EDS_GETPROP(object, PHONE, phone)
         
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -154,6 +174,7 @@ sheeple_eds_contact_class_init (SheepleEDSContactClass *self)
     INSTALL_EDS_PROP(NICKNAME, "nickname");
     
     INSTALL_EDS_PROP(EMAIL, "email");
+    INSTALL_EDS_PROP(PHONE, "phone");
 }
 
 SheepleEDSContact *
@@ -171,4 +192,5 @@ sheeple_eds_contact_interface_init (SheepleContactIface *iface)
     INSTALL_EDS_GETSETTERS(nickname);
     
     INSTALL_EDS_GETSETTERS(email);
+    INSTALL_EDS_GETSETTERS(phone);
 }

@@ -12,6 +12,9 @@ public class SheepleMetaContact : GLib.Object, SheepleContact
     private GLib.List<string> _email;
     public GLib.List<string> email {get { return _email; } set { _email = value.copy(); }}
     
+    private GLib.List<string> _phone;
+    public GLib.List<string> phone {get { return _phone; } set { _phone = value.copy(); }}
+    
     public SheepleMetaContact()
     {
         subcontacts = new GLib.List<SheepleContact>();
@@ -27,5 +30,6 @@ public class SheepleMetaContact : GLib.Object, SheepleContact
         this.nickname = to_merge.nickname;
         
         this.email = to_merge.email;
+        this.phone = to_merge.phone;
     }
 }

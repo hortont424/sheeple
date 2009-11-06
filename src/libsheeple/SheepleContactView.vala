@@ -49,14 +49,20 @@ public class SheepleContactView : Gtk.ScrolledWindow
     
     private void update_view()
     {
+        string email_str = "";
+        foreach(string email in this.contact.email)
+        {
+            email_str += "<h2>" + email + "</h2>";
+        }
+    
+        string phone_str = "";
+        foreach(string phone in this.contact.phone)
+        {
+            phone_str += "<h2>" + phone + "</h2>";
+        }
+    
         SheepleContactViewUI ui = new SheepleContactViewUI();
-        //this.webview.load_html_string("<script>document.onmousedown = function(e) { return false; }; document.onclick = function() { return true; };</script> ", "/");
-        this.webview.load_html_string(ui.contact_view_source, "/");
-        
-        unowned Seed.Engine eng;
-        unowned Seed.Script script;
-        eng = Seed.init_with_context_group(0, "");
-        script = Seed.make_script(eng.context, "print('Hello, world!')", "arst", 1);
-        Seed.evaluate(eng.context, script, null);
+        this.webview.load_html_string("<script>document.onmousedown = function(e) { return false; }; document.onclick = function() { return true; };</script><h1>" + this.contact.full_name + "</h1>" + email_str + phone_str, "/");
+        //this.webview.load_html_string(ui.contact_view_source, "/");
     }
 }
