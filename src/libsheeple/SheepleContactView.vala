@@ -40,16 +40,6 @@ public class SheepleContactView : Gtk.ScrolledWindow
         this.notify["contact"].connect(update_view);
         
         this.show_all();
-        
-        
-        
-        
-        
-        unowned Seed.Engine eng;
-        unowned Seed.Script script;
-        eng = Seed.init(0, "");
-        script = Seed.make_script(eng.context, "print('Hello, world!')", "arst", 1);
-        Seed.evaluate(eng.context, script, null);
     }
     
     public void test()
@@ -62,5 +52,11 @@ public class SheepleContactView : Gtk.ScrolledWindow
         SheepleContactViewUI ui = new SheepleContactViewUI();
         //this.webview.load_html_string("<script>document.onmousedown = function(e) { return false; }; document.onclick = function() { return true; };</script> ", "/");
         this.webview.load_html_string(ui.contact_view_source, "/");
+        
+        unowned Seed.Engine eng;
+        unowned Seed.Script script;
+        eng = Seed.init_with_context_group(0, "");
+        script = Seed.make_script(eng.context, "print('Hello, world!')", "arst", 1);
+        Seed.evaluate(eng.context, script, null);
     }
 }
