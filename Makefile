@@ -2,15 +2,15 @@
 
 SHEEPLE_CFLAGS = `pkg-config --cflags gobject-2.0 gtk+-2.0 pango \
     couchdb-glib-1.0 avahi-client avahi-core avahi-gobject avahi-glib \
-    webkit-1.0 dbus-glib-1 gnome-keyring-1 libebook-1.2 webkit-1.0`
+    webkit-1.0 dbus-glib-1 gnome-keyring-1 libebook-1.2 webkit-1.0 seed`
 
 SHEEPLE_LDFLAGS = `pkg-config --libs gobject-2.0 gtk+-2.0 pango \
     couchdb-glib-1.0 avahi-client avahi-core avahi-gobject avahi-glib \
-    webkit-1.0 dbus-glib-1 gnome-keyring-1 libebook-1.2 webkit-1.0`
+    webkit-1.0 dbus-glib-1 gnome-keyring-1 libebook-1.2 webkit-1.0 seed`
 
 VALA_FLAGS = --pkg gobject-2.0 --pkg gobject-2.0 --pkg gtk+-2.0 --vapidir=vapi \
              --pkg couchdb-glib-1.0 --pkg json-glib-1.0 --pkg dbus-glib-1 \
-             --pkg gnome-keyring-1 --pkg webkit-1.0
+             --pkg gnome-keyring-1 --pkg webkit-1.0 --pkg seed
 
 all: libsheeple.so sheeple
 
@@ -25,8 +25,10 @@ sheeple: libsheeple.so src/sheeple/*.c
 	    -lsheeple src/sheeple/*.c -o sheeple
 
 vapi:
-	cd vapi ; vala-gen-introspect couchdb-glib-1.0 couchdb-glib-1.0
-	cd vapi ; vapigen --pkg json-glib-1.0 --library couchdb-glib-1.0 couchdb-glib-1.0/couchdb-glib-1.0.gi
+	cd vapi ; vala-gen-introspect seed seed
+	cd vapi ; vapigen --pkg webkit-1.0 --pkg glib-2.0 --library seed seed/seed.gi
+#	cd vapi ; vala-gen-introspect couchdb-glib-1.0 couchdb-glib-1.0
+#	cd vapi ; vapigen --pkg json-glib-1.0 --library couchdb-glib-1.0 couchdb-glib-1.0/couchdb-glib-1.0.gi
 
 todo:
 	cd src ; grep -n "TODO" libsheeple/*.vala sheeple/*.vala
