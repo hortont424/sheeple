@@ -7,6 +7,8 @@ public class SheepleContactViewUI : GLib.Object
 h1
 {
     font-size: 1em;
+    margin: 0px;
+    padding: 0px;
 }
 
 h2
@@ -23,6 +25,7 @@ h2.label
     font-weight: normal;
     color: #aaa;
     text-align: right;
+    padding-right: 0.3em;
 }
 
 table
