@@ -34,6 +34,7 @@ public class SheepleContactView : Gtk.ScrolledWindow
 
     public SheepleContactView()
     {
+        this.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
         this.webview = new WebKit.WebView();
         this.add(webview);
         
@@ -52,17 +53,21 @@ public class SheepleContactView : Gtk.ScrolledWindow
         string email_str = "";
         foreach(string email in this.contact.email)
         {
-            email_str += "<h2>" + email + "</h2>";
+            email_str += "<tr><td><h2 class='label'>email</h2></td><td><h2>" + email + "</h2></td></tr>";
         }
     
         string phone_str = "";
         foreach(string phone in this.contact.phone)
         {
-            phone_str += "<h2>" + phone + "</h2>";
+            phone_str += "<tr><td><h2 class='label'>phone</h2></td><td><h2>" + phone + "</h2></td></tr>";
         }
+        
+        string if_email_str = "<tr><td>&nbsp</td><td></td></tr>";
+        if(email_str == "")
+            if_email_str = "";
     
         SheepleContactViewUI ui = new SheepleContactViewUI();
-        this.webview.load_html_string("<script>document.onmousedown = function(e) { return false; }; document.onclick = function() { return true; };</script><h1>" + this.contact.full_name + "</h1>" + email_str + phone_str, "/");
+        this.webview.load_html_string(ui.contact_view_css + "<script>document.onmousedown = function(e) { return false; }; document.onclick = function() { return true; };</script><table><tr><td width='25%'><div id='icon'>&nbsp;</div></td><td><h1>" + this.contact.full_name + "</h1></td></tr>" + if_email_str + email_str + "<tr><td>&nbsp</td><td></td></tr>" + phone_str + "</table>", "/");
         //this.webview.load_html_string(ui.contact_view_source, "/");
     }
 }
