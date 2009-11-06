@@ -68,13 +68,12 @@ static void contacts_changed_handler (EBookView *ebookview, gpointer added, gpoi
 static void contacts_removed_handler (EBookView *ebookview, gpointer added, gpointer self)
 {
     GList *list = (GList*)added, *elem;
-    EContact * contact;
+    const gchar * contact_id;
 
     for(elem = list; elem; elem = elem->next)
     {
-        contact = elem->data;
-        g_signal_emit_by_name(self, "contact-removed",
-                              e_contact_get(contact, E_CONTACT_UID), NULL);
+        contact_id = elem->data;
+        g_signal_emit_by_name(self, "contact-removed", contact_id, NULL);
     }
 }
 
