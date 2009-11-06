@@ -27,20 +27,31 @@
 
 SheepleBackend * eds;
 SheepleContactList * contactlistview;
+SheepleContactView * contactview;
 
 void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
 {
     SheepleGroup *gr = sheeple_source_view_get_selection(sourceview)->data;
     GValue gr_val = { 0, };
-    g_value_init(&gr_val, G_TYPE_OBJECT);
+    g_value_init(&gr_val, TYPE_SHEEPLE_GROUP);
     g_value_set_object(&gr_val, gr);
     g_object_set_property(G_OBJECT(contactlistview), "group", &gr_val);
+}
+
+void clv_select_changed(SheepleContactList * clv, gpointer user_data)
+{
+    SheepleContact *ctc = sheeple_contact_list_get_selection(clv)->data;
+
+    GValue gr_val = { 0, };
+    g_value_init(&gr_val, TYPE_SHEEPLE_CONTACT);
+    g_value_set_object(&gr_val, ctc);
+    g_object_set_property(G_OBJECT(contactview), "contact", &gr_val);
 }
 
 int main(int argc, char **argv)
 {
     GList *sources;
-    GtkWidget *window, *hbox, *sourceview, *contactview, *pane;
+    GtkWidget *window, *hbox, *sourceview, *pane;
 
     g_thread_init(NULL);
     gtk_init(&argc, &argv);
@@ -53,9 +64,11 @@ int main(int argc, char **argv)
     g_signal_connect(sourceview, "selection-changed",
                      G_CALLBACK(sv_select_changed), NULL);
     
-    contactview = GTK_WIDGET(sheeple_contact_view_new());
+    contactview = sheeple_contact_view_new();
     
     contactlistview = sheeple_contact_list_new();
+    g_signal_connect(contactlistview, "selection-changed",
+                     G_CALLBACK(clv_select_changed), NULL);
     
     sheeple_store_add_backend(contact_store, eds);
     
@@ -65,7 +78,7 @@ int main(int argc, char **argv)
     
     pane = gtk_hpaned_new();
     gtk_paned_add1(GTK_PANED(pane), GTK_WIDGET(contactlistview));
-    gtk_paned_add2(GTK_PANED(pane), contactview);
+    gtk_paned_add2(GTK_PANED(pane), GTK_WIDGET(contactview));
 
     hbox = gtk_hbox_new(FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), sourceview, FALSE, TRUE, 0);
@@ -74,7 +87,7 @@ int main(int argc, char **argv)
 
     gtk_container_add(GTK_CONTAINER(window), hbox);
 
-    gtk_widget_grab_focus(contactview);
+    gtk_widget_grab_focus(GTK_WIDGET(contactview));
 
     gtk_widget_show_all(window);
 

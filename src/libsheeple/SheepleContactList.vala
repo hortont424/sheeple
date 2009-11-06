@@ -6,6 +6,9 @@ public class SheepleContactList : Gtk.ScrolledWindow
     private Gtk.TreeView treeview;
     private Gtk.ListStore listmodel;
     
+    public unowned GLib.List<unowned SheepleContact> selection {get; set;}
+    public signal void selection_changed();
+    
     public unowned SheepleGroup _group;
     public unowned SheepleGroup group
     {
@@ -39,8 +42,9 @@ public class SheepleContactList : Gtk.ScrolledWindow
         
         this.treeview = new Gtk.TreeView();
         this.treeview.set_headers_visible(false);
+        this.treeview.cursor_changed.connect(update_selection);
         
-        this.listmodel = new Gtk.ListStore(2, typeof(string), typeof(string));
+        this.listmodel = new Gtk.ListStore(3, typeof(string), typeof(string), typeof(SheepleContact));
         this.treeview.set_model(this.listmodel);
 
         this.treeview.insert_column_with_attributes(-1, "Icon", new CellRendererPixbuf(), "icon-name", 0, null);
@@ -53,6 +57,26 @@ public class SheepleContactList : Gtk.ScrolledWindow
         this.show_all();
         
         this.notify["group"].connect(update_contact_list);
+    }
+    
+    private void update_selection()
+    {
+        Gtk.TreeSelection sel = this.treeview.get_selection();
+        Gtk.TreeIter iter;
+        Gtk.TreeModel treemodel;
+        GLib.Value val;
+        SheepleContact contact;
+        
+        sel.get_selected(out treemodel, out iter);
+        treemodel.get_value(iter, 2, out val);
+        
+        contact = (SheepleContact)val;
+        
+        GLib.List<unowned SheepleContact> new_selection = new GLib.List<unowned SheepleContact>();
+        new_selection.prepend(contact);
+        this.selection = new_selection;
+        
+        this.selection_changed();
     }
     
     private void update_contact_list()
@@ -68,9 +92,9 @@ public class SheepleContactList : Gtk.ScrolledWindow
         
         foreach(SheepleContact contact in contact_list)
         {
-            TreeIter iter;
+            Gtk.TreeIter iter;
             this.listmodel.append(out iter);
-            this.listmodel.set(iter, 0, "gtk-orientation-portrait", 1, contact.full_name, -1);
+            this.listmodel.set(iter, 0, "gtk-orientation-portrait", 1, contact.full_name, 2, contact, -1);
         }
         
         this.listmodel.set_sort_column_id(1, Gtk.SortType.ASCENDING);
