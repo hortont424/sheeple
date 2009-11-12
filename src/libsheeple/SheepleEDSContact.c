@@ -59,10 +59,63 @@ DEFINE_EDS_GETSETTERS(const gchar *, FULL_NAME, full_name);
 DEFINE_EDS_GETSETTERS(const gchar *, GIVEN_NAME, given_name);
 DEFINE_EDS_GETSETTERS(const gchar *, FAMILY_NAME, family_name);
 DEFINE_EDS_GETSETTERS(const gchar *, NICKNAME, nickname);
-DEFINE_EDS_GETSETTERS(GList *, EMAIL, email);
+//DEFINE_EDS_GETSETTERS(GList *, EMAIL, email);
 //DEFINE_EDS_GETSETTERS(GList *, PHONE, phone);
 
 // TODO: DEFINE_EDS_GETSETTERS_PROP macros
+
+void sheeple_eds_contact_set_email(SheepleContact *self, GList * prop)
+{
+    //e_contact_set(SHEEPLE_EDS_CONTACT(self)->priv->econtact, E_CONTACT_PHONE, prop);
+}
+
+GList * sheeple_eds_contact_get_email(SheepleContact * self)
+{
+    GList * emails = NULL;
+    EVCard * vcard = E_VCARD(SHEEPLE_EDS_CONTACT(self)->priv->econtact);
+    GList * attrs = e_vcard_get_attributes(vcard);
+    
+    for(; attrs; attrs = attrs->next)
+    {
+        EVCardAttribute * attr = (EVCardAttribute*)attrs->data;
+        const gchar * attr_name = e_vcard_attribute_get_name(attr);
+        
+        if(g_strcmp0(attr_name, EVC_EMAIL) == 0)
+        {
+            const gchar * type = "";
+            const gchar * value = e_vcard_attribute_get_value(attr);
+
+            GList * params = e_vcard_attribute_get_params(attr);
+            for(; params; params = params->next)
+            {
+                EVCardAttributeParam * param = (EVCardAttributeParam*)(params->data);
+                GList * param_values = e_vcard_attribute_param_get_values(param);
+                
+                for(; param_values; param_values = param_values->next)
+                {
+                    const gchar * ptype = (const gchar *)param_values->data;
+                    gchar * type_lc = g_utf8_strdown(ptype, g_utf8_strlen(ptype, -1));
+                    
+                    if(g_strcmp0(type_lc, "internet") != 0 && 
+                       g_strcmp0(type_lc, "pref") != 0)
+                    {
+                        type = ptype;
+                    }
+                
+                    g_free(type_lc);
+                }
+            }
+                        
+            SheepleContactEmail * email_addr = sheeple_contact_email_new();
+            sheeple_contact_email_set_label(email_addr, type);
+            sheeple_contact_email_set_address(email_addr, value);
+            
+            emails = g_list_prepend(emails, email_addr);
+        }
+    }
+
+    return emails;
+}
 
 void sheeple_eds_contact_set_phone(SheepleContact *self, GList * prop)
 {
@@ -78,8 +131,9 @@ GList * sheeple_eds_contact_get_phone(SheepleContact * self)
     for(; attrs; attrs = attrs->next)
     {
         EVCardAttribute * attr = (EVCardAttribute*)attrs->data;
+        const gchar * attr_name = e_vcard_attribute_get_name(attr);
         
-        if(g_strcmp0(e_vcard_attribute_get_name(attr), EVC_TEL) == 0)
+        if(g_strcmp0(attr_name, EVC_TEL) == 0)
         {
             EVCardAttributeParam * param = e_vcard_attribute_get_param(attr, "type");
             const gchar * type = e_vcard_attribute_param_get_name(param);

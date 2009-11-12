@@ -51,9 +51,9 @@ public class SheepleContactView : Gtk.ScrolledWindow
     private void update_view()
     {
         string email_str = "";
-        foreach(string email in this.contact.email)
+        foreach(SheepleContactEmail email in this.contact.email)
         {
-            email_str += "<tr><td><h2 class='label'>email</h2></td><td><h2>" + email + "</h2></td></tr>";
+            email_str += "<tr><td><h2 class='label'>" + email.label.down() + "</h2></td><td><h2>" + email.address + "</h2></td></tr>";
         }
     
         string phone_str = "";
