@@ -31,7 +31,16 @@ SheepleContactView * contactview;
 
 void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
 {
-    SheepleGroup *gr = sheeple_source_view_get_selection(sourceview)->data;
+    SheepleGroup *gr;
+    
+    if(!sheeple_source_view_get_selection(sourceview))
+        return;
+    
+    gr = sheeple_source_view_get_selection(sourceview)->data;
+    
+    if(!gr)
+        return;
+    
     GValue gr_val = { 0, };
     g_value_init(&gr_val, TYPE_SHEEPLE_GROUP);
     g_value_set_object(&gr_val, gr);
@@ -40,7 +49,15 @@ void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
 
 void clv_select_changed(SheepleContactList * clv, gpointer user_data)
 {
-    SheepleContact *ctc = sheeple_contact_list_get_selection(clv)->data;
+    SheepleContact *ctc;
+    
+    if(!sheeple_contact_list_get_selection(clv))
+        return;
+        
+    ctc = sheeple_contact_list_get_selection(clv)->data;
+    
+    if(!ctc)
+        return;
 
     GValue gr_val = { 0, };
     g_value_init(&gr_val, TYPE_SHEEPLE_CONTACT);

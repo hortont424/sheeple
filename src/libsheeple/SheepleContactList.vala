@@ -66,8 +66,16 @@ public class SheepleContactList : Gtk.ScrolledWindow
         Gtk.TreeModel treemodel;
         GLib.Value val;
         SheepleContact contact;
+         
+        if(!sel.get_selected(out treemodel, out iter))
+        {
+            GLib.List<unowned SheepleContact> new_selection = new GLib.List<unowned SheepleContact>();
+            this.selection = new_selection;
+            
+            this.selection_changed();
+            return;
+        }
         
-        sel.get_selected(out treemodel, out iter);
         treemodel.get_value(iter, 2, out val);
         
         contact = (SheepleContact)val;
