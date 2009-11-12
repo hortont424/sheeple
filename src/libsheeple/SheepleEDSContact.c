@@ -82,24 +82,34 @@ GList * sheeple_eds_contact_get_email(SheepleContact * self)
         
         if(g_strcmp0(attr_name, EVC_EMAIL) == 0)
         {
-            const gchar * type = "";
+            const gchar * type = "other";
             const gchar * value = e_vcard_attribute_get_value(attr);
+            gboolean preferred = FALSE;
 
+            // Check all of the values of each "type" parameter; take the last
+            // one which isn't "internet" or "pref" as the label of the current
+            // email address
             GList * params = e_vcard_attribute_get_params(attr);
             for(; params; params = params->next)
             {
                 EVCardAttributeParam * param = (EVCardAttributeParam*)(params->data);
                 GList * param_values = e_vcard_attribute_param_get_values(param);
+                const gchar * ptype = e_vcard_attribute_param_get_name(param);
+                
+                if(g_strcmp0(ptype, "type") != 0)
+                    continue;
                 
                 for(; param_values; param_values = param_values->next)
                 {
-                    const gchar * ptype = (const gchar *)param_values->data;
-                    gchar * type_lc = g_utf8_strdown(ptype, g_utf8_strlen(ptype, -1));
+                    const gchar * pvalue = (const gchar *)param_values->data;
+                    gchar * type_lc = g_utf8_strdown(pvalue, g_utf8_strlen(pvalue, -1));
                     
-                    if(g_strcmp0(type_lc, "internet") != 0 && 
-                       g_strcmp0(type_lc, "pref") != 0)
+                    if(g_strcmp0(type_lc, "internet") != 0)
                     {
-                        type = ptype;
+                        if(g_strcmp0(type_lc, "pref") == 0)
+                            preferred = TRUE;
+                        else
+                            type = pvalue;
                     }
                 
                     g_free(type_lc);
@@ -109,6 +119,7 @@ GList * sheeple_eds_contact_get_email(SheepleContact * self)
             SheepleContactEmail * email_addr = sheeple_contact_email_new();
             sheeple_contact_email_set_label(email_addr, type);
             sheeple_contact_email_set_address(email_addr, value);
+            sheeple_contact_email_set_primary(email_addr, preferred);
             
             emails = g_list_prepend(emails, email_addr);
         }
@@ -135,13 +146,44 @@ GList * sheeple_eds_contact_get_phone(SheepleContact * self)
         
         if(g_strcmp0(attr_name, EVC_TEL) == 0)
         {
-            EVCardAttributeParam * param = e_vcard_attribute_get_param(attr, "type");
-            const gchar * type = e_vcard_attribute_param_get_name(param);
+            const gchar * type = "other";
             const gchar * value = e_vcard_attribute_get_value(attr);
-            
+            gboolean preferred = FALSE;
+
+            // Check all of the values of each "type" parameter; take the last
+            // one which isn't "internet" or "pref" as the label of the current
+            // phone number
+            GList * params = e_vcard_attribute_get_params(attr);
+            for(; params; params = params->next)
+            {
+                EVCardAttributeParam * param = (EVCardAttributeParam*)(params->data);
+                GList * param_values = e_vcard_attribute_param_get_values(param);
+                const gchar * ptype = e_vcard_attribute_param_get_name(param);
+                
+                if(g_strcmp0(ptype, "type") != 0)
+                    continue;
+                
+                for(; param_values; param_values = param_values->next)
+                {
+                    const gchar * pvalue = (const gchar *)param_values->data;
+                    gchar * type_lc = g_utf8_strdown(pvalue, g_utf8_strlen(pvalue, -1));
+                    
+                    if(g_strcmp0(type_lc, "voice") != 0)
+                    {
+                        if(g_strcmp0(type_lc, "pref") == 0)
+                            preferred = TRUE;
+                        else
+                            type = pvalue;
+                    }
+                
+                    g_free(type_lc);
+                }
+            }
+                        
             SheepleContactPhone * phone_num = sheeple_contact_phone_new();
             sheeple_contact_phone_set_label(phone_num, type);
             sheeple_contact_phone_set_number(phone_num, value);
+            sheeple_contact_phone_set_primary(phone_num, preferred);
             
             phones = g_list_prepend(phones, phone_num);
         }
