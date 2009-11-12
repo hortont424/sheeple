@@ -71,9 +71,28 @@ void sheeple_eds_contact_set_phone(SheepleContact *self, GList * prop)
 
 GList * sheeple_eds_contact_get_phone(SheepleContact * self)
 {
-    //e_contact_get(SHEEPLE_EDS_CONTACT(self)->priv->econtact, E_CONTACT_PHONE);
-    GList * phones;
-    g_object_get(SHEEPLE_EDS_CONTACT(self)->priv->econtact, "phone", &phones, NULL);
+    GList * phones = NULL;
+    EVCard * vcard = E_VCARD(SHEEPLE_EDS_CONTACT(self)->priv->econtact);
+    GList * attrs = e_vcard_get_attributes(vcard);
+    
+    for(; attrs; attrs = attrs->next)
+    {
+        EVCardAttribute * attr = (EVCardAttribute*)attrs->data;
+        
+        if(g_strcmp0(e_vcard_attribute_get_name(attr), EVC_TEL) == 0)
+        {
+            EVCardAttributeParam * param = e_vcard_attribute_get_param(attr, "type");
+            const gchar * type = e_vcard_attribute_param_get_name(param);
+            const gchar * value = e_vcard_attribute_get_value(attr);
+            
+            SheepleContactPhone * phone_num = sheeple_contact_phone_new();
+            sheeple_contact_phone_set_label(phone_num, type);
+            sheeple_contact_phone_set_number(phone_num, value);
+            
+            phones = g_list_prepend(phones, phone_num);
+        }
+    }
+
     return phones;
 }
 

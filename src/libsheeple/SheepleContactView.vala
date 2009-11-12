@@ -57,9 +57,9 @@ public class SheepleContactView : Gtk.ScrolledWindow
         }
     
         string phone_str = "";
-        foreach(string phone in this.contact.phone)
+        foreach(SheepleContactPhone phone in this.contact.phone)
         {
-            phone_str += "<tr><td><h2 class='label'>phone</h2></td><td><h2>" + phone + "</h2></td></tr>";
+            phone_str += "<tr><td><h2 class='label'>" + phone.label.down() + "</h2></td><td><h2>" + phone.number + "</h2></td></tr>";
         }
         
         string if_email_str = "<tr><td>&nbsp</td><td></td></tr>";
