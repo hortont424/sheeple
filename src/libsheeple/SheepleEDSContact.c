@@ -19,7 +19,9 @@ enum
   PROP_NICKNAME,
   
   PROP_EMAIL,
-  PROP_PHONE
+  PROP_PHONE,
+  
+  PROP_PHOTO
 };
 
 void sheeple_eds_contact_set_econtact(SheepleEDSContact *self, EContact *ec)
@@ -192,6 +194,37 @@ GList * sheeple_eds_contact_get_phone(SheepleContact * self)
     return phones;
 }
 
+void sheeple_eds_contact_set_photo(SheepleContact *self, GdkPixbuf * photo)
+{
+    //e_contact_set(SHEEPLE_EDS_CONTACT(self)->priv->econtact, E_CONTACT_PHONE, prop);
+}
+
+GdkPixbuf * sheeple_eds_contact_get_photo(SheepleContact * self)
+{
+    GdkPixbuf *photo = NULL;
+    GdkPixbufLoader *photo_loader = NULL;
+    EContact *contact = E_CONTACT(SHEEPLE_EDS_CONTACT(self)->priv->econtact);
+    EContactPhoto *contact_photo;
+    
+    contact_photo = e_contact_get(contact, E_CONTACT_PHOTO);
+    
+    if(contact_photo)
+    {
+        photo_loader = gdk_pixbuf_loader_new();
+        gdk_pixbuf_loader_write(photo_loader, contact_photo->data.inlined.data,
+                                contact_photo->data.inlined.length, NULL);
+        gdk_pixbuf_loader_close(photo_loader, NULL);
+        
+        photo = gdk_pixbuf_loader_get_pixbuf(photo_loader);
+        
+        if(photo)
+            g_object_ref(photo);
+        
+        g_object_unref(photo_loader);
+    }
+    
+    return photo;
+}
 
 static void sheeple_eds_contact_interface_init (SheepleContactIface *iface);
 
@@ -223,6 +256,8 @@ eds_contact_set_property (GObject *object,
         DEFINE_EDS_SETPROP(object, EMAIL, email)
         DEFINE_EDS_SETPROP(object, PHONE, phone)
         
+        DEFINE_EDS_SETPROP(object, PHOTO, photo)
+        
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
             break;
@@ -250,6 +285,8 @@ eds_contact_get_property (GObject *object,
         
         DEFINE_EDS_GETPROP(object, EMAIL, email)
         DEFINE_EDS_GETPROP(object, PHONE, phone)
+        
+        DEFINE_EDS_GETPROP(object, PHOTO, photo)
         
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -290,6 +327,8 @@ sheeple_eds_contact_class_init (SheepleEDSContactClass *self)
     
     INSTALL_EDS_PROP(EMAIL, "email");
     INSTALL_EDS_PROP(PHONE, "phone");
+    
+    INSTALL_EDS_PROP(PHOTO, "photo");
 }
 
 SheepleEDSContact *
@@ -308,4 +347,6 @@ sheeple_eds_contact_interface_init (SheepleContactIface *iface)
     
     INSTALL_EDS_GETSETTERS(email);
     INSTALL_EDS_GETSETTERS(phone);
+    
+    INSTALL_EDS_GETSETTERS(photo);
 }

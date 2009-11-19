@@ -1,4 +1,5 @@
 using GLib;
+using Gdk;
 
 public class SheepleContactPhone : GLib.Object
 {
@@ -23,4 +24,6 @@ public interface SheepleContact : GLib.Object
     
     public abstract GLib.List<SheepleContactEmail> email {get; set;}
     public abstract GLib.List<SheepleContactPhone> phone {get; set;}
+    
+    public abstract Gdk.Pixbuf photo {get; set;}
 }

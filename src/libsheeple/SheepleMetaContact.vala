@@ -1,4 +1,5 @@
 using GLib;
+using Gdk;
 
 public class SheepleMetaContact : GLib.Object, SheepleContact
 {
@@ -14,6 +15,8 @@ public class SheepleMetaContact : GLib.Object, SheepleContact
     
     private GLib.List<string> _phone;
     public GLib.List<string> phone {get { return _phone; } set { _phone = value.copy(); }}
+    
+    public Gdk.Pixbuf photo {get; set;}
     
     public SheepleMetaContact()
     {
@@ -31,5 +34,7 @@ public class SheepleMetaContact : GLib.Object, SheepleContact
         
         this.email = to_merge.email;
         this.phone = to_merge.phone;
+        
+        this.photo = to_merge.photo;
     }
 }
