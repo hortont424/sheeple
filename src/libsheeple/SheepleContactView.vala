@@ -5,6 +5,7 @@ using WebKit;
 public class SheepleContactView : Gtk.ScrolledWindow
 {
     private Gtk.VBox main_box;
+    private Gtk.EventBox event_box;
     
     public unowned SheepleContact _contact;
     public unowned SheepleContact contact
@@ -36,8 +37,15 @@ public class SheepleContactView : Gtk.ScrolledWindow
         this.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
         
         this.main_box = null;
+        this.event_box = new Gtk.EventBox();
         
         this.notify["contact"].connect(update_view);
+        
+        Gdk.Color color;
+        Gdk.Color.parse("#fff", out color);
+        this.event_box.modify_bg(Gtk.StateType.NORMAL, color);
+        
+        this.add_with_viewport(event_box);
         
         this.show_all();
     }
@@ -45,13 +53,14 @@ public class SheepleContactView : Gtk.ScrolledWindow
     private void update_view()
     {
         if(this.main_box != null)
-            this.remove(this.child);
+            this.event_box.remove(this.event_box.child);
         
         this.main_box = new Gtk.VBox(false, 0);
-        this.add_with_viewport(this.main_box);
+        this.event_box.add(this.main_box);
         
+        // Load, scale, and resize the contact photo
         Gdk.Pixbuf contact_pixbuf = this.contact.photo;
-        Gtk.Image img = new Gtk.Image.from_file("/home/hortont/src/sheeple/media/no-contact-photo.png");
+        Gtk.Image img = new Gtk.Image.from_file("media/no-contact-photo.png");
         
         if(contact_pixbuf != null)
         {
@@ -59,7 +68,12 @@ public class SheepleContactView : Gtk.ScrolledWindow
             img = new Gtk.Image.from_pixbuf(contact_pixbuf);
         }
         
-        this.main_box.pack_start(img, true, true, 0);
+        // Construct the editor
+        Gtk.HBox top_bar = new Gtk.HBox(false, 0);
+        
+        top_bar.pack_start(img, false, true, 5);
+        
+        this.main_box.pack_start(top_bar, false, true, 5);
        
         main_box.show_all();
     }
