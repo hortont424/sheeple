@@ -17,5 +17,6 @@ src/libsheeple/SheepleSourceView.[ch]
 src/libsheeple/SheepleContactList.[ch]
 src/libsheeple/SheepleContactView.[ch]
 src/libsheeple/SheepleMetaContact.[ch]
+src/libsheeple/SheepleEditorField.[ch]
 src/libsheeple/SheepleContactViewUI.[ch]
 src/libsheeple/sheeple.h

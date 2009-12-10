@@ -1,6 +1,5 @@
 using GLib;
 using Gtk;
-using WebKit;
 
 public class SheepleContactView : Gtk.ScrolledWindow
 {
@@ -42,7 +41,7 @@ public class SheepleContactView : Gtk.ScrolledWindow
         this.notify["contact"].connect(update_view);
         
         Gdk.Color color;
-        Gdk.Color.parse("#fff", out color);
+        Gdk.Color.parse("#fff", out color); // TODO: BAD! (themeing)
         this.event_box.modify_bg(Gtk.StateType.NORMAL, color);
         
         this.add_with_viewport(event_box);
@@ -68,12 +67,19 @@ public class SheepleContactView : Gtk.ScrolledWindow
             img = new Gtk.Image.from_pixbuf(contact_pixbuf);
         }
         
+        // A bunch of SheepleEditorFields
+        
+        SheepleEditorField name = new SheepleEditorField();
+        name.content = this.contact.full_name;
+        name.large_type = true;
+        
         // Construct the editor
         Gtk.HBox top_bar = new Gtk.HBox(false, 0);
         
-        top_bar.pack_start(img, false, true, 5);
+        top_bar.pack_start(img, false, true, 15);
+        top_bar.pack_start(name, false, true, 5);
         
-        this.main_box.pack_start(top_bar, false, true, 5);
+        this.main_box.pack_start(top_bar, false, true, 15);
        
         main_box.show_all();
     }
