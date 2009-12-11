@@ -70,7 +70,9 @@ public class SheepleContactView : Gtk.ScrolledWindow
         // A bunch of SheepleEditorFields
         
         SheepleEditorField name = new SheepleEditorField();
-        name.content = this.contact.full_name;
+        SheepleContactField full_name_field = new SheepleContactName();
+        full_name_field.data = this.contact.full_name;
+        name.field = full_name_field;
         name.large_type = true;
         
         // Construct the editor
@@ -80,6 +82,12 @@ public class SheepleContactView : Gtk.ScrolledWindow
         top_bar.pack_start(name, false, true, 5);
         
         this.main_box.pack_start(top_bar, false, true, 15);
+        
+        SheepleEditorList email_bar = new SheepleEditorList();
+        email_bar.title = "Email";
+        email_bar.data = this.contact.email;
+        
+        this.main_box.pack_start(email_bar, true, true, 5);
        
         main_box.show_all();
     }

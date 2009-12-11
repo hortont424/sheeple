@@ -10,11 +10,11 @@ public class SheepleMetaContact : GLib.Object, SheepleContact
     public string family_name {get; set;}
     public string nickname {get; set;}
     
-    private GLib.List<string> _email;
-    public GLib.List<string> email {get { return _email; } set { _email = value.copy(); }}
+    private GLib.List<SheepleContactField> _email;
+    public GLib.List<SheepleContactField> email {get { return _email; } set { _email = value.copy(); }}
     
-    private GLib.List<string> _phone;
-    public GLib.List<string> phone {get { return _phone; } set { _phone = value.copy(); }}
+    private GLib.List<SheepleContactField> _phone;
+    public GLib.List<SheepleContactField> phone {get { return _phone; } set { _phone = value.copy(); }}
     
     public Gdk.Pixbuf photo {get; set;}
     

@@ -8,7 +8,7 @@ public class SheepleEditorField : Gtk.Alignment
     private Gtk.Button button;
     
     private bool _large_type;
-    private string _content;
+    private SheepleContactField _field;
     
     public bool large_type
     {
@@ -31,18 +31,18 @@ public class SheepleEditorField : Gtk.Alignment
         }
     }
     
-    public string content
+    public SheepleContactField field
     {
         get
         {
-            return _content;
+            return _field;
         }
         
         set
         {
-            _content = value;
-            this.entry.text = _content;
-            this.button.label = _content;
+            _field = value;
+            this.entry.text = _field.data;
+            this.button.label = _field.data;
         }
     }
     
@@ -61,7 +61,7 @@ public class SheepleEditorField : Gtk.Alignment
             this.show_all(); // No matter what I do, the button won't lose relief
         });
         this.entry.changed.connect(() => {
-            this.content = this.entry.text;
+            this.field.data = this.entry.text;
         });
         
         this.button = new Gtk.Button();
@@ -77,8 +77,8 @@ public class SheepleEditorField : Gtk.Alignment
             this.entry.grab_focus();
         });
         
-        this.xscale = 0;
-        this.yscale = 0;
+        this.xscale = this.yscale = 0;
+        this.xalign = this.yalign = 0;
         
         this.add(button);
         

@@ -8,6 +8,13 @@ public interface SheepleContactField : GLib.Object
     public abstract bool primary {get; set;}
 }
 
+public class SheepleContactName : GLib.Object, SheepleContactField
+{
+    public string label {get; set;}
+    public string data {get; set;}
+    public bool primary {get; set;}
+}
+
 public class SheepleContactPhone : GLib.Object, SheepleContactField
 {
     public string label {get; set;}
