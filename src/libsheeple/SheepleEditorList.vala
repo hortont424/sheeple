@@ -56,10 +56,23 @@ public class SheepleEditorList : Gtk.Alignment
                 w.field = f;
                 this.fields.append(w);
                 w.left_padding = 15;
-                this.field_box.pack_start(w, true, true, 0);
+                w.yalign = 0.5f;
+                
+                Gtk.Image img = new Gtk.Image.from_stock("gtk-remove", Gtk.IconSize.SMALL_TOOLBAR);
+                Gtk.Button close_button = new Gtk.Button();
+                close_button.set_image(img);
+                close_button.relief = Gtk.ReliefStyle.NONE;
+                Gtk.Alignment close_button_align = new Gtk.Alignment(1, 0.5f, 0, 0);
+                close_button_align.add(close_button);
+                
+                Gtk.HBox f_box = new Gtk.HBox(false, 0);
+                f_box.pack_start(w, false, true, 0);
+                f_box.pack_start(close_button_align, true, true, 0);
+                
+                this.field_box.pack_start(f_box, true, true, 0);
                 i++;
                 
-                w.show_all();
+                this.field_box.show_all();
             }
         }
     }
