@@ -118,10 +118,10 @@ GList * sheeple_eds_contact_get_email(SheepleContact * self)
                 }
             }
                         
-            SheepleContactEmail * email_addr = sheeple_contact_email_new();
-            sheeple_contact_email_set_label(email_addr, type);
-            sheeple_contact_email_set_address(email_addr, value);
-            sheeple_contact_email_set_primary(email_addr, preferred);
+            SheepleContactField * email_addr = (SheepleContactField*)sheeple_contact_email_new();
+            sheeple_contact_field_set_label(email_addr, type);
+            sheeple_contact_field_set_data(email_addr, value);
+            sheeple_contact_field_set_primary(email_addr, preferred);
             
             emails = g_list_prepend(emails, email_addr);
         }
@@ -182,10 +182,10 @@ GList * sheeple_eds_contact_get_phone(SheepleContact * self)
                 }
             }
                         
-            SheepleContactPhone * phone_num = sheeple_contact_phone_new();
-            sheeple_contact_phone_set_label(phone_num, type);
-            sheeple_contact_phone_set_number(phone_num, value);
-            sheeple_contact_phone_set_primary(phone_num, preferred);
+            SheepleContactField * phone_num = (SheepleContactField*)sheeple_contact_phone_new();
+            sheeple_contact_field_set_label(phone_num, type);
+            sheeple_contact_field_set_data(phone_num, value);
+            sheeple_contact_field_set_primary(phone_num, preferred);
             
             phones = g_list_prepend(phones, phone_num);
         }
