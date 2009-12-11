@@ -84,10 +84,14 @@ public class SheepleContactView : Gtk.ScrolledWindow
         this.main_box.pack_start(top_bar, false, true, 15);
         
         SheepleEditorList email_bar = new SheepleEditorList();
-        email_bar.title = "Email";
+        email_bar.title = "email";
         email_bar.data = this.contact.email;
-        
-        this.main_box.pack_start(email_bar, true, true, 5);
+        this.main_box.pack_start(email_bar, false, true, 5);
+       
+        SheepleEditorList phone_bar = new SheepleEditorList();
+        phone_bar.title = "phone";
+        phone_bar.data = this.contact.phone;
+        this.main_box.pack_start(phone_bar, false, true, 5);
        
         main_box.show_all();
     }

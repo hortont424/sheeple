@@ -4,9 +4,10 @@ using Pango;
 
 public class SheepleEditorList : Gtk.Alignment
 {
-    private Gtk.Table main_table;
+    private Gtk.HBox main_hbox;
     private Gtk.Label title_label;
     private GLib.List<SheepleEditorField> fields; 
+    private Gtk.VBox field_box;
     
     private string _title;
     private unowned GLib.List<SheepleContactField> _data;
@@ -38,14 +39,14 @@ public class SheepleEditorList : Gtk.Alignment
             {
                 foreach(SheepleEditorField w in this.fields)
                 {
-                    this.main_table.remove(w);
+                    this.field_box.remove(w);
                     this.fields.remove(w);
                 }
             }
             
             _data = value;
             
-            this.main_table.resize(2 + this.data.length(), 2);
+            //this.main_hbox.resize(2 + this.data.length(), 2);
             
             int i = 3;
             
@@ -54,10 +55,11 @@ public class SheepleEditorList : Gtk.Alignment
                 SheepleEditorField w = new SheepleEditorField();
                 w.field = f;
                 this.fields.append(w);
-                this.main_table.attach_defaults(w, 0, 1, i, i + 1);
+                w.left_padding = 15;
+                this.field_box.pack_start(w, true, true, 0);
                 i++;
                 
-                this.main_table.show_all();
+                w.show_all();
             }
         }
     }
@@ -67,18 +69,26 @@ public class SheepleEditorList : Gtk.Alignment
         this.fields = null;
         
         this.xalign = this.yalign = 0;
+        this.yscale = 0;
         this.set_padding(0, 0, 15, 15);
     
+        this.field_box = new Gtk.VBox(false, 0);
+    
         this.title_label = new Gtk.Label("");
-        Gtk.Alignment title_align = new Gtk.Alignment(0,0,0,0);
-        title_align.add(title_label);
+        this.title_label.set_size_request(40, -1); // TODO: CHEATING
+        //Gtk.Alignment title_align = new Gtk.Alignment(0,0.5f,0,0);
+        //title_align.add(title_label);
         
-        this.main_table = new Gtk.Table(2, 2, false);
-        this.main_table.attach_defaults(title_align, 0, 1, 0, 1);
-        Gtk.Alignment main_table_align = new Gtk.Alignment(0,0,1,0);
-        main_table_align.add(main_table);
+        this.main_hbox = new Gtk.HBox(false, 0);
+        this.main_hbox.pack_start(title_label, false, true, 15);
         
-        this.add(main_table_align);
+        Gtk.Alignment main_hbox_align = new Gtk.Alignment(0,0,1,0);
+        main_hbox_align.add(main_hbox);
+        
+        main_hbox.pack_start(new Gtk.VSeparator(), false, true, 0);
+        main_hbox.pack_start(this.field_box, true, true, 0);
+        
+        this.add(main_hbox_align);
         
         this.show_all();
     }
