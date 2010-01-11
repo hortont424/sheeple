@@ -90,7 +90,7 @@ int main(int argc, char **argv)
     sheeple_store_add_backend(contact_store, eds);
     
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_default_size(GTK_WINDOW(window), 300, 400);
+    gtk_window_set_default_size(GTK_WINDOW(window), 700, 500);
     g_signal_connect(window, "delete_event", gtk_main_quit, NULL);
     
     pane = gtk_hpaned_new();

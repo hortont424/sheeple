@@ -71,7 +71,7 @@ public class SheepleEditorField : Gtk.Alignment
         this.button.set_can_focus(false);
         this.button.clicked.connect(() => {
             this.remove(button);
-            //this.entry.set_width_chars((int)this.content.length);
+            this.entry.set_width_chars((int)this.field.data.length);
             this.add(entry);
             this.show_all();
             this.entry.grab_focus();
