@@ -88,7 +88,7 @@ public class SheepleEditorList : Gtk.Alignment
         this.field_box = new Gtk.VBox(false, 0);
     
         this.title_label = new Gtk.Label("");
-        this.title_label.set_size_request(40, -1); // TODO: CHEATING
+        this.title_label.set_width_chars(6); // TODO: CHEATING
         //Gtk.Alignment title_align = new Gtk.Alignment(0,0.5f,0,0);
         //title_align.add(title_label);
         
