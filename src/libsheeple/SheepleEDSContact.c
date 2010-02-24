@@ -69,6 +69,13 @@ DEFINE_EDS_GETSETTERS(const gchar *, NICKNAME, nickname);
 void sheeple_eds_contact_set_email(SheepleContact *self, GList * prop)
 {
     //e_contact_set(SHEEPLE_EDS_CONTACT(self)->priv->econtact, E_CONTACT_PHONE, prop);
+    GList * props = prop;
+
+    for(; props; props = props->next)
+    {
+        SheepleContactField * email_addr = (SheepleContactField*)props->data;
+        printf("%s\n", sheeple_contact_field_get_data(email_addr));
+    }
 }
 
 GList * sheeple_eds_contact_get_email(SheepleContact * self)

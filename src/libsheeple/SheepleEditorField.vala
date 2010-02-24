@@ -62,6 +62,7 @@ public class SheepleEditorField : Gtk.Alignment
         });
         this.entry.changed.connect(() => {
             this.field.data = this.entry.text;
+            this.button.label = this.entry.text;
         });
         
         this.button = new Gtk.Button();
