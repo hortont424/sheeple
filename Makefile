@@ -1,15 +1,15 @@
 .PHONY: clean run gitclean todo vapi
 
 SHEEPLE_CFLAGS = `pkg-config --cflags gobject-2.0 gtk+-2.0 pango \
-    couchdb-glib-1.0 avahi-client avahi-core avahi-gobject avahi-glib \
+    avahi-client avahi-core avahi-gobject avahi-glib \
     dbus-glib-1 gnome-keyring-1 libebook-1.2`
 
 SHEEPLE_LDFLAGS = `pkg-config --libs gobject-2.0 gtk+-2.0 pango \
-    couchdb-glib-1.0 avahi-client avahi-core avahi-gobject avahi-glib \
+    avahi-client avahi-core avahi-gobject avahi-glib \
     dbus-glib-1 gnome-keyring-1 libebook-1.2`
 
 VALA_FLAGS = --pkg gobject-2.0 --pkg gobject-2.0 --pkg gtk+-2.0 --vapidir=vapi \
-             --pkg couchdb-glib-1.0 --pkg json-glib-1.0 --pkg dbus-glib-1 \
+             --pkg json-glib-1.0 --pkg dbus-glib-1 \
              --pkg gnome-keyring-1 --pkg pango
 
 all: libsheeple.so sheeple
