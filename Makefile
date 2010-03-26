@@ -9,8 +9,7 @@ SHEEPLE_LDFLAGS = `pkg-config --libs gobject-2.0 gtk+-2.0 pango \
     dbus-glib-1 gnome-keyring-1 libebook-1.2`
 
 VALA_FLAGS = --pkg gobject-2.0 --pkg gobject-2.0 --pkg gtk+-2.0 --vapidir=vapi \
-             --pkg json-glib-1.0 --pkg dbus-glib-1 \
-             --pkg gnome-keyring-1 --pkg pango
+             --pkg dbus-glib-1 --pkg gnome-keyring-1 --pkg pango
 
 all: libsheeple.so sheeple
 

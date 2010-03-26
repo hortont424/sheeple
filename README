@@ -18,6 +18,5 @@ current name...
 
     * valac (built with vapigen)
     * glib-2.0, gtk+-2.0, etc.
-    * couchdb-glib-1.0 and json-glib-1.0
     * avahi, avahi-glib, etc.
     * webkit-1.0
