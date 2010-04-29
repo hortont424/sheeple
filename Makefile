@@ -1,15 +1,16 @@
-.PHONY: clean run gitclean todo vapi
+.PHONY: clean run gitclean todo vapi fromc
 
 SHEEPLE_CFLAGS = `pkg-config --cflags gobject-2.0 gtk+-2.0 pango \
     avahi-client avahi-core avahi-gobject avahi-glib \
-    dbus-glib-1 gnome-keyring-1 libebook-1.2`
+    dbus-glib-1 gnome-keyring-1 libebook-1.2 libgdata`
 
 SHEEPLE_LDFLAGS = `pkg-config --libs gobject-2.0 gtk+-2.0 pango \
     avahi-client avahi-core avahi-gobject avahi-glib \
-    dbus-glib-1 gnome-keyring-1 libebook-1.2`
+    dbus-glib-1 gnome-keyring-1 libebook-1.2 libgdata`
 
 VALA_FLAGS = --pkg gobject-2.0 --pkg gobject-2.0 --pkg gtk+-2.0 --vapidir=vapi \
-             --pkg dbus-glib-1 --pkg gnome-keyring-1 --pkg pango
+             --pkg dbus-glib-1 --pkg gnome-keyring-1 --pkg pango \
+             --pkg libgdata
 
 all: libsheeple.so sheeple
 
@@ -19,13 +20,21 @@ libsheeple.so: src/libsheeple/*.vala src/libsheeple/*.c src/libsheeple/*.h
 	gcc -g -O0 $(SHEEPLE_CFLAGS) --shared -fPIC src/libsheeple/*.c \
 	    -o libsheeple.so
 
+fromc:
+	gcc -g -O0 $(SHEEPLE_CFLAGS) --shared -fPIC src/libsheeple/*.c \
+	    -o libsheeple.so
+	gcc -g -O0 $(SHEEPLE_CFLAGS) $(SHEEPLE_LDFLAGS) -I. -Isrc -L. \
+	    -lsheeple src/sheeple/*.c -o sheeple
+
 sheeple: libsheeple.so src/sheeple/*.c
 	gcc -g -O0 $(SHEEPLE_CFLAGS) $(SHEEPLE_LDFLAGS) -I. -Isrc -L. \
 	    -lsheeple src/sheeple/*.c -o sheeple
 
 vapi:
-	cd vapi ; vala-gen-introspect seed seed
-	cd vapi ; vapigen --pkg webkit-1.0 --pkg glib-2.0 --library seed seed/seed.gi
+#	cd vapi ; vala-gen-introspect seed seed
+#	cd vapi ; vapigen --pkg webkit-1.0 --pkg glib-2.0 --library seed seed/seed.gi
+	cd vapi ; vala-gen-introspect libgdata libgdata
+	cd vapi ; vapigen --pkg glib-2.0 --library libgdata libgdata/libgdata.gi
 #	cd vapi ; vala-gen-introspect couchdb-glib-1.0 couchdb-glib-1.0
 #	cd vapi ; vapigen --pkg json-glib-1.0 --library couchdb-glib-1.0 couchdb-glib-1.0/couchdb-glib-1.0.gi
 

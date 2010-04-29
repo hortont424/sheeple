@@ -5,6 +5,8 @@ public class SheepleContactList : Gtk.ScrolledWindow
 {
     private Gtk.TreeView treeview;
     private Gtk.ListStore listmodel;
+    private Gtk.TreeModelFilter filtermodel;
+    private string filterstring = "";
     
     public unowned GLib.List<unowned SheepleContact> selection {get; set;}
     public signal void selection_changed();
@@ -45,7 +47,16 @@ public class SheepleContactList : Gtk.ScrolledWindow
         this.treeview.cursor_changed.connect(update_selection);
         
         this.listmodel = new Gtk.ListStore(3, typeof(string), typeof(string), typeof(SheepleContact));
-        this.treeview.set_model(this.listmodel);
+        filtermodel = new Gtk.TreeModelFilter(this.listmodel, null);
+        filtermodel.set_visible_func((model, iter) => {
+            GLib.Value? val;
+            model.get_value(iter, 1, out val);
+            if(val.get_string() == null)
+                return true;
+
+            return (filterstring.up() in val.get_string().up());
+        });
+        this.treeview.set_model(this.filtermodel);
 
         this.treeview.insert_column_with_attributes(-1, "Icon", new CellRendererPixbuf(), "icon-name", 0, null);
         this.treeview.insert_column_with_attributes(-1, "Contacts", new CellRendererText(), "text", 1, null);
@@ -106,5 +117,13 @@ public class SheepleContactList : Gtk.ScrolledWindow
         }
         
         this.listmodel.set_sort_column_id(1, Gtk.SortType.ASCENDING);
+    }
+
+    public void setup_toolbar(SheepleToolbar tb)
+    {
+        tb.update_filter.connect((filter) => {
+            filterstring = filter;
+            filtermodel.refilter();
+        });
     }
 }

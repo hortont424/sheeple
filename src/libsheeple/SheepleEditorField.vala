@@ -9,6 +9,8 @@ public class SheepleEditorField : Gtk.Alignment
     
     private bool _large_type;
     private SheepleContactField _field;
+
+    public signal void save();
     
     public bool large_type
     {
@@ -59,6 +61,7 @@ public class SheepleEditorField : Gtk.Alignment
             this.remove(entry);
             this.add(button);
             this.show_all(); // No matter what I do, the button won't lose relief
+            this.save();
         });
         this.entry.changed.connect(() => {
             this.field.data = this.entry.text;

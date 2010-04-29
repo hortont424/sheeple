@@ -49,6 +49,8 @@ public class SheepleSourceView : Gtk.ScrolledWindow
         viewport.set_shadow_type(Gtk.ShadowType.NONE);
         viewport.add(master_padding);
         this.add(viewport);
+
+        this.set_size_request(110, 0);
         
         this.notify["store"].connect(connect_store);
         this.notify["selection"].connect(update_selection);

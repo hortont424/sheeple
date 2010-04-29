@@ -21,26 +21,26 @@
 #include <glib/gi18n.h>
 
 #include <libsheeple/sheeple.h>
-#include <libsheeple/SheepleEDSContact.h> // yuck
-#include <libsheeple/SheepleEDSBackend.h> // yuck
-#include <libsheeple/SheepleEDSBackendGroup.h> // yuck
+//#include <libsheeple/SheepleEDSContact.h> // yuck
+//#include <libsheeple/SheepleEDSBackend.h> // yuck
+//#include <libsheeple/SheepleEDSBackendGroup.h> // yuck
 
-SheepleBackend * eds;
+SheepleBackend * backend;
 SheepleContactList * contactlistview;
 SheepleContactView * contactview;
 
 void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
 {
     SheepleGroup *gr;
-    
+
     if(!sheeple_source_view_get_selection(sourceview))
         return;
-    
+
     gr = sheeple_source_view_get_selection(sourceview)->data;
-    
+
     if(!gr)
         return;
-    
+
     GValue gr_val = { 0, };
     g_value_init(&gr_val, TYPE_SHEEPLE_GROUP);
     g_value_set_object(&gr_val, gr);
@@ -50,12 +50,12 @@ void sv_select_changed(SheepleSourceView * sourceview, gpointer user_data)
 void clv_select_changed(SheepleContactList * clv, gpointer user_data)
 {
     SheepleContact *ctc;
-    
+
     if(!sheeple_contact_list_get_selection(clv))
         return;
-        
+
     ctc = sheeple_contact_list_get_selection(clv)->data;
-    
+
     if(!ctc)
         return;
 
@@ -68,31 +68,35 @@ void clv_select_changed(SheepleContactList * clv, gpointer user_data)
 int main(int argc, char **argv)
 {
     GList *sources;
-    GtkWidget *window, *hbox, *sourceview, *pane;
+    GtkWidget *window, *hbox, *sourceview, *pane, *vbox;
+    SheepleToolbar *toolbar;
 
     g_thread_init(NULL);
     gtk_init(&argc, &argv);
-    
+
     SheepleStore * contact_store = sheeple_store_get_store();
-    eds = SHEEPLE_BACKEND(sheeple_eds_backend_new());
+    //eds = SHEEPLE_BACKEND(sheeple_eds_backend_new());
+    backend = SHEEPLE_BACKEND(sheeple_google_backend_new("username", "password"));
 
     sourceview = GTK_WIDGET(sheeple_source_view_new());
     sheeple_source_view_set_store(SHEEPLE_SOURCE_VIEW(sourceview), contact_store);
     g_signal_connect(sourceview, "selection-changed",
                      G_CALLBACK(sv_select_changed), NULL);
-    
+
     contactview = sheeple_contact_view_new();
-    
+
     contactlistview = sheeple_contact_list_new();
     g_signal_connect(contactlistview, "selection-changed",
                      G_CALLBACK(clv_select_changed), NULL);
-    
-    sheeple_store_add_backend(contact_store, eds);
-    
+
+    sheeple_store_add_backend(contact_store, backend);
+
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(GTK_WINDOW(window), 700, 500);
     g_signal_connect(window, "delete_event", gtk_main_quit, NULL);
-    
+
+    vbox = gtk_vbox_new(FALSE, 0);
+
     pane = gtk_hpaned_new();
     gtk_paned_add1(GTK_PANED(pane), GTK_WIDGET(contactlistview));
     gtk_paned_add2(GTK_PANED(pane), GTK_WIDGET(contactview));
@@ -102,7 +106,14 @@ int main(int argc, char **argv)
     gtk_box_pack_start(GTK_BOX(hbox), gtk_vseparator_new(), FALSE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), pane, TRUE, TRUE, 0);
 
-    gtk_container_add(GTK_CONTAINER(window), hbox);
+    toolbar = sheeple_toolbar_new();
+
+    sheeple_contact_list_setup_toolbar(contactlistview, toolbar);
+
+    gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(toolbar), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
+
+    gtk_container_add(GTK_CONTAINER(window), vbox);
 
     gtk_widget_grab_focus(GTK_WIDGET(contactview));
 
